@@ -29,7 +29,11 @@ public class CardRating {
         public int compare(ArrayList<Card> o1, ArrayList<Card> o2) {
             if(o1.size()<o2.size())
                 return 1;
-            else if(o2.size()>o1.size())
+            else if(o1.size()>o2.size())
+                return -1;
+            else if(o1.get(0).getValue().ordinal()<o2.get(0).getValue().ordinal())
+                return 1;
+            else if(o1.get(0).getValue().ordinal()>o2.get(0).getValue().ordinal())
                 return -1;
             else
                 return 0;
@@ -214,9 +218,9 @@ public class CardRating {
         }
     }
 
-    public ArrayList<Card> findMaxValueKickers (ArrayList<ArrayList<Card>> vGroups){
+    public ArrayList<Card> findMaxValueKickers (ArrayList<ArrayList<Card>> vGroups, int startGroup){
         ArrayList<Card> possibleKickers = new ArrayList<Card>();
-        for(int i=1; i<vGroups.size(); i++){
+        for(int i=startGroup; i<vGroups.size(); i++){
             ArrayList<Card> vGroup = vGroups.get(i);
             possibleKickers.addAll(vGroup);
         }
@@ -231,7 +235,7 @@ public class CardRating {
     }
 
     public int[] calcFourOfAKindPower (ArrayList<ArrayList<Card>> vGroups){
-        ArrayList<Card> kickers = findMaxValueKickers(vGroups);
+        ArrayList<Card> kickers = findMaxValueKickers(vGroups, 1);
         int[] power = {8, vGroups.get(0).get(0).getValue().ordinal()+2, kickers.get(0).getValue().ordinal()+2};
         return power;
     }
@@ -243,6 +247,7 @@ public class CardRating {
 
     public int[] calcSimpleFlushPower (ArrayList<Card> cards){
         int[] power = new int[6];
+        power[0] = 6;
         Collections.sort(cards, valueComparator);
         Collections.reverse(cards);
         for(int i=1; i<=5; i++){
@@ -253,23 +258,36 @@ public class CardRating {
     }
 
     public int[] calcStraightPower (ArrayList<Card> cards){
-        return null;
+        int[] power = {5, cards.get(4).getValue().ordinal()+2};
+        return power;
     }
 
     public int[] calcThreeOfAKindPower (ArrayList<ArrayList<Card>> vGroups){
-        return null;
+        ArrayList<Card> kickers = findMaxValueKickers(vGroups, 1);
+        int[] power = {4, vGroups.get(0).get(0).getValue().ordinal()+2, kickers.get(0).getValue().ordinal()+2, kickers.get(1).getValue().ordinal()+2};
+        return power;
     }
 
     public int[] calcTwoPairsPower (ArrayList<ArrayList<Card>> vGroups){
-        return null;
+        ArrayList<Card> kickers = findMaxValueKickers(vGroups, 2);
+        int[] power = {3, vGroups.get(0).get(0).getValue().ordinal()+2, vGroups.get(1).get(0).getValue().ordinal()+2, kickers.get(0).getValue().ordinal()+2};
+        return power;
     }
 
     public int[] calcPairPower (ArrayList<ArrayList<Card>> vGroups){
-        return null;
+        ArrayList<Card> kickers = findMaxValueKickers(vGroups, 1);
+        int[] power = {2, vGroups.get(0).get(0).getValue().ordinal()+2, kickers.get(0).getValue().ordinal()+2, kickers.get(1).getValue().ordinal()+2, kickers.get(2).getValue().ordinal()+2};
+        return power;
     }
 
     public int[] calcHighCardPower (ArrayList<ArrayList<Card>> vGroups){
-        return null;
+        ArrayList<Card> kickers = findMaxValueKickers(vGroups, 0);
+        int[] power = new int[6];
+        power[0] = 1;
+        for(int i=1; i<=5; i++){
+            power[i] = kickers.get(i-1).getValue().ordinal()+2;
+        }
+        return power;
     }
 
     //Testing of sorting methods
@@ -302,13 +320,13 @@ public class CardRating {
         */
 
         ArrayList<Card> testHand = new ArrayList<Card>();
-        testHand.add(new Card(Card.Value.THREE, Card.Suit.CLUBS));
-        testHand.add(new Card(Card.Value.NINE, Card.Suit.CLUBS));
-        testHand.add(new Card(Card.Value.KING, Card.Suit.CLUBS));
-        testHand.add(new Card(Card.Value.TEN, Card.Suit.CLUBS));
+        testHand.add(new Card(Card.Value.FOUR, Card.Suit.SPADES));
+        testHand.add(new Card(Card.Value.KING, Card.Suit.DIAMONDS));
         testHand.add(new Card(Card.Value.DEUCE, Card.Suit.CLUBS));
-        testHand.add(new Card(Card.Value.TEN, Card.Suit.HEARTS));
-        testHand.add(new Card(Card.Value.QUEEN, Card.Suit.SPADES));
+        testHand.add(new Card(Card.Value.THREE, Card.Suit.HEARTS));
+        testHand.add(new Card(Card.Value.NINE, Card.Suit.CLUBS));
+        testHand.add(new Card(Card.Value.ACE, Card.Suit.HEARTS));
+        testHand.add(new Card(Card.Value.TEN, Card.Suit.SPADES));
 
         /*
         for(Card card : cardRating.sortBySuit(testHand)){
