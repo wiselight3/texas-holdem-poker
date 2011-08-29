@@ -1,8 +1,5 @@
 
 
-import com.sun.org.apache.bcel.internal.classfile.InnerClass;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -140,10 +137,33 @@ public class CardRating {
 
 
     public int[] calcCardsPower (ArrayList<Card> cards){
-        ArrayList vGroups = genValueGroups(cards);
-
-
-        return null;
+        ArrayList<ArrayList<Card>> vGroups = genValueGroups(cards);
+        ArrayList<Card> flush = findFlush(cards);
+        ArrayList<Card> strInFlush = null;
+        if(flush != null)
+            strInFlush = findStraight(flush);
+        if(flush!=null && strInFlush!=null)
+            return calcStraightFlushPower(strInFlush);
+        else if(vGroups.get(0).size() == 4)
+            return calcFourOfAKindPower(vGroups);
+        else if(vGroups.get(0).size() == 3 && vGroups.size()>1 && vGroups.get(1).size()>=2)
+            return calcFullHousePower(vGroups);
+        else if(flush != null)
+            return calcSimpleFlushPower(flush);
+        else{
+            ArrayList<Card> straight = findStraight(cards);
+            if(straight != null)
+                return calcStraightPower(straight);
+            else if(vGroups.get(0).size() == 3)
+                return calcThreeOfAKindPower(vGroups);
+            else if(vGroups.get(0).size() == 2){
+                if(vGroups.size()>1 && vGroups.get(1).size()==2)
+                    return calcTwoPairsPower(vGroups);
+                else
+                    return calcPairPower(vGroups);
+            }else
+                 return calcHighCardPower(vGroups);
+        }
     }
 
     public ArrayList<Card> findFlush (ArrayList<Card> cards){
@@ -154,7 +174,9 @@ public class CardRating {
     }
 
     private Card ace;
-    public ArrayList<Card> findStraight (ArrayList<Card> cards){
+    public ArrayList<Card> findStraight (ArrayList<Card> inCards){
+        ArrayList<Card> cards = new ArrayList<Card>();
+        cards.addAll(inCards);
         ace = findCardOfValue(Card.Value.ACE, cards);
         ArrayList<Card> sCards = sortByValue(cards);
         Collections.reverse(sCards);
@@ -173,7 +195,7 @@ public class CardRating {
             temp.addAll(straight);
             return temp;
         }
-        else if(cards == null)
+        else if(cards.isEmpty())
             return null;
 
         Card card = cards.get(0);
@@ -192,7 +214,61 @@ public class CardRating {
         }
     }
 
+    public ArrayList<Card> findMaxValueKickers (ArrayList<ArrayList<Card>> vGroups){
+        ArrayList<Card> possibleKickers = new ArrayList<Card>();
+        for(int i=1; i<vGroups.size(); i++){
+            ArrayList<Card> vGroup = vGroups.get(i);
+            possibleKickers.addAll(vGroup);
+        }
+        Collections.sort(possibleKickers, valueComparator);
+        Collections.reverse(possibleKickers);
+        return possibleKickers;
+    }
+
     public int[] calcStraightFlushPower (ArrayList<Card> cards){
+        int[] power = {9, cards.get(4).getValue().ordinal()+2};
+        return power;
+    }
+
+    public int[] calcFourOfAKindPower (ArrayList<ArrayList<Card>> vGroups){
+        ArrayList<Card> kickers = findMaxValueKickers(vGroups);
+        int[] power = {8, vGroups.get(0).get(0).getValue().ordinal()+2, kickers.get(0).getValue().ordinal()+2};
+        return power;
+    }
+
+    public int[] calcFullHousePower (ArrayList<ArrayList<Card>> vGroups){
+        int[] power = {7, vGroups.get(0).get(0).getValue().ordinal()+2, vGroups.get(1).get(0).getValue().ordinal()+2};
+        return power;
+    }
+
+    public int[] calcSimpleFlushPower (ArrayList<Card> cards){
+        int[] power = new int[6];
+        Collections.sort(cards, valueComparator);
+        Collections.reverse(cards);
+        for(int i=1; i<=5; i++){
+            System.out.println(cards.get(i-1).getValue().ordinal()+2);
+            power[i] = cards.get(i-1).getValue().ordinal()+2;
+        }
+        return power;
+    }
+
+    public int[] calcStraightPower (ArrayList<Card> cards){
+        return null;
+    }
+
+    public int[] calcThreeOfAKindPower (ArrayList<ArrayList<Card>> vGroups){
+        return null;
+    }
+
+    public int[] calcTwoPairsPower (ArrayList<ArrayList<Card>> vGroups){
+        return null;
+    }
+
+    public int[] calcPairPower (ArrayList<ArrayList<Card>> vGroups){
+        return null;
+    }
+
+    public int[] calcHighCardPower (ArrayList<ArrayList<Card>> vGroups){
         return null;
     }
 
@@ -226,11 +302,11 @@ public class CardRating {
         */
 
         ArrayList<Card> testHand = new ArrayList<Card>();
-        testHand.add(new Card(Card.Value.ACE, Card.Suit.CLUBS));
-        testHand.add(new Card(Card.Value.DEUCE, Card.Suit.CLUBS));
         testHand.add(new Card(Card.Value.THREE, Card.Suit.CLUBS));
+        testHand.add(new Card(Card.Value.NINE, Card.Suit.CLUBS));
         testHand.add(new Card(Card.Value.KING, Card.Suit.CLUBS));
-        testHand.add(new Card(Card.Value.JACK, Card.Suit.CLUBS));
+        testHand.add(new Card(Card.Value.TEN, Card.Suit.CLUBS));
+        testHand.add(new Card(Card.Value.DEUCE, Card.Suit.CLUBS));
         testHand.add(new Card(Card.Value.TEN, Card.Suit.HEARTS));
         testHand.add(new Card(Card.Value.QUEEN, Card.Suit.SPADES));
 
@@ -259,18 +335,13 @@ public class CardRating {
             for(Card card : sGroup){
                 System.out.println(card);
             }
-        }
+        } */
         System.out.println();
-        ArrayList<Card> flush = cardRating.findFlush(testHand);
-        for(Card card : flush){
-            System.out.println(card);
-        }  */
-        System.out.println();
-        ArrayList<Card> straight = cardRating.findStraight(testHand);
-        if(straight != null){
-            for(Card card : straight){
-                System.out.println(card);
-            }
+        int[] power = cardRating.calcCardsPower(testHand);
+        System.out.print("Power: [ ");
+        for(int val : power){
+            System.out.print(val+" ");
         }
+        System.out.print("]");
     }
 }
