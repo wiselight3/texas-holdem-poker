@@ -16,6 +16,9 @@ public class Deck {
         buildDeck();
     }
 
+    /**
+     * Clears the current ceck and builds a new deck sorted
+     */
     public void buildDeck(){
         cards.clear();
         for(Card.Suit suit : Card.Suit.values()){
@@ -25,6 +28,9 @@ public class Deck {
         }
     }
 
+    /**
+     * Shuffles the deck
+     */
     public void shuffleDeck (){
         Card temp;
         int tempIndex;

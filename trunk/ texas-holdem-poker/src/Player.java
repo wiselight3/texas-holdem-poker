@@ -23,9 +23,18 @@ public class Player {
     private ArrayList<Card> cards = new ArrayList<Card>();
     private boolean smallBlind;
 	private boolean bigBlind;
+	private int amountInPotFromPlayer =0;
 	
 	
-    public boolean isSmallBlind() {
+	
+	
+    public int getAmountInPotFromPlayer() {
+		return amountInPotFromPlayer;
+	}
+	public void addPotMoneyFromPlayer(int bet) {
+		amountInPotFromPlayer+=bet;
+	}
+	public boolean isSmallBlind() {
 		return smallBlind;
 	}
 	public void setSmallBlind(boolean smallBlind) {
@@ -72,7 +81,7 @@ public class Player {
 			if(powerRating > 0.5) {
 				raise(PokerManager.bigBlind);
 			} else if(powerRating<0.5 && powerRating > 0.25) {
-				call();
+				call(PokerManager.bigBlind);
 			} else {
 				fold();
 			}
@@ -80,7 +89,7 @@ public class Player {
 			if (powerRating > 0.25) {
 				raise(PokerManager.bigBlind);
 			} else if (powerRating < 0.25 && powerRating > 0.10) {
-				call();
+				call(PokerManager.bigBlind);
 			} else {
 				fold();
 			}
@@ -89,7 +98,7 @@ public class Player {
 			if (powerRating> 0.90) {
 				raise(PokerManager.bigBlind);
 			} else if(powerRating < 0.90 && powerRating > 0.75) {
-				call();
+				call(PokerManager.bigBlind);
 			} else {
 				fold();
 			}
@@ -98,6 +107,7 @@ public class Player {
 	}
 	
 	public void fold() {
+		PokerManager.players.remove(this);
 	}
     
     public int call(int amount) {
