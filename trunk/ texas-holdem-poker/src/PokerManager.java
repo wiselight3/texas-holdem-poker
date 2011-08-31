@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class PokerManager {
 	
@@ -11,12 +12,13 @@ public class PokerManager {
 	private static int smallBlind = 25;
 	public static int bigBlind =50;
 	private static int roundsPlayed=0;
-	
+	private static CardRating cardRating = new CardRating();
 	
 	public static void main(String[] args) {
 		players = new ArrayList<Player>();
 		initializePlayers();
 		deck = new Deck();
+		
 		
 		while(roundsPlayed < 1) {
 			System.out.println("Round " + roundsPlayed);
@@ -49,6 +51,20 @@ public class PokerManager {
 			//}
 			
 			dealTableCards();
+			
+			/*
+			ArrayList<Card> playerHand = new ArrayList<Card>();
+			playerHand.add(p1.getCards().get(0));
+			playerHand.add(p1.getCards().get(1));
+			playerHand.add(table.getCards().get(0));
+			playerHand.add(table.getCards().get(1));
+			playerHand.add(table.getCards().get(2));
+			*/
+			//int [] powerRatingArray=
+			//cardRating.calcCardsPower(playerHand);
+			
+			//p1.setPowerRating(powerRating)
+			
 			table.printCards();
 			System.out.println(table.getPot());
 			
