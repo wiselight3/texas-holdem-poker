@@ -6,7 +6,7 @@ public class PokerManager {
 	private static Table table;
 	
 
-	private static ArrayList<Player> players;
+	public static ArrayList<Player> players;
 	private static Player p1,p2,p3,p4;
 	private static int smallBlind = 25;
 	public static int bigBlind =50;
@@ -18,21 +18,31 @@ public class PokerManager {
 		initializePlayers();
 		deck = new Deck();
 		
-		while(roundsPlayed < 15) {
-			
+		while(roundsPlayed < 1) {
+			System.out.println("Round " + roundsPlayed);
 			deck.buildDeck();
 			deck.shuffleDeck();
-			table = new Table("round");
+			table = new Table("round"); //Make a round class and keep table consistent?
 			
 			initializeBlinds();
 			dealStartingHandForPlayers();
 			
 			printCardsForPlayers();
 			
+			
+			
+			//before the flop we have no power ratings so use random to decide to bet or not?
 			for (Player player : players) {
-				//before the flop we have no power ratings so use random to decide to bet or not?
+				int n = (int) Math.random();
+				if (n>0.25 && n<0.5) {
+					table.RaisePot(player.call(bigBlind)); 
+				} else if (n>0.5) {
+					table.RaisePot(player.raise(bigBlind));
+				} else {
+					player.fold();
+				}
 				
-			}
+			//}
 			//use this after flop using power ratings
 			//for (Player player : players) {
 				//player.makeDecision();
@@ -40,19 +50,25 @@ public class PokerManager {
 			
 			dealTableCards();
 			table.printCards();
+			System.out.println(table.getPot());
+			
+			roundsPlayed++;
+			
 		}
 		
-		
-		
+	}
 		
 	}
 
 	private static void initializeBlinds() {
 		p1.setSmallBlind(true);
-		p2.setSmallBlind(true);
+		p2.setBigBlind(true);
 		table.RaisePot(p1.raise(smallBlind)); 
 		table.RaisePot(p2.raise(bigBlind));
 		
+		p1.addPotMoneyFromPlayer(smallBlind);
+		p2.addPotMoneyFromPlayer(bigBlind);
+			
 	}
 
 	private static void printCardsForPlayers() {
