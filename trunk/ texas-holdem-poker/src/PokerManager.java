@@ -31,24 +31,9 @@ public class PokerManager {
 			
 			printCardsForPlayers();
 			
-			
-			
-			//before the flop we have no power ratings so use random to decide to bet or not?
 			for (Player player : players) {
-				int n = (int) Math.random();
-				if (n>0.25 && n<0.5) {
-					table.RaisePot(player.call(bigBlind)); 
-				} else if (n>0.5) {
-					table.RaisePot(player.raise(bigBlind));
-				} else {
-					player.fold();
-				}
-				
-			//}
-			//use this after flop using power ratings
-			//for (Player player : players) {
-				//player.makeDecision();
-			//}
+				player.makeDecision();
+			}
 			
 			dealTableCards();
 			
@@ -74,7 +59,7 @@ public class PokerManager {
 		
 	}
 		
-	}
+	
 
 	private static void initializeBlinds() {
 		p1.setSmallBlind(true);
