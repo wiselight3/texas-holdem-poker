@@ -12,9 +12,12 @@ public class Player {
 
 	public enum PlayerType {PASSIVE, AGGRESSIVE, NORMAL }
 	
+	public enum statusForPlayer {FOLD, RAISE, CALL}
+	
 	private double powerRating;
 	
-
+	private statusForPlayer status;
+	
 	private final int maxRaises = 3;
 	private int numberOfRaisesThisRound=0;
 	private final PlayerType playerType;
@@ -76,49 +79,56 @@ public class Player {
     }
     
     
-	public void makeDecision() {
-		if (playerType == playerType.NORMAL) {
-			if(powerRating > 0.5) {
+	public void makeDecision(int[] powerRatings) {
+		switch (playerType) {
+		case NORMAL:
+			if (powerRatings[0] >= 4) {
 				raise(PokerManager.bigBlind);
-			} else if(powerRating<0.5 && powerRating > 0.25) {
+			} else if (powerRatings[0]>=2 && powerRatings[0] <4) {
 				call(PokerManager.bigBlind);
 			} else {
 				fold();
 			}
-		} else if (playerType == playerType.AGGRESSIVE) {
-			if (powerRating > 0.25) {
+			break;
+		case AGGRESSIVE:
+			if (powerRatings[0] >= 2) {
 				raise(PokerManager.bigBlind);
-			} else if (powerRating < 0.25 && powerRating > 0.10) {
+			} else if (powerRatings[0] == 1) {
 				call(PokerManager.bigBlind);
 			} else {
 				fold();
 			}
-			
-		} else if (playerType == playerType.PASSIVE) {
-			if (powerRating> 0.90) {
+			break;
+		case PASSIVE:
+			if (powerRatings[0] >=6) {
 				raise(PokerManager.bigBlind);
-			} else if(powerRating < 0.90 && powerRating > 0.75) {
+			} else if(powerRatings[0] >= 4 && powerRatings[0] <6) {
 				call(PokerManager.bigBlind);
 			} else {
 				fold();
 			}
+			break;
 		}
-		
 	}
 	
 	public void fold() {
-		PokerManager.players.remove(this);
+	this.status = statusForPlayer.FOLD;	
 	}
-    
+	
     public int call(int amount) {
+    	this.status = statusForPlayer.CALL;
     	money = money - amount;
     	return money;
     }
     
+    
     public int raise(int amount) {
+    	this.status = statusForPlayer.RAISE;	
     	money = money-amount;
-    	return money;
+        numberOfRaisesThisRound++;
+        return money;
     }
+    
     
 
 }
