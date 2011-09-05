@@ -12,7 +12,7 @@ public class Player {
 
 	public enum PlayerType {PASSIVE, AGGRESSIVE, NORMAL }
 	
-	private int powerRating;
+	private double powerRating;
 	
 
 	private final int maxRaises = 3;
@@ -47,10 +47,10 @@ public class Player {
 		this.bigBlind = bigBlind;
 	}
 	
-	public int getPowerRating() {
+	public double getPowerRating() {
 		return powerRating;
 	}
-	public void setPowerRating(int powerRating) {
+	public void setPowerRating(double powerRating) {
 		this.powerRating = powerRating;
 	}
 

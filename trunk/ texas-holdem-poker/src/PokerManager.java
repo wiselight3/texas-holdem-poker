@@ -28,37 +28,39 @@ public class PokerManager {
 			
 			initializeBlinds();
 			dealStartingHandForPlayers();
-			
 			printCardsForPlayers();
+			
+			
+			p1.setPowerRating(0.5);
+			p2.setPowerRating(0.7);
+			p3.setPowerRating(0.9);
+			p4.setPowerRating(0.5);
 			
 			for (Player player : players) {
 				player.makeDecision();
 			}
 			
-			dealTableCards();
-			
-			/*
-			ArrayList<Card> playerHand = new ArrayList<Card>();
-			playerHand.add(p1.getCards().get(0));
-			playerHand.add(p1.getCards().get(1));
-			playerHand.add(table.getCards().get(0));
-			playerHand.add(table.getCards().get(1));
-			playerHand.add(table.getCards().get(2));
-			*/
-			//int [] powerRatingArray=
-			//cardRating.calcCardsPower(playerHand);
-			
-			//p1.setPowerRating(powerRating)
-			
+			dealFlop();
 			table.printCards();
 			System.out.println(table.getPot());
-			
 			roundsPlayed++;
-			
 		}
 		
 	}
 		
+	
+	private static int [] getPowerRatingArrayForPLayer(Player player) {
+
+		ArrayList<Card> playerHand = new ArrayList<Card>();
+		playerHand.add(p1.getCards().get(0));
+		playerHand.add(p1.getCards().get(1));
+		playerHand.add(table.getCards().get(0));
+		playerHand.add(table.getCards().get(1));
+		playerHand.add(table.getCards().get(2));
+		
+		return cardRating.calcCardsPower(playerHand);
+		
+	}
 	
 
 	private static void initializeBlinds() {
@@ -104,7 +106,7 @@ public class PokerManager {
 		
 	}
 
-	private static void dealTableCards() {
+	private static void dealFlop() {
 		table.dealCard(deck.dealCard());
 		table.dealCard(deck.dealCard());
 		table.dealCard(deck.dealCard());
