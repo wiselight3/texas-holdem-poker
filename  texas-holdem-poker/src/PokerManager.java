@@ -31,35 +31,41 @@ public class PokerManager {
 			printCardsForPlayers();
 			
 			
-			p1.setPowerRating(0.5);
-			p2.setPowerRating(0.7);
-			p3.setPowerRating(0.9);
-			p4.setPowerRating(0.5);
-			
 			for (Player player : players) {
-				player.makeDecision();
+				int [] powerRatings = getPowerRatingArrayForPLayer(player);
+				player.makeDecision(powerRatings);
 			}
 			
 			dealFlop();
 			table.printCards();
 			System.out.println(table.getPot());
+			
+			// river card
+			table.dealCard(deck.dealCard());
+			table.printCards();
+			
+			// turn card
+			table.dealCard(deck.dealCard());
+			table.printCards();
+			
+			
 			roundsPlayed++;
 		}
-		
 	}
 		
 	
 	private static int [] getPowerRatingArrayForPLayer(Player player) {
-
 		ArrayList<Card> playerHand = new ArrayList<Card>();
 		playerHand.add(p1.getCards().get(0));
 		playerHand.add(p1.getCards().get(1));
-		playerHand.add(table.getCards().get(0));
-		playerHand.add(table.getCards().get(1));
-		playerHand.add(table.getCards().get(2));
+		
+		
+		for (Card card : table.getCards()) {
+			playerHand.add(card);
+		}
+		
 		
 		return cardRating.calcCardsPower(playerHand);
-		
 	}
 	
 
