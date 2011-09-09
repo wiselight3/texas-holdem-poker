@@ -14,8 +14,6 @@ public class Player {
 	
 	public enum statusForPlayer {FOLD, RAISE, CALL}
 	
-	private double powerRating;
-	
 	private statusForPlayer status;
 	
 	private final int maxRaises = 3;
@@ -26,17 +24,13 @@ public class Player {
     private ArrayList<Card> cards = new ArrayList<Card>();
     private boolean smallBlind;
 	private boolean bigBlind;
-	private int amountInPotFromPlayer =0;
 	
 	
-	
-	
-    public int getAmountInPotFromPlayer() {
-		return amountInPotFromPlayer;
+	public statusForPlayer getStatusForPlayer() {
+		return status;
 	}
-	public void addPotMoneyFromPlayer(int bet) {
-		amountInPotFromPlayer+=bet;
-	}
+	
+
 	public boolean isSmallBlind() {
 		return smallBlind;
 	}
@@ -50,12 +44,6 @@ public class Player {
 		this.bigBlind = bigBlind;
 	}
 	
-	public double getPowerRating() {
-		return powerRating;
-	}
-	public void setPowerRating(double powerRating) {
-		this.powerRating = powerRating;
-	}
 
     public Player (String id, PlayerType type){
         this.id = id;
