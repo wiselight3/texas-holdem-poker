@@ -31,13 +31,18 @@ public class PokerManager {
 			printCardsForPlayers();
 			
 			
+			dealFlop();
+			table.printCards();
+			
+			
+			
+			
 			for (Player player : players) {
 				int [] powerRatings = getPowerRatingArrayForPLayer(player);
 				player.makeDecision(powerRatings);
+				System.out.println(player.getStatusForPlayer());
 			}
 			
-			dealFlop();
-			table.printCards();
 			System.out.println(table.getPot());
 			
 			// river card
@@ -56,15 +61,13 @@ public class PokerManager {
 	
 	private static int [] getPowerRatingArrayForPLayer(Player player) {
 		ArrayList<Card> playerHand = new ArrayList<Card>();
-		playerHand.add(p1.getCards().get(0));
-		playerHand.add(p1.getCards().get(1));
+		playerHand.add(player.getCards().get(0));
+		playerHand.add(player.getCards().get(1));
 		
 		
 		for (Card card : table.getCards()) {
 			playerHand.add(card);
 		}
-		
-		
 		return cardRating.calcCardsPower(playerHand);
 	}
 	
@@ -72,11 +75,8 @@ public class PokerManager {
 	private static void initializeBlinds() {
 		p1.setSmallBlind(true);
 		p2.setBigBlind(true);
-		table.RaisePot(p1.raise(smallBlind)); 
-		table.RaisePot(p2.raise(bigBlind));
-		
-		p1.addPotMoneyFromPlayer(smallBlind);
-		p2.addPotMoneyFromPlayer(bigBlind);
+		table.RaisePot(smallBlind); 
+		table.RaisePot(bigBlind);
 			
 	}
 
@@ -104,7 +104,7 @@ public class PokerManager {
 		p2 = new Player("p2", Player.PlayerType.NORMAL);
 		p3 = new Player("p3", Player.PlayerType.PASSIVE);
 		p4 = new Player("p4", Player.PlayerType.NORMAL);
-		
+
 		players.add(p1);
 		players.add(p2);
 		players.add(p3);
