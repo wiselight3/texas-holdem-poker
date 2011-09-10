@@ -8,7 +8,7 @@ public class Table {
 	private ArrayList<Card> cards = new ArrayList<Card>();
 	private String id;
 	private int pot;
-	
+	public int bet;
 	
 	public int getPot() {
 		return pot;

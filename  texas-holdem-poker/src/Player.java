@@ -12,18 +12,18 @@ public class Player {
 
 	public enum PlayerType {PASSIVE, AGGRESSIVE, NORMAL }
 	
-	public enum statusForPlayer {FOLD, RAISE, CALL}
+	public enum statusForPlayer {FOLD, RAISE, CALL, WAIT, CHECK}
 	
 	private statusForPlayer status;
-	
-	private final int maxRaises = 3;
-	private int numberOfRaisesThisRound=0;
+	//private final int maxRaises = 3;
+	//private int numberOfRaisesThisRound=0;
 	private final PlayerType playerType;
-	private int money = 500; //assume everyone starts with the same amount the first round
+	private int money = 500;
     private String id;
     private ArrayList<Card> cards = new ArrayList<Card>();
     private boolean smallBlind;
 	private boolean bigBlind;
+	private int bet;
 	
 	
 	public statusForPlayer getStatusForPlayer() {
@@ -60,20 +60,24 @@ public class Player {
     }
 
     public void printCards() {
-    	System.out.println(id + " hand:");
+    	System.out.println(id + " hand: " );
     	for (Card card : cards) {
 			System.out.println(card.toString());
 		}
     }
     
     
-	public void makeDecision(int[] powerRatings) {
+	public void makeBettingDecision(int[] powerRatings) {
 		switch (playerType) {
 		case NORMAL:
 			if (powerRatings[0] >= 4) {
 				raise(PokerManager.bigBlind);
 			} else if (powerRatings[0]>=2 && powerRatings[0] <4) {
-				call(PokerManager.bigBlind);
+				if (bet < PokerManager.getTable().bet) {
+					call(PokerManager.bigBlind);
+				} else {
+					check();
+				}
 			} else {
 				fold();
 			}
@@ -103,18 +107,36 @@ public class Player {
 	this.status = statusForPlayer.FOLD;	
 	}
 	
+	
+	public void check() {
+		status = statusForPlayer.CHECK;
+	}
+	
     public int call(int amount) {
     	this.status = statusForPlayer.CALL;
     	money = money - amount;
+    	this.bet = PokerManager.getTable().bet;
+    	PokerManager.getTable().RaisePot(amount);
     	return money;
     }
-    
     
     public int raise(int amount) {
     	this.status = statusForPlayer.RAISE;	
     	money = money-amount;
-        numberOfRaisesThisRound++;
+    	this.bet = PokerManager.getTable().bet + amount;
+    	PokerManager.getTable().bet += amount;
+    	PokerManager.getTable().RaisePot(amount);
         return money;
+    }
+    
+    public void resetStatus () {
+    	this.status = statusForPlayer.WAIT;
+    }
+    
+    public boolean hasFolded() {
+    	if (status == statusForPlayer.FOLD) return true;
+    	
+    	return false;
     }
     
     

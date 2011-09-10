@@ -6,13 +6,14 @@ public class PokerManager {
 	private static Deck deck;
 	private static Table table;
 	
-
+	static int numOfFolds;
 	public static ArrayList<Player> players;
 	private static Player p1,p2,p3,p4;
 	private static int smallBlind = 25;
 	public static int bigBlind =50;
 	private static int roundsPlayed=0;
 	private static CardRating cardRating = new CardRating();
+	
 	
 	public static void main(String[] args) {
 		players = new ArrayList<Player>();
@@ -24,26 +25,34 @@ public class PokerManager {
 			System.out.println("Round " + roundsPlayed);
 			deck.buildDeck();
 			deck.shuffleDeck();
-			table = new Table("round"); //Make a round class and keep table consistent?
+			table = new Table("round");
 			
 			initializeBlinds();
 			dealStartingHandForPlayers();
 			printCardsForPlayers();
-			
+			table.bet = bigBlind;
 			
 			dealFlop();
 			table.printCards();
 			
 			
-			
-			
-			for (Player player : players) {
-				int [] powerRatings = getPowerRatingArrayForPLayer(player);
-				player.makeDecision(powerRatings);
-				System.out.println(player.getStatusForPlayer());
+			while (numOfFolds <3) {
+				//while more than 1 player left and raises <3
+				for (Player player : players) {
+					int [] powerRatings = getPowerRatingArrayForPLayer(player);
+					if (!player.hasFolded()) {
+						player.makeBettingDecision(powerRatings);
+					}
+					System.out.println(player.getStatusForPlayer());
+					System.out.println("current bet: " + table.bet);
+				}
+				
 			}
 			
+
 			System.out.println(table.getPot());
+			table.printCards();
+			
 			
 			// river card
 			table.dealCard(deck.dealCard());
@@ -76,8 +85,7 @@ public class PokerManager {
 		p1.setSmallBlind(true);
 		p2.setBigBlind(true);
 		table.RaisePot(smallBlind); 
-		table.RaisePot(bigBlind);
-			
+		table.RaisePot(bigBlind);	
 	}
 
 	private static void printCardsForPlayers() {
