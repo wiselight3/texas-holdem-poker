@@ -15,8 +15,8 @@ public class Player {
 	public enum statusForPlayer {FOLD, RAISE, CALL, WAIT, CHECK}
 	
 	private statusForPlayer status;
-	//private final int maxRaises = 3;
-	//private int numberOfRaisesThisRound=0;
+	private final int maxRaises = 3;
+	private int numberOfRaisesThisRound=0;
 	private final PlayerType playerType;
 	private int money = 500;
     private String id;
@@ -30,7 +30,10 @@ public class Player {
 		return status;
 	}
 	
-
+	public String getId() {
+		return id;
+	}
+	
 	public boolean isSmallBlind() {
 		return smallBlind;
 	}
@@ -126,6 +129,7 @@ public class Player {
     	this.bet = PokerManager.getTable().bet + amount;
     	PokerManager.getTable().bet += amount;
     	PokerManager.getTable().RaisePot(amount);
+    	numberOfRaisesThisRound++;
         return money;
     }
     
