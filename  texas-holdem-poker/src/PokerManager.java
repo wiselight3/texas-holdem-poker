@@ -6,7 +6,6 @@ public class PokerManager {
 	private static Deck deck;
 	private static Table table;
 	
-	static int numOfFolds;
 	public static ArrayList<Player> players;
 	private static Player p1,p2,p3,p4;
 	private static int smallBlind = 25;
@@ -25,7 +24,7 @@ public class PokerManager {
 			System.out.println("Round " + roundsPlayed);
 			deck.buildDeck();
 			deck.shuffleDeck();
-			table = new Table("round");
+			table = new Table();
 			
 			initializeBlinds();
 			dealStartingHandForPlayers();
@@ -43,7 +42,7 @@ public class PokerManager {
 					if (!player.hasFolded()) {
 						player.makeBettingDecision(powerRatings);
 					}
-					System.out.println(player.getStatusForPlayer());
+					System.out.println(player.getId() + ": " + player.getStatusForPlayer());
 					System.out.println("current bet: " + table.bet);
 				}
 				

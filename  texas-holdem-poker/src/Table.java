@@ -1,12 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Table {
 	
-	
 	private ArrayList<Card> cards = new ArrayList<Card>();
-	private String id;
 	private int pot;
 	public int bet;
 	
@@ -17,11 +14,6 @@ public class Table {
 	public void RaisePot(int amount) {
 		pot = pot + amount;
 	}
-
-
-	public Table (String id){
-        this.id = id;
-    }
 
 	
 	public void dealCard(Card card) {
