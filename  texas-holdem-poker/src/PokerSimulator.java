@@ -107,47 +107,42 @@ public class PokerSimulator {
 	 public static Player calculateWinner() {
 		 Player currentWinner = new Player(null,null);
 		 int[] rating;
-		 int ratingLength;
-		 int currentBestRatingLength =1;
+		 int n;
 		 int [] currentBestRating = new int[]{0};
 		 for (Player player : players) {
 			rating = player.getPowerRating();
-			ratingLength = rating.length;
-			
-			if (rating[0] > currentBestRating[0]) {
-				currentWinner = player;
+			n = calculateBestRating(rating, currentBestRating);
+			if (n == 1)  {
 				currentBestRating = rating;
+				currentWinner = player;
 			}
+			//if (n== 0) uavgjort not yet implemented
 			
-			if (rating[0] == currentBestRating[0]) {
-				if (rating[1] > currentBestRating[1]) {
-					currentWinner = player;
-					currentBestRating = rating;
-				} else if (rating[1] == currentBestRating[1]) {
-					if (rating[2] > currentBestRating[2]) {
-						currentWinner = player;
-						currentBestRating = rating;
-					
-					} else if (rating[2] == currentBestRating[2]) {
-					if (rating[3] > currentBestRating[3]) {
-						currentWinner = player;
-						currentBestRating = rating;
-					} else if(rating[3] == currentBestRating[3]) {
-						if (rating[4] > currentBestRating[4]) {
-							currentWinner = player;
-							currentBestRating = rating;
-						}
-					}
-					}
-			
-			
-			 
-		}
-			}
-		 
 	 }
 		 return currentWinner;
 	 }
 
 	
+	 /**
+	  * 
+	  * @param rating
+	  * @param rating2
+	  * @return integer: 1 if rating 1 is best, 0 if they are equal, and -1 if rating2 is best.
+	  */
+	 private static int calculateBestRating(int[] rating, int[] rating2) {
+		 int toTraverse;
+		 if (rating.length > rating2.length) toTraverse = rating2.length;
+		 if (rating.length < rating2.length) toTraverse = rating.length;
+		 else toTraverse = rating.length;
+		 
+		 
+		 for (int i = 0; i < toTraverse; i++) {
+			if (rating[i] > rating2[i]) return 1;
+			if (rating2[i] > rating[i]) return -1;
+			if (rating[i] == rating2[i] && toTraverse-i == 1) return 0;
+		 }
+		 
+		 return 0;
+	 }
+	 
 }
