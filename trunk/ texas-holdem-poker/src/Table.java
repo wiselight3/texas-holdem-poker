@@ -5,7 +5,25 @@ public class Table {
 	
 	private ArrayList<Card> cards = new ArrayList<Card>();
 	private int pot;
-	public int bet;
+	private int currentBet;
+	private List<Player> players;
+	private Deck deck;
+	
+	public Deck getDeck() {
+		return deck;
+	}
+
+	private String id;
+	private int smallBlind;
+	public  int bigBlind;
+	
+	public Table(String id, int smallBlind, int bigBlind) {
+		this.id = id;
+		players = new ArrayList<Player>();
+		this.smallBlind = smallBlind;
+		this.bigBlind = bigBlind;
+		deck = new Deck();
+	}
 	
 	public int getPot() {
 		return pot;
@@ -15,7 +33,6 @@ public class Table {
 		pot = pot + amount;
 	}
 
-	
 	public void dealCard(Card card) {
     	cards.add(card);
     }
@@ -34,6 +51,10 @@ public class Table {
     	for (Card card : cards) {
 			System.out.println(card.toString());
 		}
+    }
+    
+    public void addPlayerToTable(Player player) {
+    	players.add(player);
     }
 	
 	

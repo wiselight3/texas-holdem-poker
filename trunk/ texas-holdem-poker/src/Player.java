@@ -11,63 +11,37 @@ import java.util.List;
 public class Player {
 
 	public enum PlayerType {PASSIVE, AGGRESSIVE, NORMAL }
-	
 	public enum statusForPlayer {FOLD, RAISE, CALL, WAIT, CHECK}
-	
 	private statusForPlayer status;
-	private final int maxRaises = 3;
-	private int numberOfRaisesThisRound=0;
 	private final PlayerType playerType;
+	
+	private Hand hand;
 	private int money = 500;
     private String id;
-    private ArrayList<Card> cards = new ArrayList<Card>();
-    private boolean smallBlind;
-	private boolean bigBlind;
+
 	private int bet;
 	
+	
+	public Player (String id, PlayerType type){
+        this.id = id;
+        playerType = type;
+	}
 	
 	public statusForPlayer getStatusForPlayer() {
 		return status;
 	}
-	
 	public String getId() {
 		return id;
 	}
-	
-	public boolean isSmallBlind() {
-		return smallBlind;
-	}
-	public void setSmallBlind(boolean smallBlind) {
-		this.smallBlind = smallBlind;
-	}
-	public boolean isBigBlind() {
-		return bigBlind;
-	}
-	public void setBigBlind(boolean bigBlind) {
-		this.bigBlind = bigBlind;
-	}
-	
-
-    public Player (String id, PlayerType type){
-        this.id = id;
-        playerType = type;
-    }
+ 
     public void dealCard(Card card) {
     	cards.add(card);
     }
     public void dealHand(ArrayList<Card> cards){
         this.cards = cards;
     }    
-    public List<Card> getCards() {
-    	return this.cards;
-    }
+  
 
-    public void printCards() {
-    	System.out.println(id + " hand: " );
-    	for (Card card : cards) {
-			System.out.println(card.toString());
-		}
-    }
     
     
 	public void makeBettingDecision(int[] powerRatings) {
@@ -129,7 +103,7 @@ public class Player {
     	this.bet = PokerManager.getTable().bet + amount;
     	PokerManager.getTable().bet += amount;
     	PokerManager.getTable().RaisePot(amount);
-    	numberOfRaisesThisRound++;
+    	//numberOfRaisesThisRound++;
         return amount;
     }
     
@@ -142,6 +116,19 @@ public class Player {
     	
     	return false;
     }
+    
+    private static int [] getPowerRating(Hand hand) {
+		ArrayList<Card> playerHand = new ArrayList<Card>();
+		
+		playerHand.add(player.getCards().get(0));
+		playerHand.add(player.getCards().get(1));
+		
+		
+		for (Card card : table.getCards()) {
+			playerHand.add(card);
+		}
+		return cardRating.calcCardsPower(playerHand);
+	}
     
     
 
