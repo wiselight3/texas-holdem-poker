@@ -79,12 +79,11 @@ public class PokerManager {
 		return cardRating.calcCardsPower(playerHand);
 	}
 	
-
 	private static void initializeBlinds() {
 		p1.setSmallBlind(true);
 		p2.setBigBlind(true);
-		table.RaisePot(smallBlind); 
-		table.RaisePot(bigBlind);	
+		table.RaisePot(p1.raise(smallBlind)); 
+		table.RaisePot(p2.raise(bigBlind));
 	}
 
 	private static void printCardsForPlayers() {
