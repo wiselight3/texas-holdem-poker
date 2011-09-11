@@ -137,9 +137,11 @@ public class Player {
    }
    
    public void printPowerRating() {
+	   System.out.print("[");
 	   for (Integer inte : powerRating) {
-		System.out.print(inte);
+		System.out.print(" " + inte);
 	}
+	   System.out.print("]");
    }
 	
     
