@@ -127,13 +127,18 @@ public class PokerSimulator {
 					if (rating[2] > currentBestRating[2]) {
 						currentWinner = player;
 						currentBestRating = rating;
-					}
-				} else if (rating[2] == currentBestRating[2]) {
+					
+					} else if (rating[2] == currentBestRating[2]) {
 					if (rating[3] > currentBestRating[3]) {
 						currentWinner = player;
 						currentBestRating = rating;
+					} else if(rating[3] == currentBestRating[3]) {
+						if (rating[4] > currentBestRating[4]) {
+							currentWinner = player;
+							currentBestRating = rating;
+						}
 					}
-			
+					}
 			
 			
 			 
