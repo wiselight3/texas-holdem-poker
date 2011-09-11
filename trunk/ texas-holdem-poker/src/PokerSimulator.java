@@ -36,7 +36,16 @@ public class PokerSimulator {
 			player.printPowerRating();
 			System.out.println();
 		}
-		System.out.println("winner is " + calculateWinner().getId());
+		
+		if (calculateWinner().size() > 1) {
+			System.out.println("We have a draw: ");
+			for (Player player : calculateWinner()) {
+				System.out.println(player.getId());
+			}
+		} else {
+			System.out.println("winner is " + calculateWinner().get(0).getId());
+		}
+
 		
 		
 		
@@ -104,8 +113,8 @@ public class PokerSimulator {
 	 }
 	 
 	 
-	 public static Player calculateWinner() {
-		 Player currentWinner = new Player(null,null);
+	 public static List<Player> calculateWinner() {
+		 List<Player> winners = new ArrayList<Player>();
 		 int[] rating;
 		 int n;
 		 int [] currentBestRating = new int[]{0};
@@ -114,12 +123,15 @@ public class PokerSimulator {
 			n = calculateBestRating(rating, currentBestRating);
 			if (n == 1)  {
 				currentBestRating = rating;
-				currentWinner = player;
+				winners.clear();
+				winners.add(player);
 			}
-			//if (n== 0) uavgjort not yet implemented
+			if (n== 0) {
+				winners.add(player);
+			}
 			
 	 }
-		 return currentWinner;
+		 return winners;
 	 }
 
 	
