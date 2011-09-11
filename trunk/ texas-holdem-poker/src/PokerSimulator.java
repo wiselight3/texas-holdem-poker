@@ -1,41 +1,54 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import enums.PlayerActions;
+import enums.PlayerType;
 
 
 public class PokerSimulator {
 	
-	
-	
-	private static PokerManager manager;
 	private static Deck deck;
 	private static List<Player> players;
 	private static Table table;
-	private int pot;
-	private int currentBet;
+	private static int pot;
+	private static int currentBet;
 
 	
-	public static void main(String[] args) {
+	public int getCurrentBet() {
+		return currentBet;
+	}
 
+	public static void main(String[] args) {
+		ActionSelector actionSelector = new ActionSelector();
+		
 		setUpGame();
 		
 		
 		setUpRound();
 		dealStartingHandToPlayers();
 		printCardsForPlayers();
+	
 		dealFlop();
-		//table.printCards();
+		
+		updatePowerRatingsforPlayers();
+		
+		
+		for (Player player : players) {
+			player.setAction(actionSelector.decideAction(player));
+			if (player.getAction() == PlayerActions.RAISE) pot+= player.raise(Settings.bigBlind + (currentBet - player.getBet()));
+			if (player.getAction() == PlayerActions.CALL) pot += player.call(currentBet-player.getBet());
+			
+		}
+		
+		//turn
 		table.dealCard(deck.dealCard());
 		//table.printCards();
+		//river
 		table.dealCard(deck.dealCard());
 		table.printCards();
 		
-		for (Player player : players) {
-			player.updatePowerRating(getPowerRating(player));
-			System.out.println(player.getId());
-			player.printPowerRating();
-			System.out.println();
-		}
+		
+	
 		
 		if (calculateWinner().size() > 1) {
 			System.out.println("We have a draw: ");
@@ -47,13 +60,19 @@ public class PokerSimulator {
 		}
 
 		
-		
-		
+	}
+
+	private static void updatePowerRatingsforPlayers() {
+		for (Player player : players) {
+			player.updatePowerRating(getPowerRating(player));
+			System.out.println(player.getId());
+			player.printPowerRating();
+			System.out.println();
+		}
 	}
 	
 	public static void setUpGame() {
 		players = new ArrayList<Player>();
-		manager = new PokerManager();
 		deck = new Deck();
 		table = new Table();
 		setUpPlayers(Settings.numOfPlayers);
@@ -66,7 +85,7 @@ public class PokerSimulator {
 	
 	private static void setUpPlayers(int numOfPlayers) {
 		for (int i = 0; i < numOfPlayers; i++) {
-			players.add(new Player("p"+i, Player.PlayerType.NORMAL));
+			players.add(new Player("p"+i, PlayerType.NORMAL));
 		}
 		
 	}
@@ -152,9 +171,9 @@ public class PokerSimulator {
 			if (rating[i] > rating2[i]) return 1;
 			if (rating2[i] > rating[i]) return -1;
 			if (rating[i] == rating2[i] && toTraverse-i == 1) return 0;
-		 }
-		 
+		 } 
 		 return 0;
 	 }
+	 
 	 
 }

@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import enums.PlayerActions;
+import enums.PlayerType;
+
 /**
  * Created by IntelliJ IDEA.
  * User: oye
@@ -10,10 +13,18 @@ import java.util.List;
  */
 public class Player {
 
-	public enum PlayerType {PASSIVE, AGGRESSIVE, NORMAL }
-	public enum statusForPlayer {FOLD, RAISE, CALL, WAIT, CHECK}
-	private statusForPlayer status;
-	private final PlayerType playerType;
+
+	
+	private PlayerActions action;
+	public PlayerActions getAction() {
+		return action;
+	}
+
+	public void setAction(PlayerActions action) {
+		this.action = action;
+	}
+
+	public final PlayerType playerType;
 	
 	private List<Card> cards;
 	private int money = 500;
@@ -26,15 +37,16 @@ public class Player {
 	private int bet;
 	
 	
+	public int getBet() {
+		return bet;
+	}
+
 	public Player (String id, PlayerType type){
         this.id = id;
         playerType = type;
         cards = new ArrayList<Card>();
 	}
 	
-	public statusForPlayer getStatusForPlayer() {
-		return status;
-	}
 	public String getId() {
 		return id;
 	}
@@ -56,78 +68,22 @@ public class Player {
 			System.out.println(card.toString());
 		}
     }
-
-    
-    /*
-	public void makeBettingDecision(int[] powerRatings) {
-		switch (playerType) {
-		case NORMAL:
-			if (powerRatings[0] >= 4) {
-				raise(Settings.bigBlind);
-			} else if (powerRatings[0]>=2 && powerRatings[0] <4) {
-				if (bet < PokerSimulator.round.getCurrentBet()) {
-					call(PokerSimulator.round.getCurrentBet()-bet);
-				} else {
-					check();
-				}
-			} else {
-				fold();
-			}
-			break;
-		case AGGRESSIVE:
-			if (powerRatings[0] >= 2) {
-				raise(Settings.bigBlind);
-			} else if (powerRatings[0] == 1) {
-				call(Settings.bigBlind);
-			} else {
-				fold();
-			}
-			break;
-		case PASSIVE:
-			if (powerRatings[0] >=6) {
-				raise(Settings.bigBlind);
-			} else if(powerRatings[0] >= 4 && powerRatings[0] <6) {
-				call(Settings.bigBlind);
-			} else {
-				fold();
-			}
-			break;
-		}
-	}
-	*/
-	public void fold() {
-	this.status = statusForPlayer.FOLD;	
-	}
-	
-	
-	public void check() {
-		status = statusForPlayer.CHECK;
-	}
 	
     public int call(int amount) {
-    	this.status = statusForPlayer.CALL;
     	money = money - amount;
-    	//this.bet = PokerManager.getTable().bet;
-    	//PokerManager.getTable().RaisePot(amount);
+    	bet+=amount;
     	return amount;
     }
     
     public int raise(int amount) {
-    	this.status = statusForPlayer.RAISE;	
     	money = money-amount;
-    	//this.bet = PokerManager.getTable().bet + amount;
-    	//PokerManager.getTable().bet += amount;
-    	//PokerManager.getTable().RaisePot(amount);
-    	//numberOfRaisesThisRound++;
+    	bet +=amount;
         return amount;
     }
     
-    public void resetStatus () {
-    	this.status = statusForPlayer.WAIT;
-    }
     
     public boolean hasFolded() {
-    	if (status == statusForPlayer.FOLD) return true;
+    	if (action == PlayerActions.FOLD) return true;
     	
     	return false;
     }
