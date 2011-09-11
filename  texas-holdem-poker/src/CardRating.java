@@ -1,8 +1,14 @@
 
 
+
+
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,19 +47,19 @@ public class CardRating {
     };
 
     //Sort by suit
-    public ArrayList<Card> sortBySuit(ArrayList<Card> cards){
+    private ArrayList<Card> sortBySuit(ArrayList<Card> cards){
         Collections.sort(cards, suitComparator);
         return cards;
     }
 
     //Sort by value
-    public ArrayList<Card> sortByValue(ArrayList<Card> cards){
+    private ArrayList<Card> sortByValue(ArrayList<Card> cards){
         Collections.sort(cards, valueComparator);
         return cards;
     }
 
     //Sort by suit and value
-    public ArrayList<Card> sortBySuitAndValue(ArrayList<Card> cards){
+    private ArrayList<Card> sortBySuitAndValue(ArrayList<Card> cards){
         Collections.sort(cards, suitComparator);
         ArrayList<Card> sorted = new ArrayList<Card>();
         ArrayList<Card> suitCol = new ArrayList<Card>();
@@ -75,7 +81,7 @@ public class CardRating {
     }
 
     //Return sets of cards ordered by value
-    public ArrayList genValueGroups (ArrayList<Card> cards){
+    private ArrayList genValueGroups (ArrayList<Card> cards){
         cards = sortByValue(cards);
         ArrayList<ArrayList<Card>> valGroups = new ArrayList<ArrayList<Card>>();
 
@@ -100,7 +106,7 @@ public class CardRating {
     }
 
     //Return sets of cards ordered by suit
-    public ArrayList genSuitGroups (ArrayList<Card> cards){
+    private ArrayList genSuitGroups (ArrayList<Card> cards){
         cards = sortBySuit(cards);
         ArrayList<ArrayList<Card>> suitGroups = new ArrayList<ArrayList<Card>>();
 
@@ -125,13 +131,13 @@ public class CardRating {
     }
 
     //Order sets by length
-    public ArrayList orderByLength(ArrayList vGroups){
+    private ArrayList orderByLength(ArrayList vGroups){
         Collections.sort(vGroups, lengthComparator);
         return vGroups;
     }
 
     //Returns Card if it exists in list
-    public Card findCardOfValue(Card.Value value, ArrayList<Card> cards){
+    private Card findCardOfValue(Card.Value value, ArrayList<Card> cards){
         for(Card card : cards){
             if(card.getValue().equals(value))
                 return card;
@@ -170,7 +176,7 @@ public class CardRating {
         }
     }
 
-    public ArrayList<Card> findFlush (ArrayList<Card> cards){
+    private ArrayList<Card> findFlush (ArrayList<Card> cards){
         ArrayList<ArrayList<Card>> sGroups = genSuitGroups(cards);
         if(sGroups.get(0).size()>=5)
             return sGroups.get(0);
@@ -178,7 +184,7 @@ public class CardRating {
     }
 
     private Card ace;
-    public ArrayList<Card> findStraight (ArrayList<Card> inCards){
+    private ArrayList<Card> findStraight (ArrayList<Card> inCards){
         ArrayList<Card> cards = new ArrayList<Card>();
         cards.addAll(inCards);
         ace = findCardOfValue(Card.Value.ACE, cards);
@@ -190,7 +196,7 @@ public class CardRating {
         return scanForStraight(sCards, straight);
     }
 
-    public ArrayList<Card> scanForStraight (ArrayList<Card> cards, ArrayList<Card> straight){
+    private ArrayList<Card> scanForStraight (ArrayList<Card> cards, ArrayList<Card> straight){
         if(straight.size() == 5){
             return straight;
         }else if(ace != null && straight.get(0).getValue().equals(Card.Value.DEUCE) && straight.size()==4){
@@ -218,7 +224,7 @@ public class CardRating {
         }
     }
 
-    public ArrayList<Card> findMaxValueKickers (ArrayList<ArrayList<Card>> vGroups, int startGroup){
+    private ArrayList<Card> findMaxValueKickers (ArrayList<ArrayList<Card>> vGroups, int startGroup){
         ArrayList<Card> possibleKickers = new ArrayList<Card>();
         for(int i=startGroup; i<vGroups.size(); i++){
             ArrayList<Card> vGroup = vGroups.get(i);
@@ -229,23 +235,23 @@ public class CardRating {
         return possibleKickers;
     }
 
-    public int[] calcStraightFlushPower (ArrayList<Card> cards){
+    private int[] calcStraightFlushPower (ArrayList<Card> cards){
         int[] power = {9, cards.get(4).getValue().ordinal()+2};
         return power;
     }
 
-    public int[] calcFourOfAKindPower (ArrayList<ArrayList<Card>> vGroups){
+    private int[] calcFourOfAKindPower (ArrayList<ArrayList<Card>> vGroups){
         ArrayList<Card> kickers = findMaxValueKickers(vGroups, 1);
         int[] power = {8, vGroups.get(0).get(0).getValue().ordinal()+2, kickers.get(0).getValue().ordinal()+2};
         return power;
     }
 
-    public int[] calcFullHousePower (ArrayList<ArrayList<Card>> vGroups){
+    private int[] calcFullHousePower (ArrayList<ArrayList<Card>> vGroups){
         int[] power = {7, vGroups.get(0).get(0).getValue().ordinal()+2, vGroups.get(1).get(0).getValue().ordinal()+2};
         return power;
     }
 
-    public int[] calcSimpleFlushPower (ArrayList<Card> cards){
+    private int[] calcSimpleFlushPower (ArrayList<Card> cards){
         int[] power = new int[6];
         power[0] = 6;
         Collections.sort(cards, valueComparator);
@@ -257,30 +263,30 @@ public class CardRating {
         return power;
     }
 
-    public int[] calcStraightPower (ArrayList<Card> cards){
+    private int[] calcStraightPower (ArrayList<Card> cards){
         int[] power = {5, cards.get(4).getValue().ordinal()+2};
         return power;
     }
 
-    public int[] calcThreeOfAKindPower (ArrayList<ArrayList<Card>> vGroups){
+    private int[] calcThreeOfAKindPower (ArrayList<ArrayList<Card>> vGroups){
         ArrayList<Card> kickers = findMaxValueKickers(vGroups, 1);
         int[] power = {4, vGroups.get(0).get(0).getValue().ordinal()+2, kickers.get(0).getValue().ordinal()+2, kickers.get(1).getValue().ordinal()+2};
         return power;
     }
 
-    public int[] calcTwoPairsPower (ArrayList<ArrayList<Card>> vGroups){
+    private int[] calcTwoPairsPower (ArrayList<ArrayList<Card>> vGroups){
         ArrayList<Card> kickers = findMaxValueKickers(vGroups, 2);
         int[] power = {3, vGroups.get(0).get(0).getValue().ordinal()+2, vGroups.get(1).get(0).getValue().ordinal()+2, kickers.get(0).getValue().ordinal()+2};
         return power;
     }
 
-    public int[] calcPairPower (ArrayList<ArrayList<Card>> vGroups){
+    private int[] calcPairPower (ArrayList<ArrayList<Card>> vGroups){
         ArrayList<Card> kickers = findMaxValueKickers(vGroups, 1);
         int[] power = {2, vGroups.get(0).get(0).getValue().ordinal()+2, kickers.get(0).getValue().ordinal()+2, kickers.get(1).getValue().ordinal()+2, kickers.get(2).getValue().ordinal()+2};
         return power;
     }
 
-    public int[] calcHighCardPower (ArrayList<ArrayList<Card>> vGroups){
+    private int[] calcHighCardPower (ArrayList<ArrayList<Card>> vGroups){
         ArrayList<Card> kickers = findMaxValueKickers(vGroups, 0);
         int[] power = new int[6];
         power[0] = 1;
@@ -290,6 +296,10 @@ public class CardRating {
         return power;
     }
 
+    
+    
+    
+    
     //Testing of sorting methods
     public static void main(String args[]){
         Deck deck = new Deck();
