@@ -1,3 +1,4 @@
+
 import enums.PlayerActions;
 
 
@@ -9,23 +10,24 @@ public class ActionSelector {
 			switch (player.playerType) {
 			case NORMAL:
 				return decideActionForNormalPlayer(player);
-				break;
 			case AGGRESSIVE:
-				decideActionForAggressivePlayer(player);
-				break;
+				return decideActionForAggressivePlayer(player);
 			case PASSIVE:
-				if (powerRatings[0] >=6) {
-					raise(Settings.bigBlind);
-				} else if(powerRatings[0] >= 4 && powerRatings[0] <6) {
-					call(Settings.bigBlind);
-				} else {
-					fold();
-				}
-				break;
+				return decideActionForPassivePlayer(player);
+			default:
+			return PlayerActions.CALL;
 			}
 	}
 
 	
+	private PlayerActions decideActionForPassivePlayer(Player player) {
+		int [] powerRating = player.getPowerRating();
+		if (powerRating[0] >=6) return PlayerActions.RAISE;
+		else if (powerRating[0] >=4 && powerRating[0] <6) return PlayerActions.CALL;
+		else return PlayerActions.FOLD;	
+	}
+
+
 	private PlayerActions decideActionForAggressivePlayer(Player player) {
 		int [] powerRating = player.getPowerRating();
 		if (powerRating[0] >=2) return PlayerActions.RAISE;
