@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import enums.PlayerActions;
 import enums.PlayerType;
@@ -9,57 +10,95 @@ public class PokerSimulator {
 	
 	private static Deck deck;
 	private static List<Player> players;
+	private static List<Player> playersInRound;
 	private static Table table;
 	private static int pot;
 	private static int currentBet;
-
+	private static ActionSelector actionSelector;
 	
 	public int getCurrentBet() {
 		return currentBet;
 	}
 
 	public static void main(String[] args) {
-		ActionSelector actionSelector = new ActionSelector();
 		
 		setUpGame();
+		
+		int roundsPlayed=0;
+		while (roundsPlayed<Settings.numberOfRounds) {
+			
 		
 		
 		setUpRound();
 		dealStartingHandToPlayers();
 		printCardsForPlayers();
-	
+		
 		dealFlop();
 		
 		updatePowerRatingsforPlayers();
 		
-		
-		for (Player player : players) {
-			player.setAction(actionSelector.decideAction(player));
-			if (player.getAction() == PlayerActions.RAISE) pot+= player.raise(Settings.bigBlind + (currentBet - player.getBet()));
-			if (player.getAction() == PlayerActions.CALL) pot += player.call(currentBet-player.getBet());
-			
-		}
-		
-		//turn
-		table.dealCard(deck.dealCard());
-		//table.printCards();
-		//river
-		table.dealCard(deck.dealCard());
 		table.printCards();
 		
 		
-	
+		makeActions();
+		System.out.println(pot);
 		
-		if (calculateWinner().size() > 1) {
+		//turn
+		table.dealCard(deck.dealCard());
+		table.printCards();
+		updatePowerRatingsforPlayers();
+		makeActions();
+		System.out.println(pot);
+		
+		//river
+		table.dealCard(deck.dealCard());
+		table.printCards();
+		updatePowerRatingsforPlayers();
+		makeActions();
+		System.out.println(pot);
+		
+	
+		int temp =0;
+		if (calculateWinner(playersInRound).size() > 1) {
 			System.out.println("We have a draw: ");
-			for (Player player : calculateWinner()) {
+			temp = pot/playersInRound.size();
+			for (Player player : calculateWinner(playersInRound)) {
 				System.out.println(player.getId());
+				player.addMoney(temp);
+				
 			}
 		} else {
-			System.out.println("winner is " + calculateWinner().get(0).getId());
+			Player winner = calculateWinner(playersInRound).get(0);
+			System.out.println("winner is " + calculateWinner(playersInRound).get(0).getId());
+			winner.addMoney(pot);
 		}
 
 		
+		tearDown();
+		roundsPlayed++;
+		}
+		
+		for (Player player : players) {
+			System.out.println(player.getId() + "ended up with " + player.getMoney());
+		}
+		
+	}
+
+	private static void makeActions() {
+		for (Player player : players) {
+			if (player.getAction() == PlayerActions.FOLD) {
+				playersInRound.remove(player);
+				continue;
+			}
+			player.setAction(actionSelector.decideAction(player));
+			if (player.getAction() == PlayerActions.RAISE) {
+				pot+= player.raise(Settings.bigBlind + (currentBet - player.getBet()));
+				currentBet+= player.raise(Settings.bigBlind + (currentBet - player.getBet()));
+			}
+			if (player.getAction() == PlayerActions.CALL) pot += player.call(currentBet-player.getBet());
+			System.out.println(player.getId() + " has " + player.getAction());
+
+		}
 	}
 
 	private static void updatePowerRatingsforPlayers() {
@@ -72,6 +111,7 @@ public class PokerSimulator {
 	}
 	
 	public static void setUpGame() {
+		actionSelector = new ActionSelector();
 		players = new ArrayList<Player>();
 		deck = new Deck();
 		table = new Table();
@@ -79,15 +119,45 @@ public class PokerSimulator {
 	}
 	
 	public static void setUpRound() {
+		playersInRound = new ArrayList<Player>();
+		playersInRound.addAll(players);
 		deck.buildDeck();
 		deck.shuffleDeck();
+		pot += players.get(0).raise(Settings.smallBlind);
+		pot += players.get(1).raise(Settings.bigBlind);
+		currentBet = Settings.bigBlind;
+	}
+	
+	public static void tearDown() {
+		playersInRound.clear();
+		for (Player player : players) {
+			player.setBet(0);
+		}
+		currentBet =0;
+		pot =0;
+		
 	}
 	
 	private static void setUpPlayers(int numOfPlayers) {
 		for (int i = 0; i < numOfPlayers; i++) {
-			players.add(new Player("p"+i, PlayerType.NORMAL));
+			
+			players.add(new Player("p"+i, generateType()));
 		}
-		
+	}
+	
+	private static PlayerType generateType () {
+		Random r = new Random();
+		r.nextInt(3);
+		switch (r.nextInt(3)) {
+		case 0:
+			return PlayerType.PASSIVE;
+		case 1:
+			return PlayerType.AGGRESSIVE;
+		case 2:
+			return PlayerType.NORMAL;
+		default:
+			return PlayerType.NORMAL;
+		}
 	}
 	
 	public static void dealStartingHandToPlayers() {
@@ -132,7 +202,7 @@ public class PokerSimulator {
 	 }
 	 
 	 
-	 public static List<Player> calculateWinner() {
+	 public static List<Player> calculateWinner(List<Player> players) {
 		 List<Player> winners = new ArrayList<Player>();
 		 int[] rating;
 		 int n;
