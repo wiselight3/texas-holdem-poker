@@ -15,9 +15,13 @@ public class Player {
 	private statusForPlayer status;
 	private final PlayerType playerType;
 	
-	private Hand hand;
+	private List<Card> cards;
 	private int money = 500;
     private String id;
+    private int [] powerRating;
+	public int[] getPowerRating() {
+		return powerRating;
+	}
 
 	private int bet;
 	
@@ -25,6 +29,7 @@ public class Player {
 	public Player (String id, PlayerType type){
         this.id = id;
         playerType = type;
+        cards = new ArrayList<Card>();
 	}
 	
 	public statusForPlayer getStatusForPlayer() {
@@ -42,16 +47,26 @@ public class Player {
     }    
   
 
+	 public List<Card> getCards() {
+	    return cards;
+	}
+	 
+    public void printCards() {
+    	for (Card card : cards) {
+			System.out.println(card.toString());
+		}
+    }
+
     
-    
+    /*
 	public void makeBettingDecision(int[] powerRatings) {
 		switch (playerType) {
 		case NORMAL:
 			if (powerRatings[0] >= 4) {
-				raise(PokerManager.bigBlind);
+				raise(Settings.bigBlind);
 			} else if (powerRatings[0]>=2 && powerRatings[0] <4) {
-				if (bet < PokerManager.getTable().bet) {
-					call(PokerManager.bigBlind);
+				if (bet < PokerSimulator.round.getCurrentBet()) {
+					call(PokerSimulator.round.getCurrentBet()-bet);
 				} else {
 					check();
 				}
@@ -61,25 +76,25 @@ public class Player {
 			break;
 		case AGGRESSIVE:
 			if (powerRatings[0] >= 2) {
-				raise(PokerManager.bigBlind);
+				raise(Settings.bigBlind);
 			} else if (powerRatings[0] == 1) {
-				call(PokerManager.bigBlind);
+				call(Settings.bigBlind);
 			} else {
 				fold();
 			}
 			break;
 		case PASSIVE:
 			if (powerRatings[0] >=6) {
-				raise(PokerManager.bigBlind);
+				raise(Settings.bigBlind);
 			} else if(powerRatings[0] >= 4 && powerRatings[0] <6) {
-				call(PokerManager.bigBlind);
+				call(Settings.bigBlind);
 			} else {
 				fold();
 			}
 			break;
 		}
 	}
-	
+	*/
 	public void fold() {
 	this.status = statusForPlayer.FOLD;	
 	}
@@ -92,17 +107,17 @@ public class Player {
     public int call(int amount) {
     	this.status = statusForPlayer.CALL;
     	money = money - amount;
-    	this.bet = PokerManager.getTable().bet;
-    	PokerManager.getTable().RaisePot(amount);
+    	//this.bet = PokerManager.getTable().bet;
+    	//PokerManager.getTable().RaisePot(amount);
     	return amount;
     }
     
     public int raise(int amount) {
     	this.status = statusForPlayer.RAISE;	
     	money = money-amount;
-    	this.bet = PokerManager.getTable().bet + amount;
-    	PokerManager.getTable().bet += amount;
-    	PokerManager.getTable().RaisePot(amount);
+    	//this.bet = PokerManager.getTable().bet + amount;
+    	//PokerManager.getTable().bet += amount;
+    	//PokerManager.getTable().RaisePot(amount);
     	//numberOfRaisesThisRound++;
         return amount;
     }
@@ -117,18 +132,16 @@ public class Player {
     	return false;
     }
     
-    private static int [] getPowerRating(Hand hand) {
-		ArrayList<Card> playerHand = new ArrayList<Card>();
-		
-		playerHand.add(player.getCards().get(0));
-		playerHand.add(player.getCards().get(1));
-		
-		
-		for (Card card : table.getCards()) {
-			playerHand.add(card);
-		}
-		return cardRating.calcCardsPower(playerHand);
+   public void updatePowerRating(int [] rating) {
+	   this.powerRating = rating;
+   }
+   
+   public void printPowerRating() {
+	   for (Integer inte : powerRating) {
+		System.out.print(inte);
 	}
+   }
+	
     
     
 
