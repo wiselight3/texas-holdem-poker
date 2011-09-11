@@ -120,7 +120,7 @@ public class Player {
     	money = money - amount;
     	this.bet = PokerManager.getTable().bet;
     	PokerManager.getTable().RaisePot(amount);
-    	return money;
+    	return amount;
     }
     
     public int raise(int amount) {
@@ -130,7 +130,7 @@ public class Player {
     	PokerManager.getTable().bet += amount;
     	PokerManager.getTable().RaisePot(amount);
     	numberOfRaisesThisRound++;
-        return money;
+        return amount;
     }
     
     public void resetStatus () {
