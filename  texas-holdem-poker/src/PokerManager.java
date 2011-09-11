@@ -72,11 +72,7 @@ public class PokerManager {
 		}
 	}
 
-	private static void dealFlop() {
-		table.dealCard(deck.dealCard());
-		table.dealCard(deck.dealCard());
-		table.dealCard(deck.dealCard());
-	}
+	
 	
 	public static Table getTable() {
 		return table;
