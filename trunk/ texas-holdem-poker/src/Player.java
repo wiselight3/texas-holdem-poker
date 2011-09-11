@@ -13,23 +13,20 @@ import enums.PlayerType;
  */
 public class Player {
 
-
-	
 	private PlayerActions action;
 	public PlayerActions getAction() {
 		return action;
 	}
-
 	public void setAction(PlayerActions action) {
 		this.action = action;
 	}
-
 	public final PlayerType playerType;
 	
 	private List<Card> cards;
 	private int money = 500;
     private String id;
     private int [] powerRating;
+    
 	public int[] getPowerRating() {
 		return powerRating;
 	}
@@ -40,25 +37,20 @@ public class Player {
 	public int getBet() {
 		return bet;
 	}
-
 	public Player (String id, PlayerType type){
         this.id = id;
         playerType = type;
         cards = new ArrayList<Card>();
 	}
-	
 	public String getId() {
 		return id;
 	}
- 
     public void dealCard(Card card) {
     	cards.add(card);
     }
     public void dealHand(ArrayList<Card> cards){
         this.cards = cards;
     }    
-  
-
 	 public List<Card> getCards() {
 	    return cards;
 	}
@@ -69,6 +61,11 @@ public class Player {
 		}
     }
 	
+    /**
+     * Call or check. Depends on currentBet compared to players bet
+     * @param amount
+     * @return the amount used to call
+     */
     public int call(int amount) {
     	money = money - amount;
     	bet+=amount;
