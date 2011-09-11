@@ -22,8 +22,8 @@ public class ActionSelector {
 	
 	private PlayerActions decideActionForPassivePlayer(Player player) {
 		int [] powerRating = player.getPowerRating();
-		if (powerRating[0] >=6) return PlayerActions.RAISE;
-		else if (powerRating[0] >=4 && powerRating[0] <6) return PlayerActions.CALL;
+		if (powerRating[0] >=5) return PlayerActions.RAISE;
+		else if (powerRating[0] >=3 && powerRating[0] <5) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;	
 	}
 
@@ -36,8 +36,8 @@ public class ActionSelector {
 	}
 	
 	private PlayerActions decideActionForNormalPlayer(Player player) {
-		if (player.getPowerRating()[0] >= 4) return PlayerActions.RAISE;
-		else if (player.getPowerRating()[0]>=2 && player.getPowerRating()[0] <4) return PlayerActions.CALL;
+		if (player.getPowerRating()[0] >= 3) return PlayerActions.RAISE;
+		else if (player.getPowerRating()[0]>=1 && player.getPowerRating()[0] <3) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 	}
 }
