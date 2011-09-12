@@ -29,7 +29,9 @@ public class Table {
 		}
     }
     
-
+    public void removeCards() {
+    	cards.clear();
+    }
 	
 	
 }
