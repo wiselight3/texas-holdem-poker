@@ -8,7 +8,7 @@ import enums.PlayerType;
 
 
 public class PokerSimulator {
-	
+	//TODO: re raise, starting position compared to blinds. Now player with position 0 in array always start 
 	private static Deck deck;
 	private static List<Player> players;
 	private static List<Player> playersInRound;
@@ -16,6 +16,8 @@ public class PokerSimulator {
 	private static int pot;
 	private static int currentBet;
 	private static ActionSelector actionSelector;
+	private static int smallBlindPosition;
+	private static int bigBlindPosition;
 	
 	public int getCurrentBet() {
 		return currentBet;
@@ -85,6 +87,7 @@ public class PokerSimulator {
 		
 	}
 
+	
 	private static void makeActions() {
 		for (Player player : players) {
 			if (player.getAction() == PlayerActions.FOLD) {
@@ -131,11 +134,10 @@ public class PokerSimulator {
 	}
 	
 	private static void setBlinds() {
-		int smallBlindPosition = 0;
-		int bigBlindPosition = 0;
+		smallBlindPosition = 0;
+		bigBlindPosition = 0;
 		Random r = new Random();
 		smallBlindPosition = r.nextInt(players.size());
-		
 		
 		pot += players.get(smallBlindPosition).raise(Settings.smallBlind);
 		
@@ -143,10 +145,7 @@ public class PokerSimulator {
 		else bigBlindPosition = smallBlindPosition+1;
 		
 		pot += players.get(bigBlindPosition).raise(Settings.bigBlind);
-		
-		
 	}
-	
 	
 	
 	public static void tearDown() {
