@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -123,12 +124,30 @@ public class PokerSimulator {
 		playersInRound.addAll(players);
 		deck.buildDeck();
 		deck.shuffleDeck();
-		pot += players.get(0).raise(Settings.smallBlind);
-		pot += players.get(1).raise(Settings.bigBlind);
+		setBlinds();
 		currentBet = Settings.bigBlind;
 		
 		
 	}
+	
+	private static void setBlinds() {
+		int smallBlindPosition = 0;
+		int bigBlindPosition = 0;
+		Random r = new Random();
+		smallBlindPosition = r.nextInt(players.size());
+		
+		
+		pot += players.get(smallBlindPosition).raise(Settings.smallBlind);
+		
+		if (smallBlindPosition+1 >= players.size()) bigBlindPosition =0;
+		else bigBlindPosition = smallBlindPosition+1;
+		
+		pot += players.get(bigBlindPosition).raise(Settings.bigBlind);
+		
+		
+	}
+	
+	
 	
 	public static void tearDown() {
 		playersInRound.clear();
