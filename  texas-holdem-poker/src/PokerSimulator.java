@@ -156,7 +156,7 @@ public class PokerSimulator {
 		currentBet =0;
 		pot =0;
 		collectCards();
-		
+		resetPlayers();
 	}
 	
 	private static void collectCards() {
@@ -164,6 +164,12 @@ public class PokerSimulator {
 			player.removeCards();
 		}
 		table.removeCards();
+	}
+	
+	private static void resetPlayers() {
+		for (Player player : players) {
+			player.resetAfterRound();
+		}
 	}
 	
 	private static void setUpPlayers(int numOfPlayers) {
