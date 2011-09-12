@@ -126,6 +126,8 @@ public class PokerSimulator {
 		pot += players.get(0).raise(Settings.smallBlind);
 		pot += players.get(1).raise(Settings.bigBlind);
 		currentBet = Settings.bigBlind;
+		
+		
 	}
 	
 	public static void tearDown() {
@@ -135,7 +137,15 @@ public class PokerSimulator {
 		}
 		currentBet =0;
 		pot =0;
+		collectCards();
 		
+	}
+	
+	private static void collectCards() {
+		for (Player player : players) {
+			player.removeCards();
+		}
+		table.removeCards();
 	}
 	
 	private static void setUpPlayers(int numOfPlayers) {

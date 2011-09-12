@@ -106,6 +106,11 @@ public class Player {
 	}
 	   System.out.print("]");
    }
+   
+   
+   public void removeCards() {
+	   cards.clear();
+   }
 	
     
     
