@@ -111,6 +111,11 @@ public class Player {
    public void removeCards() {
 	   cards.clear();
    }
+   
+   public void resetAfterRound() {
+	   bet =0;
+	   action = null;
+   }
 	
     
     
