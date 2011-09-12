@@ -189,7 +189,7 @@ public class PokerSimulator {
 			players.add(new Player("p"+i, generateType()));
 		}
 	}
-	
+	//TODO: Ikke random type spiller, bør predefineres så de kan sammenlignes.
 	private static PlayerType generateType () {
 		Random r = new Random();
 		r.nextInt(3);
