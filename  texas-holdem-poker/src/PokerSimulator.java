@@ -8,7 +8,7 @@ import enums.PlayerType;
 
 
 public class PokerSimulator {
-	//TODO: re raise, starting position compared to blinds. Now player with position 0 in array always start 
+	//TODO: re raise
 	private static Deck deck;
 	private static List<Player> players;
 	private static List<Player> playersInRound;
@@ -123,28 +123,39 @@ public class PokerSimulator {
 	}
 	
 	public static void setUpRound() {
+	
+		
+		movePlayerOrder();
+		
+		
 		playersInRound = new ArrayList<Player>();
 		playersInRound.addAll(players);
 		deck.buildDeck();
 		deck.shuffleDeck();
+		
 		setBlinds();
 		currentBet = Settings.bigBlind;
 		
 		
 	}
 	
+	private static void movePlayerOrder() {
+		Player temp = players.remove(players.size()-1);
+		players.add(0, temp);
+	}
+	
 	private static void setBlinds() {
-		smallBlindPosition = 0;
-		bigBlindPosition = 0;
-		Random r = new Random();
-		smallBlindPosition = r.nextInt(players.size());
+		smallBlindPosition = players.size()-2;
+		bigBlindPosition = players.size()-1;
+		//Random r = new Random();
+		//smallBlindPosition = r.nextInt(players.size());
 		
 		pot += players.get(smallBlindPosition).raise(Settings.smallBlind);
-		
-		if (smallBlindPosition+1 >= players.size()) bigBlindPosition =0;
-		else bigBlindPosition = smallBlindPosition+1;
-		
 		pot += players.get(bigBlindPosition).raise(Settings.bigBlind);
+		//if (smallBlindPosition+1 >= players.size()) bigBlindPosition =0;
+		//else bigBlindPosition = smallBlindPosition+1;
+		
+		
 	}
 	
 	
