@@ -257,7 +257,6 @@ public class CardRating {
         Collections.sort(cards, valueComparator);
         Collections.reverse(cards);
         for(int i=1; i<=5; i++){
-            System.out.println(cards.get(i-1).getValue().ordinal()+2);
             power[i] = cards.get(i-1).getValue().ordinal()+2;
         }
         return power;
