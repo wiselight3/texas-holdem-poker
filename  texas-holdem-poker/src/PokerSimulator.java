@@ -124,9 +124,12 @@ public class PokerSimulator {
 		}
 			continueBetting = false;
 			if (playersInRound.size() == 1) break;
+			System.out.println("currentBet before player bets:  " + currentBet);
 			for (Player player : playersInRound) {
+				System.out.println(player.getId() + "s current bet: " + player.getBet());
 				if (player.getBet() < currentBet) continueBetting = true;
 			}
+			System.out.println("currentBet after player bets:  " + currentBet);
 		}
 	}
 	
