@@ -126,7 +126,9 @@ public class Player {
 	   action = null;
    }
 	
-    
+   public String toString (){
+       return id;
+   }
     
 
 }
