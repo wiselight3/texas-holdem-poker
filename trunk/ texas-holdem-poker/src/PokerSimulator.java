@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -31,43 +30,35 @@ public class PokerSimulator {
 		
 		while (roundsPlayed<Settings.numberOfRounds) {
 			
-		setUpRound();
-		dealStartingHandToPlayers();
-		printCardsForPlayers();
-		
-		dealFlop();
-		
-		updatePowerRatingsforPlayers();
-		
-		table.printCards();
-		
-		playersMakeActions();		
-		
-		System.out.println(pot);
-		
-		
-		
-		
-		
-		//turn
-		table.dealCard(deck.dealCard());
-		table.printCards();
-		updatePowerRatingsforPlayers();
-		playersMakeActions();
-		System.out.println(pot);
-		
-		//river
-		table.dealCard(deck.dealCard());
-		table.printCards();
-		updatePowerRatingsforPlayers();
-		playersMakeActions();
-		System.out.println(pot);
-		
-		distributePotToWinners();
+            setUpRound();
+            dealStartingHandToPlayers();
 
-		
-		tearDown();
-		roundsPlayed++;
+            //preflop
+            preFlop();
+            printGame(true);
+
+            //flop
+            dealFlop();
+            updatePowerRatingsforPlayers();
+            playersMakeActions();
+            printGame(false);
+
+            //turn
+            table.dealCard(deck.dealCard());
+            updatePowerRatingsforPlayers();
+            playersMakeActions();
+            printGame(false);
+
+            //river
+            table.dealCard(deck.dealCard());
+            updatePowerRatingsforPlayers();
+            playersMakeActions();
+            printGame(false);
+
+            distributePotToWinners();
+
+            tearDown();
+            roundsPlayed++;
 		}
 		
 		for (Player player : players) {
@@ -75,6 +66,42 @@ public class PokerSimulator {
 		}
 		
 	}
+
+    public static void printGame(boolean preFlop){
+        for(Player pl : players){
+            System.out.print(pl+"($"+pl.getMoney()+"): [ ");
+            for(Card card : pl.getCards()){
+                System.out.print(card+" ");
+            }
+            System.out.print("] "+pl.getAction()+"      ");
+        }
+        System.out.print("\n\nTable: [ ");
+        for(Card card : table.getCards()){
+            System.out.print(card+" ");
+        }
+        System.out.print("]     Pot: $"+pot+"\n\n");
+        if(!preFlop){
+            for(Player pl : players){
+                System.out.print(pl+"(power):[ ");
+                int[] rating = getPowerRating(pl);
+                for(int i : rating){
+                    System.out.print(i+" ");
+                }
+                System.out.print("]     ");
+            }
+            System.out.print("\n");
+        }
+    }
+
+    public static void preFlop() {
+        for(Player pl : players){
+            pl.setAction(actionSelector.preFlopFlipOfCoin(pl));
+            if(pl.hasFolded())
+                playersInRound.remove(pl);
+            else
+                pot += pl.call(currentBet-pl.getBet());
+        }
+    }
 
 	private static void distributePotToWinners() {
 		int temp =0;
@@ -164,9 +191,6 @@ public class PokerSimulator {
 	private static void updatePowerRatingsforPlayers() {
 		for (Player player : players) {
 			player.updatePowerRating(getPowerRating(player));
-			System.out.println(player.getId());
-			player.printPowerRating();
-			System.out.println();
 		}
 	}
 	
@@ -237,7 +261,7 @@ public class PokerSimulator {
 			players.add(new Player("p"+i, generateType()));
 		}
 	}
-	//TODO: Ikke random type spiller, b¿r predefineres sŒ de kan sammenlignes.
+	//TODO: Ikke random type spiller, bï¿½r predefineres sï¿½ de kan sammenlignes.
 	private static PlayerType generateType () {
 		Random r = new Random();
 		r.nextInt(3);
