@@ -83,13 +83,13 @@ public class Player {
      */
     public int call(int amount) {
     	money = money - amount;
-    	bet+=amount;
+    	//bet+=amount;
     	return amount;
     }
     
     public int raise(int amount) {
     	money = money-amount;
-    	bet +=amount;
+    	//bet +=amount;
         return amount;
     }
     

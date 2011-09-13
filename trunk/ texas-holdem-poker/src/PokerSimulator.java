@@ -115,13 +115,14 @@ public class PokerSimulator {
 				if (player.getRaises() >= 3) {
 					player.setAction(PlayerActions.CALL);
 				} else {
-					System.out.println("current bet " + currentBet);
-					 System.out.println("current player bet" + player.getBet());
+					//System.out.println("current bet " + currentBet);
+					 //System.out.println("current player bet" + player.getBet());
 					int amountRaised = player.raise(Settings.bigBlind + (currentBet - player.getBet()));
 					System.out.println("amount raised: " + amountRaised);
 					pot+= amountRaised;
 					//System.out.println("currentbet before raise: " + currentBet);
 					currentBet+= amountRaised;
+					player.raiseBet(amountRaised);
 					player.AddRaises(1);
 					//System.out.println("currentbet after raise: " + currentBet);
 				}
@@ -131,7 +132,7 @@ public class PokerSimulator {
 					 System.out.println("current player bet" + player.getBet());
 					int amountCalled = player.call(currentBet-player.getBet());
 					 pot += amountCalled;
-					
+					player.raiseBet(amountCalled);
 					 System.out.println("amount called: " + amountCalled);
 					if (amountCalled == 0) player.setAction(PlayerActions.CHECK);
 				}
