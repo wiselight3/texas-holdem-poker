@@ -101,8 +101,8 @@ public class PokerSimulator {
 	}
 
 	private static void playersMakeActions() {
-		boolean reraise = true;
-		while(reraise) {
+		boolean continueBetting = true;
+		while(continueBetting) {
 			
 		for (Player player : players) {
 			if (player.getAction() == PlayerActions.FOLD) {
@@ -115,19 +115,21 @@ public class PokerSimulator {
 				player.AddRaises(1);
 				pot+= player.raise(Settings.bigBlind + (currentBet - player.getBet()));
 				currentBet+= player.raise(Settings.bigBlind + (currentBet - player.getBet()));
+				player.raiseBet(Settings.bigBlind + (currentBet - player.getBet()));
 			}
 			if (player.getAction() == PlayerActions.CALL) pot += player.call(currentBet-player.getBet());
+			player.raiseBet(currentBet-player.getBet());
 			System.out.println(player.getId() + " has " + player.getAction());
 
 		}
-			if (raised <2 || getNumberOfRaisesForPlayerThatHasRaisedMost() >3) {
-				reraise = false;
+			continueBetting = false;
+			if (playersInRound.size() == 1) break;
+			for (Player player : playersInRound) {
+				if (player.getBet() < currentBet) continueBetting = true;
 			}
 		}
-		
-		
-		
 	}
+	
 	
 	private static int getNumberOfRaisesForPlayerThatHasRaisedMost () {
 		int mostRaises = 0;
@@ -154,10 +156,7 @@ public class PokerSimulator {
 	}
 	
 	public static void setUpRound() {
-	
-		
 		movePlayerOrder();
-		
 		
 		playersInRound = new ArrayList<Player>();
 		playersInRound.addAll(players);
@@ -166,8 +165,6 @@ public class PokerSimulator {
 		
 		setBlinds();
 		currentBet = Settings.bigBlind;
-		
-		
 	}
 	
 	private static void movePlayerOrder() {
@@ -180,13 +177,10 @@ public class PokerSimulator {
 		bigBlindPosition = players.size()-1;
 		//Random r = new Random();
 		//smallBlindPosition = r.nextInt(players.size());
-		
 		pot += players.get(smallBlindPosition).raise(Settings.smallBlind);
 		pot += players.get(bigBlindPosition).raise(Settings.bigBlind);
 		//if (smallBlindPosition+1 >= players.size()) bigBlindPosition =0;
 		//else bigBlindPosition = smallBlindPosition+1;
-		
-		
 	}
 	
 	

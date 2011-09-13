@@ -43,7 +43,9 @@ public class Player {
 	public void setBet(int bet) {
 		this.bet = bet;
 	}
-	
+	public void raiseBet(int amount) {
+		bet += amount;
+	}
 	public int getBet() {
 		return bet;
 	}
