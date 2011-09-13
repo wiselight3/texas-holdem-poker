@@ -46,9 +46,7 @@ public class Player {
 	public void setBet(int bet) {
 		this.bet = bet;
 	}
-	public void raiseBet(int amount) {
-		bet += amount;
-	}
+
 	public int getBet() {
 		return bet;
 	}
@@ -83,13 +81,13 @@ public class Player {
      */
     public int call(int amount) {
     	money = money - amount;
-    	//bet+=amount;
+    	bet+=amount;
     	return amount;
     }
     
     public int raise(int amount) {
     	money = money-amount;
-    	//bet +=amount;
+    	bet +=amount;
         return amount;
     }
     
