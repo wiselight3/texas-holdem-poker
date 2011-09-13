@@ -30,7 +30,7 @@ public class Card implements Comparable<Card>{
     }
 
     public String toString (){
-        return value.toString()+" of "+suit.toString();
+        return value.ordinal()+2+""+suit.toString().charAt(0);
     }
 
     public int compareTo(Card card) {

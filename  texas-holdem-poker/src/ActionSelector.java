@@ -19,6 +19,14 @@ public class ActionSelector {
 			}
 	}
 
+    public PlayerActions preFlopFlipOfCoin(Player player)  {
+        int flip = (int)(Math.random()*2);
+        if(flip==1)
+            return PlayerActions.CALL;
+        else
+            return PlayerActions.FOLD;
+    }
+
 	
 	private PlayerActions decideActionForPassivePlayer(Player player) {
 		int [] powerRating = player.getPowerRating();
