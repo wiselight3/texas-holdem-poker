@@ -113,23 +113,40 @@ public class PokerSimulator {
 			player.setAction(actionSelector.decideAction(player));
 			if (player.getAction() == PlayerActions.RAISE) {
 				player.AddRaises(1);
-				pot+= player.raise(Settings.bigBlind + (currentBet - player.getBet()));
-				currentBet+= player.raise(Settings.bigBlind + (currentBet - player.getBet()));
-				player.raiseBet(Settings.bigBlind + (currentBet - player.getBet()));
+				if (player.getRaises() >= 3) {
+					player.setAction(PlayerActions.CALL);
+				} else {
+					int amountRaised = player.raise(Settings.bigBlind + (currentBet - player.getBet()));
+					pot+= amountRaised;
+					//System.out.println("currentbet before raise: " + currentBet);
+					currentBet+= amountRaised;
+					//System.out.println("currentbet after raise: " + currentBet);
+				}
+				
 			}
-			if (player.getAction() == PlayerActions.CALL) pot += player.call(currentBet-player.getBet());
-			player.raiseBet(currentBet-player.getBet());
+			int amountCalled = player.call(currentBet-player.getBet());
+			if (player.getAction() == PlayerActions.CALL) pot += amountCalled;
+			if (amountCalled == 0) player.setAction(PlayerActions.CHECK);
+			
+			
+			
 			System.out.println(player.getId() + " has " + player.getAction());
-
 		}
 			continueBetting = false;
 			if (playersInRound.size() == 1) break;
-			System.out.println("currentBet before player bets:  " + currentBet);
+			//System.out.println("currentBet before player bets:  " + currentBet);
 			for (Player player : playersInRound) {
-				System.out.println(player.getId() + "s current bet: " + player.getBet());
+				//System.out.println(player.getId() + "s current bet: " + player.getBet());
 				if (player.getBet() < currentBet) continueBetting = true;
 			}
-			System.out.println("currentBet after player bets:  " + currentBet);
+
+			
+		
+			
+		}
+		
+		for (Player player : players) {
+			player.setRaises(0);
 		}
 	}
 	

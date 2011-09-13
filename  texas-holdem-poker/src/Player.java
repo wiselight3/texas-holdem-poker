@@ -40,6 +40,9 @@ public class Player {
 	public void AddRaises(int raises) {
 		this.raises +=raises;
 	}
+	public void setRaises(int integer) {
+		raises = integer;
+	}
 	public void setBet(int bet) {
 		this.bet = bet;
 	}
@@ -124,6 +127,7 @@ public class Player {
    public void resetAfterRound() {
 	   bet =0;
 	   action = null;
+	   raises = 0;
    }
 	
    public String toString (){
