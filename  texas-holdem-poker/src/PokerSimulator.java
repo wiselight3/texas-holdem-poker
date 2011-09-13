@@ -42,8 +42,8 @@ public class PokerSimulator {
 		
 		table.printCards();
 		
-		
 		makeActions();
+
 		System.out.println(pot);
 		
 		//turn
@@ -68,7 +68,6 @@ public class PokerSimulator {
 			for (Player player : calculateWinner(playersInRound)) {
 				System.out.println(player.getId());
 				player.addMoney(temp);
-				
 			}
 		} else {
 			Player winner = calculateWinner(playersInRound).get(0);
