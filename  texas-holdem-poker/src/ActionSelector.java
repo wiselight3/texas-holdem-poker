@@ -1,6 +1,8 @@
 
 import enums.PlayerActions;
 
+import java.util.Random;
+
 
 public class ActionSelector {
 
@@ -20,8 +22,7 @@ public class ActionSelector {
 	}
 
     public PlayerActions preFlopFlipOfCoin(Player player)  {
-        int flip = (int)(Math.random()*2);
-        if(flip==1)
+        if((int)(Math.random()*2) == 0)
             return PlayerActions.CALL;
         else
             return PlayerActions.FOLD;
