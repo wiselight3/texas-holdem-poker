@@ -32,7 +32,14 @@ public class Player {
 	}
 
 	private int bet;
+	private int raises =0;
 	
+	public int getRaises() {
+		return raises;
+	}
+	public void AddRaises(int raises) {
+		this.raises +=raises;
+	}
 	public void setBet(int bet) {
 		this.bet = bet;
 	}
