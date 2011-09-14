@@ -165,6 +165,7 @@ public class PokerSimulator {
 				if (player.getRaises() >= 3) {
 					player.setAction(PlayerActions.CALL);
 				} else {
+					//TODO: skjer noe bug nŒr man re raiser. Da raises det for mye.
 					int amountRaised = player.raise(Settings.bigBlind + (currentBet - player.getBet()));
 					System.out.println("amount raised: " + amountRaised);
 					pot+= amountRaised;
