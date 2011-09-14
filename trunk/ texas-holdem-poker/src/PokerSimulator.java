@@ -25,7 +25,6 @@ public class PokerSimulator {
 	public static void main(String[] args) {
 		
 		setUpGame();
-		
 		int roundsPlayed=0;
 		
 		while (roundsPlayed<Settings.numberOfRounds) {
@@ -36,19 +35,39 @@ public class PokerSimulator {
             //preflop
             preFlop();
             printGame(true);
-
-            //flop
+            
+            if (onePLayerLeft())  {
+            	distributePotToWinners();
+            	roundsPlayed++;
+            	tearDown();
+            	continue;
+            }
+        	//flop
             dealFlop();
             updatePowerRatingsforPlayers();
             playersMakeActions();
             printGame(false);
-
+            
+            if (onePLayerLeft()) {
+            	distributePotToWinners();
+            	roundsPlayed++;
+            	tearDown();
+            	continue;
+            }
+            	
             //turn
             table.dealCard(deck.dealCard());
             updatePowerRatingsforPlayers();
             playersMakeActions();
             printGame(false);
 
+            if (onePLayerLeft()) {
+            	distributePotToWinners();
+            	roundsPlayed++;
+            	tearDown();
+            	continue;
+            }
+            	
             //river
             table.dealCard(deck.dealCard());
             updatePowerRatingsforPlayers();
@@ -96,12 +115,21 @@ public class PokerSimulator {
     public static void preFlop() {
         for(Player pl : players){
             pl.setAction(actionSelector.preFlopFlipOfCoin(pl));
+            if (playersInRound.size() == 1) return;
+            
             if(pl.hasFolded())
                 playersInRound.remove(pl);
             else
                 pot += pl.call(currentBet-pl.getBet());
         }
     }
+    
+    
+    private static boolean onePLayerLeft() {
+    	if (playersInRound.size() == 1) return true;
+    	return false;
+    }
+    
 
 	private static void distributePotToWinners() {
 		int temp =0;
@@ -119,19 +147,14 @@ public class PokerSimulator {
 		}
 	}
 
-	
-	private static boolean onePlayerLeft() {
-		if (playersInRound.size() ==1) {
-			return true;
-		}
-		return false;
-	}
-
 	private static void playersMakeActions() {
 		boolean continueBetting = true;
+		
 		while(continueBetting) {
-			
+		
 		for (Player player : players) {
+			if (playersInRound.size() == 1) return;
+			
 			if (player.getAction() == PlayerActions.FOLD) {
 				playersInRound.remove(player);
 				continue;
@@ -142,15 +165,11 @@ public class PokerSimulator {
 				if (player.getRaises() >= 3) {
 					player.setAction(PlayerActions.CALL);
 				} else {
-					//System.out.println("current bet " + currentBet);
-					 //System.out.println("current player bet" + player.getBet());
 					int amountRaised = player.raise(Settings.bigBlind + (currentBet - player.getBet()));
 					System.out.println("amount raised: " + amountRaised);
 					pot+= amountRaised;
-					//System.out.println("currentbet before raise: " + currentBet);
 					currentBet+= amountRaised;
 					player.AddRaises(1);
-					//System.out.println("currentbet after raise: " + currentBet);
 				}
 			}
 				if (player.getAction() == PlayerActions.CALL) {
@@ -166,28 +185,20 @@ public class PokerSimulator {
 		
 		}
 			continueBetting = false;
-			if (playersInRound.size() == 1) break;
-			//System.out.println("currentBet before player bets:  " + currentBet);
+			if (playersInRound.size() == 1) return;
 			for (Player player : playersInRound) {
-				//System.out.println(player.getId() + "s current bet: " + player.getBet());
 				if (player.getBet() < currentBet) continueBetting = true;
 			}
 		}
-		
-		
+		resetRaisesForPlayers();
+	}
+
+	private static void resetRaisesForPlayers() {
 		for (Player player : players) {
 			player.setRaises(0);
 		}
 	}
 	
-	
-	private static int getNumberOfRaisesForPlayerThatHasRaisedMost () {
-		int mostRaises = 0;
-		for (Player player : playersInRound) 
-			if (player.getRaises() > mostRaises) mostRaises = player.getRaises();
-		return mostRaises;
-	}
-
 	private static void updatePowerRatingsforPlayers() {
 		for (Player player : players) {
 			player.updatePowerRating(getPowerRating(player));
@@ -222,12 +233,8 @@ public class PokerSimulator {
 	private static void setBlinds() {
 		smallBlindPosition = players.size()-2;
 		bigBlindPosition = players.size()-1;
-		//Random r = new Random();
-		//smallBlindPosition = r.nextInt(players.size());
 		pot += players.get(smallBlindPosition).raise(Settings.smallBlind);
 		pot += players.get(bigBlindPosition).raise(Settings.bigBlind);
-		//if (smallBlindPosition+1 >= players.size()) bigBlindPosition =0;
-		//else bigBlindPosition = smallBlindPosition+1;
 	}
 	
 	
