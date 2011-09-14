@@ -87,6 +87,15 @@ public class PokerSimulator {
 	}
 
     public static void printGame(boolean preFlop){
+        if(preFlop)
+            System.out.println("******** Preflop ********");
+        else if(table.getCards().size()==3)
+            System.out.println("********   Flop  ********");
+        else if(table.getCards().size()==4)
+            System.out.println("********   Turn  ********");
+        else if(table.getCards().size()==5)
+            System.out.println("********  River  ********");
+
         for(Player pl : players){
             System.out.print(pl+"($"+pl.getMoney()+"): [ ");
             for(Card card : pl.getCards()){
@@ -98,8 +107,9 @@ public class PokerSimulator {
         for(Card card : table.getCards()){
             System.out.print(card+" ");
         }
-        System.out.print("]     Pot: $"+pot+"\n\n");
+        System.out.print("]     Pot: $"+pot+"\n");
         if(!preFlop){
+            System.out.print("\n");
             for(Player pl : players){
                 System.out.print(pl+"(power):[ ");
                 int[] rating = getPowerRating(pl);
@@ -110,6 +120,7 @@ public class PokerSimulator {
             }
             System.out.print("\n");
         }
+        System.out.println("*************************");
     }
 
     public static void preFlop() {
@@ -165,7 +176,7 @@ public class PokerSimulator {
 				if (player.getRaises() >= 3) {
 					player.setAction(PlayerActions.CALL);
 				} else {
-					//TODO: skjer noe bug nŒr man re raiser. Da raises det for mye.
+					//TODO: skjer noe bug nï¿½r man re raiser. Da raises det for mye.
 					int amountRaised = player.raise(Settings.bigBlind + (currentBet - player.getBet()));
 					System.out.println("amount raised: " + amountRaised);
 					pot+= amountRaised;
