@@ -23,7 +23,7 @@ public class Player {
 	public final PlayerType playerType;
 	
 	private List<Card> cards;
-	private int money = 500;
+	private int money = Settings.startingCash;
     private String id;
     private int [] powerRating;
     
