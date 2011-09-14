@@ -8,7 +8,6 @@ import java.util.Random;
 
 
 public class JKSimulator {
-	//TODO: re raise
 	private static Deck deck;
 	private static List<Player> players;
 	private static List<Player> playersInRound;
@@ -30,7 +29,6 @@ public class JKSimulator {
             Iterator<Player> iterator = playersInRound.iterator();
             while (iterator.hasNext()){
                 Player player = iterator.next();
-            //for(Player player : playersInRound){
                 if(playersInRound.size()==1)
                     return;
 
@@ -125,60 +123,6 @@ public class JKSimulator {
             tearDown();
             roundsPlayed++;
         }
-            /*
-            setUpRound();
-            dealStartingHandToPlayers();
-
-            //preflop
-            preFlop();
-            printGame(true);
-
-
-
-            if (onePLayerLeft())  {
-            	distributePotToWinners();
-            	roundsPlayed++;
-            	tearDown();
-            	continue;
-            }
-        	//flop
-            dealFlop();
-            updatePowerRatingsforPlayers();
-            playersMakeActions();
-            printGame(false);
-            
-            if (onePLayerLeft()) {
-            	distributePotToWinners();
-            	roundsPlayed++;
-            	tearDown();
-            	continue;
-            }
-            	
-            //turn
-            table.dealCard(deck.dealCard());
-            updatePowerRatingsforPlayers();
-            playersMakeActions();
-            printGame(false);
-
-            if (onePLayerLeft()) {
-            	distributePotToWinners();
-            	roundsPlayed++;
-            	tearDown();
-            	continue;
-            }
-            	
-            //river
-            table.dealCard(deck.dealCard());
-            updatePowerRatingsforPlayers();
-            playersMakeActions();
-            printGame(false);
-
-
-            distributePotToWinners();
-
-            tearDown();
-            roundsPlayed++;
-		}*/
 
 		System.out.println("\nAfter "+roundsPlayed+" rounds played:");
 		for (Player player : players) {
@@ -265,6 +209,7 @@ public class JKSimulator {
 		}
 	}
 
+    /*
 	private static void playersMakeActions() {
 		boolean continueBetting = true;
 		
@@ -310,7 +255,7 @@ public class JKSimulator {
 			}
 		}
 		resetRaisesForPlayers();
-	}
+	}*/
 
 	private static void resetRaisesForPlayers() {
 		for (Player player : players) {
