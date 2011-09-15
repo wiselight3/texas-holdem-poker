@@ -1,10 +1,7 @@
 import enums.PlayerActions;
 import enums.PlayerType;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 public class JKSimulator {
@@ -35,35 +32,35 @@ public class JKSimulator {
                 player.setAction(actionSelector.decideAction(player));
                 if(player.getAction()==PlayerActions.RAISE){
                     if(raiseCount >= 3){
-                        player.setAction(PlayerActions.CALL);
-                        pot += player.call(currentBet-player.getBet());
-                        System.out.println(player+" RaiseCall");
+                        if(currentBet==player.getBet())
+                            player.setAction(PlayerActions.CHECK);
+                        else{
+                            player.setAction(PlayerActions.CALL);
+                            pot += player.call(currentBet-player.getBet());
+                        }
                     }else{
                         raiseCount++;
                         int amount = player.raise(Settings.bigBlind + (currentBet-player.getBet()));
                         pot += amount;
-                        currentBet += amount;
-                        System.out.println(player+" Raise");
+                        currentBet += Settings.bigBlind;
                     }
                 }else if(player.getAction()==PlayerActions.CALL){
                     if(currentBet==player.getBet()){
                         player.setAction(PlayerActions.CHECK);
-                        System.out.println(player+" CallCheck");
                     }else{
                         pot += player.call(currentBet-player.getBet());
-                        System.out.println(player+" Call");
                     }
                 }else if(player.getAction()==PlayerActions.FOLD){
                     if(currentBet==player.getBet()){
                         player.setAction(PlayerActions.CHECK);
-                        System.out.println(player+" FoldCheck");
                     }
                     else{
                         iterator.remove();
-                        System.out.println(player+" Fold");
                     }
                 }
-
+                System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
+                if(isLastCall())
+                    return;
             }
 
             for(Player player : playersInRound){
@@ -74,6 +71,7 @@ public class JKSimulator {
                     bettingNotDone = false;
             }
         }
+        resetRaisesForPlayers();
     }
 
     public static void playRound() {
@@ -81,17 +79,17 @@ public class JKSimulator {
         dealStartingHandToPlayers();
 
         //preflop
-        preFlop();
         printGame(true);
+        preFlopBetting();
 
-        if (onePLayerLeft())
+        if(onePLayerLeft())
             return;
 
         //flop
         dealFlop();
         updatePowerRatingsforPlayers();
-        startBetting();
         printGame(false);
+        startBetting();
 
         if (onePLayerLeft())
             return;
@@ -99,8 +97,8 @@ public class JKSimulator {
         //turn
         table.dealCard(deck.dealCard());
         updatePowerRatingsforPlayers();
-        startBetting();
         printGame(false);
+        startBetting();
 
         if (onePLayerLeft())
             return;
@@ -108,8 +106,8 @@ public class JKSimulator {
         //river
         table.dealCard(deck.dealCard());
         updatePowerRatingsforPlayers();
-        startBetting();
         printGame(false);
+        startBetting();
     }
 
 	public static void main(String[] args) {
@@ -126,7 +124,7 @@ public class JKSimulator {
 
 		System.out.println("\nAfter "+roundsPlayed+" rounds played:");
 		for (Player player : players) {
-			System.out.println(player + " ended up with " + player.getMoney() + " by playing as " +player.playerType);
+			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
 		}
 		
 	}
@@ -142,11 +140,20 @@ public class JKSimulator {
             System.out.println("********  River  ********");
 
         for(Player pl : players){
-            System.out.print(pl+"($"+pl.getMoney()+"): [ ");
+            System.out.print(pl+"($"+pl.getMoney()+")");
+            if(players.indexOf(pl)==players.size()-2)
+                System.out.print("{SB}");
+            else if(players.indexOf(pl)==players.size()-1)
+                System.out.print("{BB}");
+            System.out.print(": [ ");
             for(Card card : pl.getCards()){
                 System.out.print(card+" ");
             }
-            System.out.print("] "+pl.getAction()+"      ");
+            System.out.print("] ");
+            if(pl.getAction()!=null)
+                System.out.print(pl.getAction() + "      ");
+            else
+                System.out.print("          ");
         }
         System.out.print("\n\nTable: [ ");
         for(Card card : table.getCards()){
@@ -168,24 +175,32 @@ public class JKSimulator {
         System.out.println("*************************");
     }
 
-    public static void preFlop() {
+    public static void preFlopBetting() {
         for(Player pl : players){
-            if(players.indexOf(pl)==players.size()-1)
+            if(players.indexOf(pl)==players.size()-1){
                 pl.setAction(PlayerActions.CHECK);
-            else
+                System.out.println(pl+"($"+pl.getMoney()+"): "+pl.getAction().toString());
+            }else{
                 pl.setAction(actionSelector.preFlopFlipOfCoin(pl));
-            if (playersInRound.size() == 1)
-                return;
-            
-            if(pl.hasFolded()){
-                playersInRound.remove(pl);
+                if(pl.hasFolded())
+                    playersInRound.remove(pl);
+                else
+                    pot += pl.call(currentBet-pl.getBet());
+                System.out.println(pl+"($"+pl.getMoney()+"): "+pl.getAction().toString());
             }
-            else {
-                pot += pl.call(currentBet-pl.getBet());
-            }
+
+            //if (playersInRound.size() == 1)
+            //    return;
         }
     }
-    
+
+    private static boolean isLastCall() {
+        for(Player player : playersInRound){
+            if(player.getBet()!=currentBet)
+                return false;
+        }
+        return true;
+    }
     
     private static boolean onePLayerLeft() {
     	if (playersInRound.size() == 1) return true;
@@ -194,68 +209,23 @@ public class JKSimulator {
     
 
 	private static void distributePotToWinners() {
-		int temp =0;
-		if (calculateWinner(playersInRound).size() > 1) {
+        System.out.println("*************************");
+        List<Player> winners = calculateWinner(playersInRound);
+		if (winners.size() > 1) {
 			System.out.println("We have a draw: ");
-			temp = pot/playersInRound.size();
+			int temp = pot/winners.size();
 			for (Player player : calculateWinner(playersInRound)) {
-				System.out.println(player.getId());
+				System.out.println(player.getId()+" wins: $"+temp);
 				player.addMoney(temp);
 			}
 		} else {
-			Player winner = calculateWinner(playersInRound).get(0);
-			System.out.println("winner is " + calculateWinner(playersInRound).get(0).getId());
+			Player winner = winners.get(0);
+			System.out.println("The winner is: ");
+            System.out.println(calculateWinner(playersInRound).get(0).getId());
 			winner.addMoney(pot);
 		}
+        System.out.println("*************************");
 	}
-
-    /*
-	private static void playersMakeActions() {
-		boolean continueBetting = true;
-		
-		while(continueBetting) {
-		
-		for (Player player : players) {
-			if (playersInRound.size() == 1) return;
-
-			if (player.getAction() == PlayerActions.FOLD) {
-				playersInRound.remove(player);
-				continue;
-			}
-
-			player.setAction(actionSelector.decideAction(player));
-			if (player.getAction() == PlayerActions.RAISE) {
-				if (player.getRaises() >= 3) {
-					player.setAction(PlayerActions.CALL);
-				} else {
-					//TODO: skjer noe bug n�r man re raiser. Da raises det for mye.
-					int amountRaised = player.raise(Settings.bigBlind + (currentBet - player.getBet()));
-					System.out.println("amount raised: " + amountRaised);
-					pot+= amountRaised;
-					currentBet+= amountRaised;
-					player.AddRaises(1);
-				}
-			}
-				if (player.getAction() == PlayerActions.CALL) {
-					 System.out.println("current bet " + currentBet);
-					 System.out.println("current player bet" + player.getBet());
-					int amountCalled = player.call(currentBet-player.getBet());
-					 pot += amountCalled;
-					 System.out.println("amount called: " + amountCalled);
-					if (amountCalled == 0) player.setAction(PlayerActions.CHECK);
-				}
-
-			System.out.println(player.getId() + " has " + player.getAction());
-
-		}
-			continueBetting = false;
-			if (playersInRound.size() == 1) return;
-			for (Player player : playersInRound) {
-				if (player.getBet() < currentBet) continueBetting = true;
-			}
-		}
-		resetRaisesForPlayers();
-	}*/
 
 	private static void resetRaisesForPlayers() {
 		for (Player player : players) {
@@ -278,8 +248,6 @@ public class JKSimulator {
 	}
 	
 	public static void setUpRound() {
-		movePlayerOrder();
-		
 		playersInRound = new ArrayList<Player>();
 		playersInRound.addAll(players);
 		deck.buildDeck();
@@ -301,7 +269,6 @@ public class JKSimulator {
 		pot += players.get(bigBlindPosition).raise(Settings.bigBlind);
 	}
 	
-	
 	public static void tearDown() {
 		playersInRound.clear();
 		for (Player player : players) {
@@ -311,6 +278,7 @@ public class JKSimulator {
 		pot =0;
 		collectCards();
 		resetPlayers();
+        movePlayerOrder();
 	}
 	
 	private static void collectCards() {
@@ -328,10 +296,10 @@ public class JKSimulator {
 	
 	private static void setUpPlayers(int numOfPlayers) {
 		for (int i = 0; i < numOfPlayers; i++) {
-			
-			players.add(new Player("p"+i, generateType()));
+			players.add(new Player("P"+i, generateType()));
 		}
 	}
+
 	//TODO: Ikke random type spiller, b�r predefineres s� de kan sammenlignes.
 	private static PlayerType generateType () {
 		Random r = new Random();
@@ -358,45 +326,33 @@ public class JKSimulator {
 		
 	}
 	
-	public static void printCardsForPlayers() {
-		for (Player player : players) {
-			System.out.println(player.getId());
-			player.printCards();
-		}
-	}
-	
 	public static void dealFlop() {
 		table.dealCard(deck.dealCard());
 		table.dealCard(deck.dealCard());
 		table.dealCard(deck.dealCard());
 	}
 	
-	public void RaisePot(int amount) {
-		pot = pot + amount;
+	private static int [] getPowerRating(Player player) {
+	    ArrayList<Card> hand = new ArrayList<Card>();
+		CardRating rating = new CardRating();
+		hand.add(player.getCards().get(0));
+		hand.add(player.getCards().get(1));
+
+		for (Card card : table.getCards()) {
+		    hand.add(card);
+		}
+			
+		return rating.calcCardsPower(hand);
 	}
-	
-	
-	 private static int [] getPowerRating(Player player) {
-			ArrayList<Card> hand = new ArrayList<Card>();
-			CardRating rating = new CardRating();
-			hand.add(player.getCards().get(0));
-			hand.add(player.getCards().get(1));
-			
-			for (Card card : table.getCards()) {
-				hand.add(card);
-			}
-			
-			return rating.calcCardsPower(hand);
-	 }
 	 
 	 
-	 public static List<Player> calculateWinner(List<Player> players) {
-		 List<Player> winners = new ArrayList<Player>();
-		 int[] rating;
-		 int n;
-		 int [] currentBestRating = new int[]{0};
-		 for (Player player : players) {
-			rating = player.getPowerRating();
+    public static List<Player> calculateWinner(List<Player> players) {
+	    List<Player> winners = new ArrayList<Player>();
+		int[] rating;
+	    int n;
+		int [] currentBestRating = new int[]{0};
+		for (Player player : players) {
+		    rating = player.getPowerRating();
 			n = calculateBestRating(rating, currentBestRating);
 			if (n == 1)  {
 				currentBestRating = rating;
@@ -406,11 +362,9 @@ public class JKSimulator {
 			if (n== 0) {
 				winners.add(player);
 			}
-			
-	 }
-		 return winners;
-	 }
-
+	    }
+        return winners;
+	}
 	
 	 /**
 	  * 
@@ -431,7 +385,5 @@ public class JKSimulator {
 			if (rating[i] == rating2[i] && toTraverse-i == 1) return 0;
 		 } 
 		 return 0;
-	 }
-	 
-	 
+     }
 }
