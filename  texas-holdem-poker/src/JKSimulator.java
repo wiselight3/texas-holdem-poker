@@ -59,8 +59,10 @@ public class JKSimulator {
                     }
                 }
                 System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
-                if(isLastCall())
-                    return;
+
+                if(player.hasFolded() || player.getAction()==PlayerActions.CALL)
+                    if(isLastCall())
+                        return;
             }
 
             for(Player player : playersInRound){
@@ -188,9 +190,6 @@ public class JKSimulator {
                     pot += pl.call(currentBet-pl.getBet());
                 System.out.println(pl+"($"+pl.getMoney()+"): "+pl.getAction().toString());
             }
-
-            //if (playersInRound.size() == 1)
-            //    return;
         }
     }
 
