@@ -113,7 +113,8 @@ public class JKSimulator {
     }
 
 	public static void main(String[] args) {
-		
+        long startTime = System.currentTimeMillis();
+
 		setUpGame();
 		int roundsPlayed=0;
 		
@@ -124,7 +125,7 @@ public class JKSimulator {
             roundsPlayed++;
         }
 
-		System.out.println("\nAfter "+roundsPlayed+" rounds played:");
+		System.out.println("\nAfter "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
 		for (Player player : players) {
 			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
 		}
