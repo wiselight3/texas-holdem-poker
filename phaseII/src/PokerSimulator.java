@@ -1,13 +1,10 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import enums.PlayerActions;
 import enums.PlayerType;
 
+import java.util.*;
+
 
 public class PokerSimulator {
-	//TODO: re raise
 	private static Deck deck;
 	private static List<Player> players;
 	private static List<Player> playersInRound;
@@ -22,66 +19,115 @@ public class PokerSimulator {
 		return currentBet;
 	}
 
+    public static void startBetting() {
+        boolean bettingNotDone = true;
+        int raiseCount = 0;
+        while(bettingNotDone){
+            Iterator<Player> iterator = playersInRound.iterator();
+            while (iterator.hasNext()){
+                Player player = iterator.next();
+                if(playersInRound.size()==1)
+                    return;
+
+                player.setAction(actionSelector.decideAction(player));
+                if(player.getAction()==PlayerActions.RAISE){
+                    if(raiseCount >= 3){
+                        if(currentBet==player.getBet())
+                            player.setAction(PlayerActions.CHECK);
+                        else{
+                            player.setAction(PlayerActions.CALL);
+                            pot += player.call(currentBet-player.getBet());
+                        }
+                    }else{
+                        raiseCount++;
+                        int amount = player.raise(Settings.bigBlind + (currentBet-player.getBet()));
+                        pot += amount;
+                        currentBet += Settings.bigBlind;
+                    }
+                }else if(player.getAction()==PlayerActions.CALL){
+                    if(currentBet==player.getBet()){
+                        player.setAction(PlayerActions.CHECK);
+                    }else{
+                        pot += player.call(currentBet-player.getBet());
+                    }
+                }else if(player.getAction()==PlayerActions.FOLD){
+                    if(currentBet==player.getBet()){
+                        player.setAction(PlayerActions.CHECK);
+                    }
+                    else{
+                        iterator.remove();
+                    }
+                }
+                System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
+
+                if(player.hasFolded() || player.getAction()==PlayerActions.CALL)
+                    if(isLastCall())
+                        return;
+            }
+
+            for(Player player : playersInRound){
+                if(currentBet != player.getBet()){
+                    bettingNotDone = true;
+                    break;
+                }else
+                    bettingNotDone = false;
+            }
+        }
+        resetRaisesForPlayers();
+    }
+
+    public static void playRound() {
+        setUpRound();
+
+        //preflop
+        dealStartingHandToPlayers();
+        printGame(true);
+        preFlopBetting();
+
+        if(onePLayerLeft())
+            return;
+
+        //flop
+        dealFlop();
+        updatePowerRatingsforPlayers();
+        printGame(false);
+        startBetting();
+
+        if (onePLayerLeft())
+            return;
+
+        //turn
+        table.dealCard(deck.dealCard());
+        updatePowerRatingsforPlayers();
+        printGame(false);
+        startBetting();
+
+        if (onePLayerLeft())
+            return;
+
+        //river
+        table.dealCard(deck.dealCard());
+        updatePowerRatingsforPlayers();
+        printGame(false);
+        startBetting();
+    }
+
 	public static void main(String[] args) {
-		
+        long startTime = System.currentTimeMillis();
+
 		setUpGame();
 		int roundsPlayed=0;
 		
 		while (roundsPlayed<Settings.numberOfRounds) {
-			
-            setUpRound();
-            dealStartingHandToPlayers();
-
-            //preflop
-            preFlop();
-            printGame(true);
-            
-            if (onePLayerLeft())  {
-            	distributePotToWinners();
-            	roundsPlayed++;
-            	tearDown();
-            	continue;
-            }
-        	//flop
-            dealFlop();
-            updatePowerRatingsforPlayers();
-            playersMakeActions();
-            printGame(false);
-            
-            if (onePLayerLeft()) {
-            	distributePotToWinners();
-            	roundsPlayed++;
-            	tearDown();
-            	continue;
-            }
-            	
-            //turn
-            table.dealCard(deck.dealCard());
-            updatePowerRatingsforPlayers();
-            playersMakeActions();
-            printGame(false);
-
-            if (onePLayerLeft()) {
-            	distributePotToWinners();
-            	roundsPlayed++;
-            	tearDown();
-            	continue;
-            }
-            	
-            //river
-            table.dealCard(deck.dealCard());
-            updatePowerRatingsforPlayers();
-            playersMakeActions();
-            printGame(false);
-
+            playRound();
             distributePotToWinners();
-
             tearDown();
             roundsPlayed++;
-		}
-		
+        }
+
+		System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
 		for (Player player : players) {
-			System.out.println(player.getId() + "ended up with " + player.getMoney());
+			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
 		}
 		
 	}
@@ -97,11 +143,20 @@ public class PokerSimulator {
             System.out.println("********  River  ********");
 
         for(Player pl : players){
-            System.out.print(pl+"($"+pl.getMoney()+"): [ ");
+            System.out.print(pl+"($"+pl.getMoney()+")");
+            if(players.indexOf(pl)==players.size()-2)
+                System.out.print("{SB}");
+            else if(players.indexOf(pl)==players.size()-1)
+                System.out.print("{BB}");
+            System.out.print(": [ ");
             for(Card card : pl.getCards()){
                 System.out.print(card+" ");
             }
-            System.out.print("] "+pl.getAction()+"      ");
+            System.out.print("] ");
+            if(pl.getAction()!=null)
+                System.out.print(pl.getAction() + "      ");
+            else
+                System.out.print("          ");
         }
         System.out.print("\n\nTable: [ ");
         for(Card card : table.getCards()){
@@ -112,7 +167,7 @@ public class PokerSimulator {
             System.out.print("\n");
             for(Player pl : players){
                 System.out.print(pl+"(power):[ ");
-                int[] rating = getPowerRating(pl);
+                int[] rating = pl.getPowerRating();
                 for(int i : rating){
                     System.out.print(i+" ");
                 }
@@ -123,18 +178,29 @@ public class PokerSimulator {
         System.out.println("*************************");
     }
 
-    public static void preFlop() {
+    public static void preFlopBetting() {
         for(Player pl : players){
-            pl.setAction(actionSelector.preFlopFlipOfCoin(pl));
-            if (playersInRound.size() == 1) return;
-            
-            if(pl.hasFolded())
-                playersInRound.remove(pl);
-            else
-                pot += pl.call(currentBet-pl.getBet());
+            if(players.indexOf(pl)==players.size()-1){
+                pl.setAction(PlayerActions.CHECK);
+                System.out.println(pl+"($"+pl.getMoney()+"): "+pl.getAction().toString());
+            }else{
+                pl.setAction(actionSelector.preFlopFlipOfCoin(pl));
+                if(pl.hasFolded())
+                    playersInRound.remove(pl);
+                else
+                    pot += pl.call(currentBet-pl.getBet());
+                System.out.println(pl+"($"+pl.getMoney()+"): "+pl.getAction().toString());
+            }
         }
     }
-    
+
+    private static boolean isLastCall() {
+        for(Player player : playersInRound){
+            if(player.getBet()!=currentBet)
+                return false;
+        }
+        return true;
+    }
     
     private static boolean onePLayerLeft() {
     	if (playersInRound.size() == 1) return true;
@@ -143,66 +209,22 @@ public class PokerSimulator {
     
 
 	private static void distributePotToWinners() {
-		int temp =0;
-		if (calculateWinner(playersInRound).size() > 1) {
+        System.out.println("*************************");
+        List<Player> winners = calculateWinner(playersInRound);
+		if (winners.size() > 1) {
 			System.out.println("We have a draw: ");
-			temp = pot/playersInRound.size();
+			int temp = pot/winners.size();
 			for (Player player : calculateWinner(playersInRound)) {
-				System.out.println(player.getId());
+				System.out.println(player.getId()+" wins: $"+temp);
 				player.addMoney(temp);
 			}
 		} else {
-			Player winner = calculateWinner(playersInRound).get(0);
-			System.out.println("winner is " + calculateWinner(playersInRound).get(0).getId());
+			Player winner = winners.get(0);
+			System.out.println("The winner is: ");
+            System.out.println(calculateWinner(playersInRound).get(0).getId());
 			winner.addMoney(pot);
 		}
-	}
-
-	private static void playersMakeActions() {
-		boolean continueBetting = true;
-		
-		while(continueBetting) {
-		
-		for (Player player : players) {
-			if (playersInRound.size() == 1) return;
-			
-			if (player.getAction() == PlayerActions.FOLD) {
-				playersInRound.remove(player);
-				continue;
-			}
-			
-			player.setAction(actionSelector.decideAction(player));
-			if (player.getAction() == PlayerActions.RAISE) {
-				if (player.getRaises() >= 3) {
-					player.setAction(PlayerActions.CALL);
-				} else {
-					//TODO: skjer noe bug n�r man re raiser. Da raises det for mye.
-					int amountRaised = player.raise(Settings.bigBlind + (currentBet - player.getBet()));
-					System.out.println("amount raised: " + amountRaised);
-					pot+= amountRaised;
-					currentBet+= amountRaised;
-					player.AddRaises(1);
-				}
-			}
-				if (player.getAction() == PlayerActions.CALL) {
-					 System.out.println("current bet " + currentBet);
-					 System.out.println("current player bet" + player.getBet());
-					int amountCalled = player.call(currentBet-player.getBet());
-					 pot += amountCalled;
-					 System.out.println("amount called: " + amountCalled);
-					if (amountCalled == 0) player.setAction(PlayerActions.CHECK);
-				}
-				
-			System.out.println(player.getId() + " has " + player.getAction());
-		
-		}
-			continueBetting = false;
-			if (playersInRound.size() == 1) return;
-			for (Player player : playersInRound) {
-				if (player.getBet() < currentBet) continueBetting = true;
-			}
-		}
-		resetRaisesForPlayers();
+        System.out.println("*************************");
 	}
 
 	private static void resetRaisesForPlayers() {
@@ -226,8 +248,6 @@ public class PokerSimulator {
 	}
 	
 	public static void setUpRound() {
-		movePlayerOrder();
-		
 		playersInRound = new ArrayList<Player>();
 		playersInRound.addAll(players);
 		deck.buildDeck();
@@ -249,7 +269,6 @@ public class PokerSimulator {
 		pot += players.get(bigBlindPosition).raise(Settings.bigBlind);
 	}
 	
-	
 	public static void tearDown() {
 		playersInRound.clear();
 		for (Player player : players) {
@@ -259,6 +278,7 @@ public class PokerSimulator {
 		pot =0;
 		collectCards();
 		resetPlayers();
+        movePlayerOrder();
 	}
 	
 	private static void collectCards() {
@@ -276,10 +296,10 @@ public class PokerSimulator {
 	
 	private static void setUpPlayers(int numOfPlayers) {
 		for (int i = 0; i < numOfPlayers; i++) {
-			
-			players.add(new Player("p"+i, generateType()));
+			players.add(new Player("P"+i, generateType()));
 		}
 	}
+
 	//TODO: Ikke random type spiller, b�r predefineres s� de kan sammenlignes.
 	private static PlayerType generateType () {
 		Random r = new Random();
@@ -306,45 +326,35 @@ public class PokerSimulator {
 		
 	}
 	
-	public static void printCardsForPlayers() {
-		for (Player player : players) {
-			System.out.println(player.getId());
-			player.printCards();
-		}
-	}
-	
 	public static void dealFlop() {
 		table.dealCard(deck.dealCard());
 		table.dealCard(deck.dealCard());
 		table.dealCard(deck.dealCard());
 	}
 	
-	public void RaisePot(int amount) {
-		pot = pot + amount;
+	private static int [] getPowerRating(Player player) {
+	    ArrayList<Card> hand = new ArrayList<Card>();
+		CardRating rating = new CardRating();
+		hand.add(player.getCards().get(0));
+		hand.add(player.getCards().get(1));
+
+		for (Card card : table.getCards()) {
+		    hand.add(card);
+		}
+			
+		return rating.calcCardsPower(hand);
 	}
-	
-	
-	 private static int [] getPowerRating(Player player) {
-			ArrayList<Card> hand = new ArrayList<Card>();
-			CardRating rating = new CardRating();
-			hand.add(player.getCards().get(0));
-			hand.add(player.getCards().get(1));
-			
-			for (Card card : table.getCards()) {
-				hand.add(card);
-			}
-			
-			return rating.calcCardsPower(hand);
-	 }
 	 
 	 
-	 public static List<Player> calculateWinner(List<Player> players) {
-		 List<Player> winners = new ArrayList<Player>();
-		 int[] rating;
-		 int n;
-		 int [] currentBestRating = new int[]{0};
-		 for (Player player : players) {
-			rating = player.getPowerRating();
+    public static List<Player> calculateWinner(List<Player> players) {
+        if(players.size()==1)
+            return players;
+	    List<Player> winners = new ArrayList<Player>();
+		int[] rating;
+	    int n;
+		int [] currentBestRating = new int[]{0};
+		for (Player player : players) {
+		    rating = player.getPowerRating();
 			n = calculateBestRating(rating, currentBestRating);
 			if (n == 1)  {
 				currentBestRating = rating;
@@ -354,11 +364,9 @@ public class PokerSimulator {
 			if (n== 0) {
 				winners.add(player);
 			}
-			
-	 }
-		 return winners;
-	 }
-
+	    }
+        return winners;
+	}
 	
 	 /**
 	  * 
@@ -379,7 +387,5 @@ public class PokerSimulator {
 			if (rating[i] == rating2[i] && toTraverse-i == 1) return 0;
 		 } 
 		 return 0;
-	 }
-	 
-	 
+     }
 }
