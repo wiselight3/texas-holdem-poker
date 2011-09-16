@@ -58,7 +58,7 @@ public class PokerSimulator {
                         iterator.remove();
                     }
                 }
-                System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
+//                System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
 
                 if(player.hasFolded() || player.getAction()==PlayerActions.CALL)
                     if(isLastCall())
@@ -80,9 +80,9 @@ public class PokerSimulator {
         setUpRound();
 
         //preflop
-        dealStartingHandToPlayers();
-        printGame(true);
-        preFlopBetting();
+        dealStartingHandToRemainingPlayers();
+//        printGame(true);
+        startBetting();
 
         if(onePLayerLeft())
             return;
@@ -90,7 +90,7 @@ public class PokerSimulator {
         //flop
         dealFlop();
         updatePowerRatingsforPlayers();
-        printGame(false);
+//        printGame(false);
         startBetting();
 
         if (onePLayerLeft())
@@ -99,7 +99,7 @@ public class PokerSimulator {
         //turn
         table.dealCard(deck.dealCard());
         updatePowerRatingsforPlayers();
-        printGame(false);
+//        printGame(false);
         startBetting();
 
         if (onePLayerLeft())
@@ -108,28 +108,68 @@ public class PokerSimulator {
         //river
         table.dealCard(deck.dealCard());
         updatePowerRatingsforPlayers();
-        printGame(false);
+//        printGame(false);
         startBetting();
     }
 
 	public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
 
-		setUpGame();
-		int roundsPlayed=0;
-		
-		while (roundsPlayed<Settings.numberOfRounds) {
-            playRound();
-            distributePotToWinners();
-            tearDown();
-            roundsPlayed++;
-        }
+        for(int p=2; p<=10; p++){
+            for(Card.Value val1 : Card.Value.values()){
+                for(Card.Value val2 : Card.Value.values()){
+                    int roundsPlayed=0;
+                    while (roundsPlayed<Settings.numberOfRounds) {
+                        setUpGame(p);
 
-		System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
-		for (Player player : players) {
-			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
-		}
-		
+                        players.get(0).dealCard(deck.getSpecificCard(new Card(val1, Card.Suit.SPADES)));
+                        players.get(0).dealCard(deck.getSpecificCard(new Card(val2, Card.Suit.CLUBS)));
+
+                        playRound();
+//                        distributePotToWinners();
+                        tearDown();
+                        roundsPlayed++;
+                    }
+
+//                    System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
+//                    for (Player player : players) {
+//                        System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
+//                    }
+                    System.out.println("P0: [ "+new Card(val1, Card.Suit.SPADES)+" "+new Card(val2, Card.Suit.CLUBS)+" ] Players: "+p);
+                }
+            }
+
+            ArrayList<Card> temp = new ArrayList<Card>();
+            for(Card.Value val : Card.Value.values()){
+                temp.add(new Card(val, Card.Suit.SPADES));
+            }
+
+            for(int i=0; i<13; i++){
+                for(int j=i+1; j<13; j++){
+                    if(i==j)
+                        continue;
+                    int roundsPlayed=0;
+                    while (roundsPlayed<Settings.numberOfRounds) {
+                        setUpGame(p);
+
+                        players.get(0).dealCard(deck.getSpecificCard(temp.get(i)));
+                        players.get(0).dealCard(deck.getSpecificCard(temp.get(j)));
+
+                        playRound();
+//                        distributePotToWinners();
+                        tearDown();
+                        roundsPlayed++;
+                    }
+
+    //                System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
+    //                for (Player player : players) {
+    //                    System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
+    //                }
+                    System.out.println("P0: [ "+temp.get(i)+" "+temp.get(j)+" ] Players: "+p);
+                }
+            }
+        }
+        System.out.println((System.currentTimeMillis()-startTime)/1000+"s");
 	}
 
     public static void printGame(boolean preFlop){
@@ -239,12 +279,12 @@ public class PokerSimulator {
 		}
 	}
 	
-	public static void setUpGame() {
+	public static void setUpGame(int numOfPlayers) {
 		actionSelector = new ActionSelector();
 		players = new ArrayList<Player>();
 		deck = new Deck();
 		table = new Table();
-		setUpPlayers(Settings.numOfPlayers);
+		setUpPlayers(numOfPlayers);
 	}
 	
 	public static void setUpRound() {
@@ -296,7 +336,7 @@ public class PokerSimulator {
 	
 	private static void setUpPlayers(int numOfPlayers) {
 		for (int i = 0; i < numOfPlayers; i++) {
-			players.add(new Player("P"+i, generateType()));
+			players.add(new Player("P"+i, PlayerType.PASSIVE));
 		}
 	}
 
@@ -316,12 +356,18 @@ public class PokerSimulator {
 		}
 	}
 	
-	public static void dealStartingHandToPlayers() {
+	public static void dealStartingHandToRemainingPlayers() {
 		for (Player player : players) {
-			player.dealCard(deck.dealCard());
+            if(players.indexOf(player)==0)
+                continue;
+            else
+			    player.dealCard(deck.dealCard());
 		}
 		for (Player player : players) {
-			player.dealCard(deck.dealCard());
+			if(players.indexOf(player)==0)
+                continue;
+            else
+			    player.dealCard(deck.dealCard());
 		}
 		
 	}

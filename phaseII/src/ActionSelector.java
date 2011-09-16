@@ -32,10 +32,11 @@ public class ActionSelector {
 
 	
 	private PlayerActions decideActionForPassivePlayer(Player player) {
-		int [] powerRating = player.getPowerRating();
-		if (powerRating[0] >=5) return PlayerActions.RAISE;
-		else if (powerRating[0] >=3 && powerRating[0] <5) return PlayerActions.CALL;
-		else return PlayerActions.FOLD;	
+        return PlayerActions.CALL;
+//		int [] powerRating = player.getPowerRating();
+//		if (powerRating[0] >=5) return PlayerActions.RAISE;
+//		else if (powerRating[0] >=3 && powerRating[0] <5) return PlayerActions.CALL;
+//		else return PlayerActions.FOLD;
 	}
 
 
