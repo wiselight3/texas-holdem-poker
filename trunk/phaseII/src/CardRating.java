@@ -19,19 +19,19 @@ import java.util.Comparator;
  */
 public class CardRating {
 
-    private Comparator<Card> suitComparator = new Comparator<Card>() {
+    public Comparator<Card> suitComparator = new Comparator<Card>() {
         public int compare(Card o1, Card o2) {
             return o1.getSuit().compareTo(o2.getSuit());
         }
     };
 
-    private Comparator<Card> valueComparator = new Comparator<Card>() {
+    public Comparator<Card> valueComparator = new Comparator<Card>() {
         public int compare(Card o1, Card o2) {
             return o1.getValue().compareTo(o2.getValue());
         }
     };
 
-    private Comparator<ArrayList<Card>> lengthComparator = new Comparator<ArrayList<Card>>() {
+    public Comparator<ArrayList<Card>> lengthComparator = new Comparator<ArrayList<Card>>() {
         public int compare(ArrayList<Card> o1, ArrayList<Card> o2) {
             if(o1.size()<o2.size())
                 return 1;
