@@ -78,9 +78,9 @@ public class JKSimulator {
 
     public static void playRound() {
         setUpRound();
-        dealStartingHandToPlayers();
 
         //preflop
+        dealStartingHandToPlayers();
         printGame(true);
         preFlopBetting();
 
@@ -125,7 +125,7 @@ public class JKSimulator {
             roundsPlayed++;
         }
 
-		System.out.println("\nAfter "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
+		System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
 		for (Player player : players) {
 			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
 		}
@@ -167,7 +167,7 @@ public class JKSimulator {
             System.out.print("\n");
             for(Player pl : players){
                 System.out.print(pl+"(power):[ ");
-                int[] rating = getPowerRating(pl);
+                int[] rating = pl.getPowerRating();
                 for(int i : rating){
                     System.out.print(i+" ");
                 }
@@ -347,6 +347,8 @@ public class JKSimulator {
 	 
 	 
     public static List<Player> calculateWinner(List<Player> players) {
+        if(players.size()==1)
+            return players;
 	    List<Player> winners = new ArrayList<Player>();
 		int[] rating;
 	    int n;
