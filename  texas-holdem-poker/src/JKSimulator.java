@@ -23,13 +23,49 @@ public class JKSimulator {
         boolean bettingNotDone = true;
         int raiseCount = 0;
         while(bettingNotDone){
-            Iterator<Player> iterator = playersInRound.iterator();
-            while (iterator.hasNext()){
-                Player player = iterator.next();
-                if(playersInRound.size()==1)
-                    return;
+            Iterator<Player> iteratorForPLayersInRound = playersInRound.iterator();
+            while (iteratorForPLayersInRound.hasNext()){
+                Player player = iteratorForPLayersInRound.next();
+                if(onePLayerLeft()) return;
 
                 player.setAction(actionSelector.decideAction(player));
+                
+                switch (player.getAction()) {
+				case RAISE:
+					if(raiseCount >= 3){
+                        if(currentBet==player.getBet())
+                            player.setAction(PlayerActions.CHECK);
+                        else{
+                            player.setAction(PlayerActions.CALL);
+                            pot += player.call(currentBet-player.getBet());
+                        }
+                    }else{
+                        raiseCount++;
+                        int amount = player.raise(Settings.bigBlind + (currentBet-player.getBet()));
+                        pot += amount;
+                        currentBet += Settings.bigBlind;
+                    }
+					break;
+				case CALL:
+					if(currentBet==player.getBet()){
+                        player.setAction(PlayerActions.CHECK);
+                    }else{
+                        pot += player.call(currentBet-player.getBet());
+                    }
+					break;
+					
+				case FOLD:
+					if(currentBet==player.getBet()){
+                        player.setAction(PlayerActions.CHECK);
+                    }
+                    else{
+                        iteratorForPLayersInRound.remove();
+                    }
+					break;
+				}
+                
+                
+                /*
                 if(player.getAction()==PlayerActions.RAISE){
                     if(raiseCount >= 3){
                         if(currentBet==player.getBet())
@@ -55,9 +91,10 @@ public class JKSimulator {
                         player.setAction(PlayerActions.CHECK);
                     }
                     else{
-                        iterator.remove();
+                        iteratorForPLayersInRound.remove();
                     }
                 }
+                */
                 System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
 
                 if(player.hasFolded() || player.getAction()==PlayerActions.CALL)
@@ -72,7 +109,7 @@ public class JKSimulator {
                 }else
                     bettingNotDone = false;
             }
-        }
+        } //end while betting not done
         resetRaisesForPlayers();
     }
 
