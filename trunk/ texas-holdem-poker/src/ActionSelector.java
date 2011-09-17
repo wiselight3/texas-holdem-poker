@@ -11,10 +11,10 @@ public class ActionSelector {
 			switch (player.playerType) {
 			case NORMAL:
 				return decideActionForNormalPlayer(player);
-			case AGGRESSIVE:
-				return decideActionForAggressivePlayer(player);
-			case PASSIVE:
-				return decideActionForPassivePlayer(player);
+			case BLUFFER:
+				return decideActionForBluffer(player);
+			case CONSERVATIVE:
+				return decideActionForConservativePlayer(player);
 			default:
 			return PlayerActions.CALL;
 			}
@@ -31,7 +31,7 @@ public class ActionSelector {
     }
 
 	
-	private PlayerActions decideActionForPassivePlayer(Player player) {
+	private PlayerActions decideActionForConservativePlayer(Player player) {
 		int [] powerRating = player.getPowerRating();
 		if (powerRating[0] >=5) return PlayerActions.RAISE;
 		else if (powerRating[0] >=3 && powerRating[0] <5) return PlayerActions.CALL;
@@ -39,7 +39,7 @@ public class ActionSelector {
 	}
 
 
-	private PlayerActions decideActionForAggressivePlayer(Player player) {
+	private PlayerActions decideActionForBluffer(Player player) {
 		int [] powerRating = player.getPowerRating();
 		if (powerRating[0] >=2) return PlayerActions.RAISE;
 		else if (powerRating[0] ==1) return PlayerActions.CALL;

@@ -295,20 +295,26 @@ public class JKSimulator {
 	}
 	
 	private static void setUpPlayers(int numOfPlayers) {
+		
 		for (int i = 0; i < numOfPlayers; i++) {
-			players.add(new Player("P"+i, generateType()));
+			if (i%2 == 0) {
+				players.add(new Player("P"+i, PlayerType.CONSERVATIVE ));
+			} else {
+				players.add(new Player("P" +i, PlayerType.BLUFFER));
+			}
 		}
 	}
 
+	
 	//TODO: Ikke random type spiller, b�r predefineres s� de kan sammenlignes.
 	private static PlayerType generateType () {
 		Random r = new Random();
 		r.nextInt(3);
 		switch (r.nextInt(3)) {
 		case 0:
-			return PlayerType.PASSIVE;
+			return PlayerType.CONSERVATIVE;
 		case 1:
-			return PlayerType.AGGRESSIVE;
+			return PlayerType.BLUFFER;
 		case 2:
 			return PlayerType.NORMAL;
 		default:

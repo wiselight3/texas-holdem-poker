@@ -2,8 +2,8 @@ package enums;
 
 public enum PlayerType {
 	
-	PASSIVE , 
-	AGGRESSIVE, 
+	CONSERVATIVE , 
+	BLUFFER, 
 	NORMAL
 	
 
