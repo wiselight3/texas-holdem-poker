@@ -114,34 +114,39 @@ public class PokerSimulator {
 
 	public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
+        int counter=0;
+        for(int p=2; p<=2; p++){
+            ArrayList<Card> spades = new ArrayList<Card>();
+            for(Card.Value val : Card.Value.values()){
+                spades.add(new Card(val, Card.Suit.SPADES));
+            }
 
-        for(int p=2; p<=10; p++){
-            for(Card.Value val1 : Card.Value.values()){
-                for(Card.Value val2 : Card.Value.values()){
+            ArrayList<Card> clubs = new ArrayList<Card>();
+            for(Card.Value val : Card.Value.values()){
+                clubs.add(new Card(val, Card.Suit.CLUBS));
+            }
+
+            for(int i=0; i<13; i++){
+                for(int j=i; j<13; j++){
                     int roundsPlayed=0;
                     while (roundsPlayed<Settings.numberOfRounds) {
                         setUpGame(p);
 
-                        players.get(0).dealCard(deck.getSpecificCard(new Card(val1, Card.Suit.SPADES)));
-                        players.get(0).dealCard(deck.getSpecificCard(new Card(val2, Card.Suit.CLUBS)));
+                        players.get(0).dealCard(deck.getSpecificCard(spades.get(i)));
+                        players.get(0).dealCard(deck.getSpecificCard(clubs.get(j)));
 
                         playRound();
 //                        distributePotToWinners();
                         tearDown();
                         roundsPlayed++;
                     }
-
+                    counter++;
 //                    System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
 //                    for (Player player : players) {
 //                        System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
 //                    }
-                    System.out.println("P0: [ "+new Card(val1, Card.Suit.SPADES)+" "+new Card(val2, Card.Suit.CLUBS)+" ] Players: "+p);
+                    System.out.println("P0: [ "+spades.get(i)+" "+clubs.get(j)+" ] Players: "+p);
                 }
-            }
-
-            ArrayList<Card> temp = new ArrayList<Card>();
-            for(Card.Value val : Card.Value.values()){
-                temp.add(new Card(val, Card.Suit.SPADES));
             }
 
             for(int i=0; i<13; i++){
@@ -152,24 +157,24 @@ public class PokerSimulator {
                     while (roundsPlayed<Settings.numberOfRounds) {
                         setUpGame(p);
 
-                        players.get(0).dealCard(deck.getSpecificCard(temp.get(i)));
-                        players.get(0).dealCard(deck.getSpecificCard(temp.get(j)));
+                        players.get(0).dealCard(deck.getSpecificCard(spades.get(i)));
+                        players.get(0).dealCard(deck.getSpecificCard(spades.get(j)));
 
                         playRound();
 //                        distributePotToWinners();
                         tearDown();
                         roundsPlayed++;
                     }
-
+                    counter++;
     //                System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
     //                for (Player player : players) {
     //                    System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
     //                }
-                    System.out.println("P0: [ "+temp.get(i)+" "+temp.get(j)+" ] Players: "+p);
+                    System.out.println("P0: [ "+spades.get(i)+" "+spades.get(j)+" ] Players: "+p);
                 }
             }
         }
-        System.out.println((System.currentTimeMillis()-startTime)/1000+"s");
+        System.out.println("Time: "+(System.currentTimeMillis()-startTime)/1000+"s");
 	}
 
     public static void printGame(boolean preFlop){
