@@ -130,6 +130,12 @@ public class JKSimulator {
 			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
 		}
 		
+		int sum =0;
+		for (Player player : players) {
+			sum+= player.getMoney();
+		}
+		System.out.println("this should be 2500 for 5 players?: " + sum);
+		
 	}
 
     public static void printGame(boolean preFlop){
@@ -294,8 +300,9 @@ public class JKSimulator {
 		}
 	}
 	
+	
+	
 	private static void setUpPlayers(int numOfPlayers) {
-		
 		for (int i = 0; i < numOfPlayers; i++) {
 			if (i%2 == 0) {
 				players.add(new Player("P"+i, PlayerType.CONSERVATIVE ));
@@ -306,7 +313,10 @@ public class JKSimulator {
 	}
 
 	
-	//TODO: Ikke random type spiller, b�r predefineres s� de kan sammenlignes.
+	/**
+	 * Use this method if you want to generate random players
+	 * @return
+	 */
 	private static PlayerType generateType () {
 		Random r = new Random();
 		r.nextInt(3);
