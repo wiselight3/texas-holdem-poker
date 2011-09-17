@@ -19,7 +19,7 @@ public class JKSimulator {
 		return currentBet;
 	}
 
-    public static void startBetting() {
+    public static void runBettings() {
         boolean bettingNotDone = true;
         int raiseCount = 0;
         while(bettingNotDone){
@@ -91,7 +91,7 @@ public class JKSimulator {
         dealFlop();
         updatePowerRatingsforPlayers();
         printGame(false);
-        startBetting();
+        runBettings();
 
         if (onePLayerLeft())
             return;
@@ -100,7 +100,7 @@ public class JKSimulator {
         table.dealCard(deck.dealCard());
         updatePowerRatingsforPlayers();
         printGame(false);
-        startBetting();
+        runBettings();
 
         if (onePLayerLeft())
             return;
@@ -109,7 +109,7 @@ public class JKSimulator {
         table.dealCard(deck.dealCard());
         updatePowerRatingsforPlayers();
         printGame(false);
-        startBetting();
+        runBettings();
     }
 
 	public static void main(String[] args) {
