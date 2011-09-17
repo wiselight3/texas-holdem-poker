@@ -286,9 +286,9 @@ public class PokerSimulator {
 		r.nextInt(3);
 		switch (r.nextInt(3)) {
 		case 0:
-			return PlayerType.PASSIVE;
+			return PlayerType.CONSERVATIVE;
 		case 1:
-			return PlayerType.AGGRESSIVE;
+			return PlayerType.BLUFFER;
 		case 2:
 			return PlayerType.NORMAL;
 		default:
