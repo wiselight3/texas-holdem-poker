@@ -14,6 +14,7 @@ public class PokerSimulator {
 	private static ActionSelector actionSelector;
 	private static int smallBlindPosition;
 	private static int bigBlindPosition;
+    private static int wins, losses, draws;
 	
 	public int getCurrentBet() {
 		return currentBet;
@@ -137,15 +138,17 @@ public class PokerSimulator {
 
                         playRound();
 //                        distributePotToWinners();
+                        updateStats(calculateWinner(playersInRound));
                         tearDown();
                         roundsPlayed++;
                     }
-                    counter++;
 //                    System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
 //                    for (Player player : players) {
 //                        System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
 //                    }
-                    System.out.println("P0: [ "+spades.get(i)+" "+clubs.get(j)+" ] Players: "+p);
+
+                    System.out.println("P0: [ "+spades.get(i)+" "+clubs.get(j)+" ] Players: "+p+" Prob: "+calculateHoldecardProb(p));
+                    resetStats();
                 }
             }
 
@@ -162,20 +165,43 @@ public class PokerSimulator {
 
                         playRound();
 //                        distributePotToWinners();
+                        updateStats(calculateWinner(playersInRound));
                         tearDown();
                         roundsPlayed++;
                     }
-                    counter++;
     //                System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
     //                for (Player player : players) {
     //                    System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
     //                }
-                    System.out.println("P0: [ "+spades.get(i)+" "+spades.get(j)+" ] Players: "+p);
+                    System.out.println("P0: [ "+spades.get(i)+" "+spades.get(j)+" ] Players: "+p+" Prob: "+calculateHoldecardProb(p));
+                    resetStats();
                 }
             }
         }
         System.out.println("Time: "+(System.currentTimeMillis()-startTime)/1000+"s");
 	}
+
+    private static void resetStats() {
+        draws = 0;
+        wins = 0;
+        losses = 0;
+    }
+
+    private static double calculateHoldecardProb(int numberOfPlayers) {
+        //( (Wins + Ties/2) / (Wins + Ties + Losses) )^p
+        int teller = wins + (draws/2);
+        int nevner = wins + draws + losses;
+        return Math.pow((double)teller/(double) nevner, (double)numberOfPlayers);
+    }
+
+    private static void updateStats(List<Player> winners) {
+        if(winners.size()>1 && winners.contains(players.get(0)))
+            draws++;
+        else if(winners.size()==1 && winners.contains(players.get(0)))
+            wins++;
+        else
+            losses++;
+    }
 
     public static void printGame(boolean preFlop){
         if(preFlop)
