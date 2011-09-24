@@ -15,6 +15,7 @@ public class PokerSimulator {
 	private static int smallBlindPosition;
 	private static int bigBlindPosition;
     private static int wins, losses, draws;
+    
 	
 	public int getCurrentBet() {
 		return currentBet;
@@ -114,6 +115,7 @@ public class PokerSimulator {
     }
 
 	public static void main(String[] args) {
+		EquivalenceClassTable equivalenceClassTable = new EquivalenceClassTable();
         long startTime = System.currentTimeMillis();
         int counter=0;
         for(int p=2; p<=2; p++){
@@ -148,6 +150,10 @@ public class PokerSimulator {
 //                    }
 
                     System.out.println("P0: [ "+spades.get(i)+" "+clubs.get(j)+" ] Players: "+p+" Prob: "+calculateHoldecardProb(p));
+                    List<Card> holeCards = new ArrayList<Card>();
+                    holeCards.add(spades.get(i));
+                    holeCards.add(clubs.get(j));
+                    equivalenceClassTable.saveProb(holeCards, p, calculateHoldecardProb(p));
                     resetStats();
                 }
             }
@@ -174,11 +180,19 @@ public class PokerSimulator {
     //                    System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
     //                }
                     System.out.println("P0: [ "+spades.get(i)+" "+spades.get(j)+" ] Players: "+p+" Prob: "+calculateHoldecardProb(p));
+                    List<Card> holeCards = new ArrayList<Card>();
+                    holeCards.add(spades.get(i));
+                    holeCards.add(clubs.get(j));
+                    equivalenceClassTable.saveProb(holeCards, p, calculateHoldecardProb(p));
                     resetStats();
                 }
             }
         }
         System.out.println("Time: "+(System.currentTimeMillis()-startTime)/1000+"s");
+        List<Card> testCards = new ArrayList<Card>();
+        testCards.add(new Card(Card.Value.JACK, Card.Suit.CLUBS));
+        testCards.add(new Card(Card.Value.JACK, Card.Suit.DIAMONDS));
+        System.out.println("test after test run with two cards:" +  equivalenceClassTable.getProb(testCards, 2));
 	}
 
     private static void resetStats() {
