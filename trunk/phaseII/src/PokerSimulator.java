@@ -119,7 +119,7 @@ public class PokerSimulator {
 		EquivalenceClassTable equivalenceClassTable = new EquivalenceClassTable();
         long startTime = System.currentTimeMillis();
         int counter=0;
-        for(int p=2; p<=2; p++){
+        for(int p=2; p<=10; p++){
             ArrayList<Card> spades = new ArrayList<Card>();
             for(Card.Value val : Card.Value.values()){
                 spades.add(new Card(val, Card.Suit.SPADES));
