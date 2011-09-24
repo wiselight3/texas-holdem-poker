@@ -28,8 +28,9 @@ public class JKSimulator {
             while (iteratorForPLayersInRound.hasNext()){
                 Player player = iteratorForPLayersInRound.next();
                 if(onePLayerLeft()) return;
-
-                player.setAction(actionSelector.decideActionsForPhase1Players(player));
+                
+                if (player.getPhaseType() == PhaseType.PHASE1PLAYER) 
+                	player.setAction(actionSelector.decideActionsForPhase1Players(player));
                 
                 switch (player.getAction()) {
 				case RAISE:
