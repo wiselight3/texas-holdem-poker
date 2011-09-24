@@ -46,12 +46,12 @@ public class EquivalenceClassTable {
     	File f = new File("probs.txt");
     	FileWriter fwriter = new FileWriter(f);
     	BufferedWriter writer = new BufferedWriter(fwriter);
-    	writer.write("Cards " + " Prob" + "\n");
+    	writer.write("Cards " + "num pla." + " Prob" + "\n");
     	for (int i = 0; i < 14; i++) {
 			for (int j = 0; j < 14; j++) {
 				for (int j2 = 0; j2 < 2; j2++) {
 					for (int k = 0; k < 10; k++) {
-						writer.write(i + " " + j + " "  + probs[i][j][j2][k] + "\n" );
+						writer.write(i + " " + j + " " + k + " "  + probs[i][j][j2][k] + "\n" );
 					}
 				}
 			}
