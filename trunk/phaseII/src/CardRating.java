@@ -7,7 +7,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
+import java.util.List;
 
 
 /**
@@ -296,79 +296,71 @@ public class CardRating {
     }
 
     
-    
+    public double handStrength (ArrayList<Card> holeCards, List<Card> communityCards, int numbPlayers){
+        Deck deck = new Deck();
+        ArrayList<Card> plHand = new ArrayList<Card>();
+        ArrayList<Card> opHand = new ArrayList<Card>();
+        for(Card c : holeCards){
+            deck.getSpecificCard(c);
+        }
+        for(Card c : communityCards){
+            deck.getSpecificCard(c);
+            plHand.add(c);
+            opHand.add(c);
+        }
+        ArrayList<Card> remainingCards = deck.getCards();
+
+        int[] plRank = calcCardsPower(plHand);
+
+        int wins, losses, draws;
+        for(int i=0; i<remainingCards.size(); i++){
+            for(int j=i+1; j<remainingCards.size(); j++){
+                opHand.add(remainingCards.get(i));
+                opHand.add(remainingCards.get(j));
+
+                int[] opRank = calcCardsPower(opHand);
+                //if()
+            }
+        }
+        return 0.0;
+    }
+
+    /**
+	  *
+	  * @param rating
+	  * @param rating2
+	  * @return integer: 1 if rating 1 is best, 0 if they are equal, and -1 if rating2 is best.
+	  */
+	 public static int calculateBestRating(int[] rating, int[] rating2) {
+		 int toTraverse;
+		 if (rating.length > rating2.length) toTraverse = rating2.length;
+		 if (rating.length < rating2.length) toTraverse = rating.length;
+		 else toTraverse = rating.length;
+
+
+		 for (int i = 0; i < toTraverse; i++) {
+			if (rating[i] > rating2[i]) return 1;
+			if (rating2[i] > rating[i]) return -1;
+			if (rating[i] == rating2[i] && toTraverse-i == 1) return 0;
+		 }
+		 return 0;
+     }
     
     
     //Testing of sorting methods
     public static void main(String args[]){
         Deck deck = new Deck();
         CardRating cardRating = new CardRating();
-        /*
-        deck.shuffleDeck();
-        ArrayList<Card> valueSort = cardRating.sortByValue(deck.getCards());
-        System.out.println("SortedByValue:");
-        for(Card card : valueSort){
-            System.out.println(card);
-        }
 
-        deck.buildDeck();
-        deck.shuffleDeck();
-        ArrayList<Card> suitSort = cardRating.sortBySuit(deck.getCards());
-        System.out.println("SortedBySuit:");
-        for(Card card : suitSort){
-            System.out.println(card);
-        }
+        ArrayList<Card> testHole = new ArrayList<Card>();
+        testHole.add(new Card(Card.Value.JACK, Card.Suit.CLUBS));
+        testHole.add(new Card(Card.Value.JACK, Card.Suit.DIAMONDS));
 
-        deck.buildDeck();
-        deck.shuffleDeck();
-        ArrayList<Card> suitAndValueSort = cardRating.sortBySuitAndValue(deck.getCards());
-        System.out.println("SortedBySuitAndValue:");
-        for(Card card : suitAndValueSort){
-            System.out.println(card);
-        }
-        */
+        ArrayList<Card> testCommunity = new ArrayList<Card>();
+        testCommunity.add(new Card(Card.Value.JACK, Card.Suit.HEARTS));
+        testCommunity.add(new Card(Card.Value.JACK, Card.Suit.SPADES));
+        testCommunity.add(new Card(Card.Value.QUEEN, Card.Suit.SPADES));
 
-        ArrayList<Card> testHand = new ArrayList<Card>();
-        testHand.add(new Card(Card.Value.FOUR, Card.Suit.SPADES));
-        testHand.add(new Card(Card.Value.KING, Card.Suit.DIAMONDS));
-        testHand.add(new Card(Card.Value.DEUCE, Card.Suit.CLUBS));
-        testHand.add(new Card(Card.Value.THREE, Card.Suit.HEARTS));
-        testHand.add(new Card(Card.Value.NINE, Card.Suit.CLUBS));
-        testHand.add(new Card(Card.Value.ACE, Card.Suit.HEARTS));
-        testHand.add(new Card(Card.Value.TEN, Card.Suit.SPADES));
-
-        /*
-        for(Card card : cardRating.sortBySuit(testHand)){
-            System.out.println(card);
-        }
-        System.out.println();
-        for(Card card : cardRating.sortByValue(testHand)){
-            System.out.println(card);
-        }
-        System.out.println();
-        for(Card card : cardRating.sortBySuitAndValue(testHand)){
-            System.out.println(card);
-        }
-        System.out.println();
-        ArrayList<ArrayList<Card>> vGroups = cardRating.genValueGroups(testHand);
-        for(ArrayList<Card> vGroup : vGroups){
-            for(Card card : vGroup){
-                System.out.println(card);
-            }
-        }
-        System.out.println();
-        ArrayList<ArrayList<Card>> sGroups = cardRating.genSuitGroups(testHand);
-        for(ArrayList<Card> sGroup : sGroups){
-            for(Card card : sGroup){
-                System.out.println(card);
-            }
-        } */
-        System.out.println();
-        int[] power = cardRating.calcCardsPower(testHand);
-        System.out.print("Power: [ ");
-        for(int val : power){
-            System.out.print(val+" ");
-        }
-        System.out.print("]");
+        cardRating.handStrength(testHole, testCommunity, 2);
     }
 }

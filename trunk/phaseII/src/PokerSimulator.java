@@ -191,16 +191,13 @@ public class PokerSimulator {
             }
         }
         System.out.println("Time: "+(System.currentTimeMillis()-startTime)/1000+"s");
-        List<Card> testCards = new ArrayList<Card>();
-        testCards.add(new Card(Card.Value.JACK, Card.Suit.CLUBS));
-        testCards.add(new Card(Card.Value.JACK, Card.Suit.DIAMONDS));
+
         try {
 			equivalenceClassTable.saveProbEquivalenceClassToFile();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        //System.out.println("test after test run with two cards:" +  equivalenceClassTable.getProb(testCards, 2));
 	}
 
     private static void resetStats() {
@@ -454,7 +451,7 @@ public class PokerSimulator {
 		int [] currentBestRating = new int[]{0};
 		for (Player player : players) {
 		    rating = player.getPowerRating();
-			n = calculateBestRating(rating, currentBestRating);
+			n = CardRating.calculateBestRating(rating, currentBestRating);
 			if (n == 1)  {
 				currentBestRating = rating;
 				winners.clear();
@@ -467,24 +464,5 @@ public class PokerSimulator {
         return winners;
 	}
 	
-	 /**
-	  * 
-	  * @param rating
-	  * @param rating2
-	  * @return integer: 1 if rating 1 is best, 0 if they are equal, and -1 if rating2 is best.
-	  */
-	 private static int calculateBestRating(int[] rating, int[] rating2) {
-		 int toTraverse;
-		 if (rating.length > rating2.length) toTraverse = rating2.length;
-		 if (rating.length < rating2.length) toTraverse = rating.length;
-		 else toTraverse = rating.length;
-		 
-		 
-		 for (int i = 0; i < toTraverse; i++) {
-			if (rating[i] > rating2[i]) return 1;
-			if (rating2[i] > rating[i]) return -1;
-			if (rating[i] == rating2[i] && toTraverse-i == 1) return 0;
-		 } 
-		 return 0;
-     }
+
 }
