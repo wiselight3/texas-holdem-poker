@@ -135,6 +135,9 @@ public class Player {
    public String toString (){
        return id;
    }
+   public PhaseType getPhaseType() {
+	   return this.phaseType;
+}
     
 
 }
