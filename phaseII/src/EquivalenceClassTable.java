@@ -1,6 +1,12 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
+
+import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,6 +40,24 @@ public class EquivalenceClassTable {
             return 1;
         else
             return 0;
+    }
+    
+    public void saveProbEquivalenceClassToFile() throws IOException {
+    	File f = new File("probs2.txt");
+    	FileWriter fwriter = new FileWriter(f);
+    	BufferedWriter writer = new BufferedWriter(fwriter);
+    	
+    	for (int i = 0; i < 14; i++) {
+			for (int j = 0; j < 14; j++) {
+				for (int j2 = 0; j2 < 2; j2++) {
+					for (int k = 0; k < 10; k++) {
+						writer.write("Cards: " + probs[i].toString() + probs[i][j].toString() + " suit " + probs[i][j][j2] + " prob: " + probs[i][j][j2][k] + "\n" );
+					}
+				}
+			}
+		}
+    	
+    	writer.close();
     }
 
 }

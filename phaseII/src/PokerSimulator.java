@@ -1,6 +1,7 @@
 import enums.PlayerActions;
 import enums.PlayerType;
 
+import java.io.IOException;
 import java.util.*;
 
 
@@ -192,7 +193,13 @@ public class PokerSimulator {
         List<Card> testCards = new ArrayList<Card>();
         testCards.add(new Card(Card.Value.JACK, Card.Suit.CLUBS));
         testCards.add(new Card(Card.Value.JACK, Card.Suit.DIAMONDS));
-        System.out.println("test after test run with two cards:" +  equivalenceClassTable.getProb(testCards, 2));
+        try {
+			equivalenceClassTable.saveProbEquivalenceClassToFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        //System.out.println("test after test run with two cards:" +  equivalenceClassTable.getProb(testCards, 2));
 	}
 
     private static void resetStats() {
