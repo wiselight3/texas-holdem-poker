@@ -7,11 +7,29 @@ public class ActionSelector {
 
 	
 	
-	public PlayerActions decideActionsForPhase2Players(Player player) {
+	public PlayerActions decideActionsForPhase2Players(Player player, List<Player> players, EquivalenceClassTable ect) {
+		double probForWinning = ect.getProb(player.getCards(), players.size());
+		switch (player.playerType) {
+		case NORMAL:
+			return decideActionForPhase2NormalPlayer(player);
+		case BLUFFER:
+			return decideActionForPhase2Bluffer(probForWinning);
+		case CONSERVATIVE:
+			return decideActionForPhase2ConservativePlayer(player);
+		default:
+		return PlayerActions.CALL;
+		}
 		
 	}
 	
 	
+	private PlayerActions decideActionForPhase2Bluffer(double probForWinning) {
+		if (probForWinning > 0.3) return PlayerActions.RAISE;
+		else if (probForWinning > 0.2) return PlayerActions.CALL;
+		else return PlayerActions.FOLD;
+	}
+
+
 	public PlayerActions decideActionsForPhase1Players(Player player) {
 			switch (player.playerType) {
 			case NORMAL:
