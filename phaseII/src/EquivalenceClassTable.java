@@ -44,6 +44,7 @@ public class EquivalenceClassTable {
     
     public void saveProbEquivalenceClassToFile() throws IOException {
     	File f = new File("probs.txt");
+    	
     	FileWriter fwriter = new FileWriter(f);
     	BufferedWriter writer = new BufferedWriter(fwriter);
     	writer.write("Cards " + "num pla." + " Prob" + "\n");
