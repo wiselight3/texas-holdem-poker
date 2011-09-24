@@ -51,12 +51,11 @@ public class EquivalenceClassTable {
 			for (int j = 0; j < 14; j++) {
 				for (int j2 = 0; j2 < 2; j2++) {
 					for (int k = 0; k < 10; k++) {
-						writer.write("Cards: " + probs[i].toString() + probs[i][j].toString() + " suit " + probs[i][j][j2] + " prob: " + probs[i][j][j2][k] + "\n" );
+						writer.write("Cards: " + probs[i].toString() + probs[i][j].toString() + " suit:" + probs[i][j][j2] + " prob: " + probs[i][j][j2][k] + "\n" );
 					}
 				}
 			}
 		}
-    	
     	writer.close();
     }
 
