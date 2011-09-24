@@ -367,15 +367,43 @@ public class CardRating {
         Deck deck = new Deck();
         CardRating cardRating = new CardRating();
 
-        ArrayList<Card> testHole = new ArrayList<Card>();
-        testHole.add(new Card(Card.Value.ACE, Card.Suit.DIAMONDS));
-        testHole.add(new Card(Card.Value.QUEEN, Card.Suit.CLUBS));
+        ArrayList<Card> testHole1 = new ArrayList<Card>();
+        testHole1.add(new Card(Card.Value.ACE, Card.Suit.DIAMONDS));
+        testHole1.add(new Card(Card.Value.ACE, Card.Suit.HEARTS));
+
+        ArrayList<Card> testHole2 = new ArrayList<Card>();
+        testHole2.add(new Card(Card.Value.FOUR, Card.Suit.SPADES));
+        testHole2.add(new Card(Card.Value.FIVE, Card.Suit.SPADES));
+
+        ArrayList<Card> testHole3 = new ArrayList<Card>();
+        testHole3.add(new Card(Card.Value.FOUR, Card.Suit.HEARTS));
+        testHole3.add(new Card(Card.Value.FIVE, Card.Suit.HEARTS));
+
+        ArrayList<Card> testHole4 = new ArrayList<Card>();
+        testHole4.add(new Card(Card.Value.ACE, Card.Suit.DIAMONDS));
+        testHole4.add(new Card(Card.Value.THREE, Card.Suit.HEARTS));
+
+        ArrayList<Card> testHole5 = new ArrayList<Card>();
+        testHole5.add(new Card(Card.Value.FOUR, Card.Suit.DIAMONDS));
+        testHole5.add(new Card(Card.Value.NINE, Card.Suit.DIAMONDS));
 
         ArrayList<Card> testCommunity = new ArrayList<Card>();
-        testCommunity.add(new Card(Card.Value.JACK, Card.Suit.HEARTS));
-        testCommunity.add(new Card(Card.Value.FOUR, Card.Suit.CLUBS));
-        testCommunity.add(new Card(Card.Value.THREE, Card.Suit.HEARTS));
+        testCommunity.add(new Card(Card.Value.ACE, Card.Suit.SPADES));
+        testCommunity.add(new Card(Card.Value.DEUCE, Card.Suit.SPADES));
+        testCommunity.add(new Card(Card.Value.THREE, Card.Suit.SPADES));
 
-        System.out.println(cardRating.handStrength(testHole, testCommunity, 2));
+        System.out.println(cardRating.handStrength(testHole1, testCommunity, 2));
+        System.out.println(cardRating.handStrength(testHole2, testCommunity, 2));
+        System.out.println(cardRating.handStrength(testHole3, testCommunity, 2));
+        System.out.println(cardRating.handStrength(testHole4, testCommunity, 2));
+        System.out.println(cardRating.handStrength(testHole5, testCommunity, 2));
+
+        testCommunity.add(new Card(Card.Value.ACE, Card.Suit.CLUBS));
+
+        System.out.println(cardRating.handStrength(testHole1, testCommunity, 2));
+        System.out.println(cardRating.handStrength(testHole2, testCommunity, 2));
+        System.out.println(cardRating.handStrength(testHole3, testCommunity, 2));
+        System.out.println(cardRating.handStrength(testHole4, testCommunity, 2));
+        System.out.println(cardRating.handStrength(testHole5, testCommunity, 2));
     }
 }
