@@ -21,7 +21,7 @@ public class ActionSelector {
 	}
 	
 	
-	private PlayerActions decideActionForPhase2ConservativePlayer(int probForWinning) {
+	private PlayerActions decideActionForPhase2ConservativePlayer(double probForWinning) {
 		if (probForWinning > 0.7) return PlayerActions.RAISE;
 		else if (probForWinning > 0.4) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
