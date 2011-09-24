@@ -183,7 +183,7 @@ public class PokerSimulator {
                     double prob = calculateHoldecardProb(p);
                     List<Card> holeCards = new ArrayList<Card>();
                     holeCards.add(spades.get(i));
-                    holeCards.add(clubs.get(j));
+                    holeCards.add(spades.get(j));
                     equivalenceClassTable.saveProb(holeCards, p, prob);
                     System.out.println("P0: [ "+spades.get(i)+" "+spades.get(j)+" ] Players: "+p+" Prob: "+prob);
                     resetStats();
