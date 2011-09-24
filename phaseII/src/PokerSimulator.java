@@ -210,7 +210,7 @@ public class PokerSimulator {
         //( (Wins + Ties/2) / (Wins + Ties + Losses) )^p
         int teller = wins + (draws/2);
         int nevner = wins + draws + losses;
-        return Math.pow((double)teller/(double) nevner, (double)numberOfPlayers);
+        return Math.pow((double)teller/(double) nevner, (double)numberOfPlayers-1);
     }
 
     private static void updateStats(List<Player> winners) {

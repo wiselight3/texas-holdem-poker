@@ -296,12 +296,13 @@ public class CardRating {
     }
 
     
-    public double handStrength (ArrayList<Card> holeCards, List<Card> communityCards, int numbPlayers){
+    public double handStrength (ArrayList<Card> holeCards, List<Card> communityCards, int numberOfPlayers){
         Deck deck = new Deck();
         ArrayList<Card> plHand = new ArrayList<Card>();
         ArrayList<Card> opHand = new ArrayList<Card>();
         for(Card c : holeCards){
             deck.getSpecificCard(c);
+            plHand.add(c);
         }
         for(Card c : communityCards){
             deck.getSpecificCard(c);
@@ -312,17 +313,31 @@ public class CardRating {
 
         int[] plRank = calcCardsPower(plHand);
 
-        int wins, losses, draws;
+        int wins=0, losses=0, draws=0;
         for(int i=0; i<remainingCards.size(); i++){
             for(int j=i+1; j<remainingCards.size(); j++){
                 opHand.add(remainingCards.get(i));
                 opHand.add(remainingCards.get(j));
 
                 int[] opRank = calcCardsPower(opHand);
-                //if()
+                int compare = calculateBestRating(plRank, opRank);
+
+                if(compare>0){
+                    wins++;
+                }else if(compare<0){
+                    losses++;
+                }else{
+                    draws++;
+                }
+
+                opHand.remove(remainingCards.get(i));
+                opHand.remove(remainingCards.get(j));
             }
         }
-        return 0.0;
+        System.out.println("WINS: "+wins+" LOSSES: "+losses+" DRAWS: "+draws);
+        int teller = wins + (draws/2);
+        int nevner = wins + draws + losses;
+        return Math.pow((double)teller/(double)nevner, (double)numberOfPlayers-1);
     }
 
     /**
@@ -353,14 +368,14 @@ public class CardRating {
         CardRating cardRating = new CardRating();
 
         ArrayList<Card> testHole = new ArrayList<Card>();
-        testHole.add(new Card(Card.Value.JACK, Card.Suit.CLUBS));
-        testHole.add(new Card(Card.Value.JACK, Card.Suit.DIAMONDS));
+        testHole.add(new Card(Card.Value.ACE, Card.Suit.DIAMONDS));
+        testHole.add(new Card(Card.Value.QUEEN, Card.Suit.CLUBS));
 
         ArrayList<Card> testCommunity = new ArrayList<Card>();
         testCommunity.add(new Card(Card.Value.JACK, Card.Suit.HEARTS));
-        testCommunity.add(new Card(Card.Value.JACK, Card.Suit.SPADES));
-        testCommunity.add(new Card(Card.Value.QUEEN, Card.Suit.SPADES));
+        testCommunity.add(new Card(Card.Value.FOUR, Card.Suit.CLUBS));
+        testCommunity.add(new Card(Card.Value.THREE, Card.Suit.HEARTS));
 
-        cardRating.handStrength(testHole, testCommunity, 2);
+        System.out.println(cardRating.handStrength(testHole, testCommunity, 2));
     }
 }
