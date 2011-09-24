@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import enums.PhaseType;
 import enums.PlayerActions;
 import enums.PlayerType;
 
@@ -14,6 +15,8 @@ import enums.PlayerType;
 public class Player {
 
 	private PlayerActions action;
+	private PhaseType phaseType;
+	
 	public PlayerActions getAction() {
 		return action;
 	}
@@ -50,7 +53,8 @@ public class Player {
 	public int getBet() {
 		return bet;
 	}
-	public Player (String id, PlayerType type){
+	public Player (String id, PlayerType type, PhaseType phaseType){
+		this.phaseType = phaseType;
         this.id = id;
         playerType = type;
         cards = new ArrayList<Card>();

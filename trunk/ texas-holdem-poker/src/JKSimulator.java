@@ -1,3 +1,4 @@
+import enums.PhaseType;
 import enums.PlayerActions;
 import enums.PlayerType;
 
@@ -28,7 +29,7 @@ public class JKSimulator {
                 Player player = iteratorForPLayersInRound.next();
                 if(onePLayerLeft()) return;
 
-                player.setAction(actionSelector.decideAction(player));
+                player.setAction(actionSelector.decideActionsForPhase1Players(player));
                 
                 switch (player.getAction()) {
 				case RAISE:
@@ -339,13 +340,19 @@ public class JKSimulator {
 	
 	
 	
+	/**
+	 * Change or use other method to add players from other phases.
+	 * @param numOfPlayers
+	 */
 	private static void setUpPlayers(int numOfPlayers) {
-		for (int i = 0; i < numOfPlayers; i++) {
-			if (i%2 == 0) {
-				players.add(new Player("P"+i, PlayerType.CONSERVATIVE ));
+		int counter =0;
+		while (counter <= numOfPlayers) {
+			if (counter%2 == 0) {
+				players.add(new Player("P"+counter, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER ));
 			} else {
-				players.add(new Player("P" +i, PlayerType.BLUFFER));
+				players.add(new Player("P" +counter, PlayerType.BLUFFER, PhaseType.PHASE1PLAYER));
 			}
+			
 		}
 	}
 

@@ -7,7 +7,12 @@ public class ActionSelector {
 
 	
 	
-	public PlayerActions decideAction(Player player) {
+	public PlayerActions decideActionsForPhase2Players(Player player) {
+		
+	}
+	
+	
+	public PlayerActions decideActionsForPhase1Players(Player player) {
 			switch (player.playerType) {
 			case NORMAL:
 				return decideActionForNormalPlayer(player);

@@ -171,7 +171,7 @@ public class PokerSimulator {
 				continue;
 			}
 			
-			player.setAction(actionSelector.decideAction(player));
+			player.setAction(actionSelector.decideActionsForPhase1Players(player));
 			if (player.getAction() == PlayerActions.RAISE) {
 				if (player.getRaises() >= 3) {
 					player.setAction(PlayerActions.CALL);
