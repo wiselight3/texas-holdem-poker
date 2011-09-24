@@ -149,12 +149,12 @@ public class PokerSimulator {
 //                    for (Player player : players) {
 //                        System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
 //                    }
-
-                    System.out.println("P0: [ "+spades.get(i)+" "+clubs.get(j)+" ] Players: "+p+" Prob: "+calculateHoldecardProb(p));
+                    double prob = calculateHoldecardProb(p);
                     List<Card> holeCards = new ArrayList<Card>();
                     holeCards.add(spades.get(i));
                     holeCards.add(clubs.get(j));
-                    equivalenceClassTable.saveProb(holeCards, p, calculateHoldecardProb(p));
+                    equivalenceClassTable.saveProb(holeCards, p, prob);
+                    System.out.println("P0: [ "+spades.get(i)+" "+clubs.get(j)+" ] Players: "+p+" Prob: "+prob);
                     resetStats();
                 }
             }
@@ -180,11 +180,12 @@ public class PokerSimulator {
     //                for (Player player : players) {
     //                    System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
     //                }
-                    System.out.println("P0: [ "+spades.get(i)+" "+spades.get(j)+" ] Players: "+p+" Prob: "+calculateHoldecardProb(p));
+                    double prob = calculateHoldecardProb(p);
                     List<Card> holeCards = new ArrayList<Card>();
                     holeCards.add(spades.get(i));
                     holeCards.add(clubs.get(j));
-                    equivalenceClassTable.saveProb(holeCards, p, calculateHoldecardProb(p));
+                    equivalenceClassTable.saveProb(holeCards, p, prob);
+                    System.out.println("P0: [ "+spades.get(i)+" "+spades.get(j)+" ] Players: "+p+" Prob: "+prob);
                     resetStats();
                 }
             }
