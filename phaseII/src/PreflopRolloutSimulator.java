@@ -1,9 +1,11 @@
 import enums.PlayerActions;
 import enums.PlayerType;
+
+import java.io.IOException;
 import java.util.*;
 
 
-public class PokerSimulator {
+public class PreflopRolloutSimulator {
 	private static Deck deck;
 	private static List<Player> players;
 	private static List<Player> playersInRound;
@@ -30,7 +32,7 @@ public class PokerSimulator {
                 if(playersInRound.size()==1)
                     return;
 
-                player.setAction(actionSelector.decideAction(player));
+                player.setAction(actionSelector.decideActionForPreFlopRollout(player));
                 if(player.getAction()==PlayerActions.RAISE){
                     if(raiseCount >= 3){
                         if(currentBet==player.getBet())
@@ -59,7 +61,7 @@ public class PokerSimulator {
                         iterator.remove();
                     }
                 }
-                System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
+//                System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
 
                 if(player.hasFolded() || player.getAction()==PlayerActions.CALL)
                     if(isLastCall())
@@ -81,9 +83,9 @@ public class PokerSimulator {
         setUpRound();
 
         //preflop
-        dealStartingHandToPlayers();
-        printGame(true);
-        preFlopBetting();
+        dealStartingHandToRemainingPlayers();
+//        printGame(true);
+        startBetting();
 
         if(onePLayerLeft())
             return;
@@ -91,7 +93,7 @@ public class PokerSimulator {
         //flop
         dealFlop();
         updatePowerRatingsforPlayers();
-        printGame(false);
+//        printGame(false);
         startBetting();
 
         if (onePLayerLeft())
@@ -100,7 +102,7 @@ public class PokerSimulator {
         //turn
         table.dealCard(deck.dealCard());
         updatePowerRatingsforPlayers();
-        printGame(false);
+//        printGame(false);
         startBetting();
 
         if (onePLayerLeft())
@@ -109,33 +111,93 @@ public class PokerSimulator {
         //river
         table.dealCard(deck.dealCard());
         updatePowerRatingsforPlayers();
-        printGame(false);
+//        printGame(false);
         startBetting();
     }
 
 	public static void main(String[] args) {
-		long startTime = System.currentTimeMillis();
+		EquivalenceClassTable equivalenceClassTable = new EquivalenceClassTable();
+        long startTime = System.currentTimeMillis();
+        int counter=0;
+        for(int p=2; p<=10; p++){
+            ArrayList<Card> spades = new ArrayList<Card>();
+            for(Card.Value val : Card.Value.values()){
+                spades.add(new Card(val, Card.Suit.SPADES));
+            }
 
-		setUpGame();
-		int roundsPlayed=0;
+            ArrayList<Card> clubs = new ArrayList<Card>();
+            for(Card.Value val : Card.Value.values()){
+                clubs.add(new Card(val, Card.Suit.CLUBS));
+            }
 
-		while (roundsPlayed<Settings.numberOfRounds) {
-            playRound();
-            distributePotToWinners();
-            tearDown();
-            roundsPlayed++;
+            for(int i=0; i<13; i++){
+                for(int j=i; j<13; j++){
+                    int roundsPlayed=0;
+                    while (roundsPlayed<Settings.numberOfRounds) {
+                        setUpGame(p);
+
+                        players.get(0).dealCard(deck.getSpecificCard(spades.get(i)));
+                        players.get(0).dealCard(deck.getSpecificCard(clubs.get(j)));
+
+                        playRound();
+//                        distributePotToWinners();
+                        updateStats(calculateWinner(playersInRound));
+                        tearDown();
+                        roundsPlayed++;
+                    }
+//                    System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
+//                    for (Player player : players) {
+//                        System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
+//                    }
+                    double prob = calculateHoldecardProb(p);
+                    List<Card> holeCards = new ArrayList<Card>();
+                    holeCards.add(spades.get(i));
+                    holeCards.add(clubs.get(j));
+                    equivalenceClassTable.saveProb(holeCards, p, prob);
+                    System.out.println("P0: [ "+spades.get(i)+" "+clubs.get(j)+" ] Players: "+p+" Prob: "+prob);
+                    resetStats();
+                }
+            }
+
+            for(int i=0; i<13; i++){
+                for(int j=i+1; j<13; j++){
+                    if(i==j)
+                        continue;
+                    int roundsPlayed=0;
+                    while (roundsPlayed<Settings.numberOfRounds) {
+                        setUpGame(p);
+
+                        players.get(0).dealCard(deck.getSpecificCard(spades.get(i)));
+                        players.get(0).dealCard(deck.getSpecificCard(spades.get(j)));
+
+                        playRound();
+//                        distributePotToWinners();
+                        updateStats(calculateWinner(playersInRound));
+                        tearDown();
+                        roundsPlayed++;
+                    }
+    //                System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
+    //                for (Player player : players) {
+    //                    System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
+    //                }
+                    double prob = calculateHoldecardProb(p);
+                    List<Card> holeCards = new ArrayList<Card>();
+                    holeCards.add(spades.get(i));
+                    holeCards.add(spades.get(j));
+                    equivalenceClassTable.saveProb(holeCards, p, prob);
+                    System.out.println("P0: [ "+spades.get(i)+" "+spades.get(j)+" ] Players: "+p+" Prob: "+prob);
+                    resetStats();
+                }
+            }
         }
+        System.out.println("Time: "+(System.currentTimeMillis()-startTime)/1000+"s");
 
-		System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
-		for (Player player : players) {
-			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
+        try {
+			equivalenceClassTable.saveProbEquivalenceClassToFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		int sum =0;
-		for (Player player : players) {
-			sum+= player.getMoney();
-		}
-		System.out.println("this should be 25000 for 5 players?: " + sum);
 	}
 
     private static void resetStats() {
@@ -145,7 +207,7 @@ public class PokerSimulator {
     }
 
     private static double calculateHoldecardProb(int numberOfPlayers) {
-        //( (Wins + Ties/2) / (Wins + Ties + Losses) )^Opponents
+        //( (Wins + Ties/2) / (Wins + Ties + Losses) )^p
         int teller = wins + (draws/2);
         int nevner = wins + draws + losses;
         return Math.pow((double)teller/(double) nevner, (double)numberOfPlayers-1);
@@ -267,12 +329,12 @@ public class PokerSimulator {
 		}
 	}
 	
-	public static void setUpGame() {
+	public static void setUpGame(int numOfPlayers) {
 		actionSelector = new ActionSelector();
 		players = new ArrayList<Player>();
 		deck = new Deck();
 		table = new Table();
-		setUpPlayers();
+		setUpPlayers(numOfPlayers);
 	}
 	
 	public static void setUpRound() {
@@ -322,9 +384,9 @@ public class PokerSimulator {
 		}
 	}
 	
-	private static void setUpPlayers() {
-		for (int i = 0; i < Settings.numOfPlayers; i++) {
-			players.add(new Player("P"+i, generateType()));
+	private static void setUpPlayers(int numOfPlayers) {
+		for (int i = 0; i < numOfPlayers; i++) {
+			players.add(new Player("P"+i, PlayerType.PASSIVE));
 		}
 	}
 
@@ -343,14 +405,21 @@ public class PokerSimulator {
 			return PlayerType.NORMAL;
 		}
 	}
-
-	public static void dealStartingHandToPlayers() {
+	
+	public static void dealStartingHandToRemainingPlayers() {
 		for (Player player : players) {
-			player.dealCard(deck.dealCard());
+            if(players.indexOf(player)==0)
+                continue;
+            else
+			    player.dealCard(deck.dealCard());
 		}
 		for (Player player : players) {
-			player.dealCard(deck.dealCard());
+			if(players.indexOf(player)==0)
+                continue;
+            else
+			    player.dealCard(deck.dealCard());
 		}
+		
 	}
 	
 	public static void dealFlop() {

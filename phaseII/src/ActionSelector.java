@@ -1,5 +1,7 @@
 
 import enums.PlayerActions;
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import java.util.*;
 
 
@@ -30,13 +32,16 @@ public class ActionSelector {
             return PlayerActions.FOLD;
     }
 
+    public PlayerActions decideActionForPreFlopRollout(Player player){
+        return PlayerActions.CALL;
+    }
+
 	
 	private PlayerActions decideActionForPassivePlayer(Player player) {
-        return PlayerActions.CALL;
-//		int [] powerRating = player.getPowerRating();
-//		if (powerRating[0] >=5) return PlayerActions.RAISE;
-//		else if (powerRating[0] >=3 && powerRating[0] <5) return PlayerActions.CALL;
-//		else return PlayerActions.FOLD;
+		int [] powerRating = player.getPowerRating();
+		if (powerRating[0] >=5) return PlayerActions.RAISE;
+		else if (powerRating[0] >=3 && powerRating[0] <5) return PlayerActions.CALL;
+		else return PlayerActions.FOLD;
 	}
 
 
