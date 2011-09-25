@@ -13,9 +13,9 @@ import java.util.Scanner;
  */
 public class EquivalenceClassTable {
 
-    private double[][][][] probs = new double[13][13][2][11];
+    private static double[][][][] probs = new double[13][13][2][11];
 
-    public void saveProb(List<Card> holeCards, int players, double prob){
+    public static void saveProb(List<Card> holeCards, int players, double prob){
         Collections.sort(holeCards);
         int card1 = holeCards.get(0).getValue().ordinal();
         int card2 = holeCards.get(1).getValue().ordinal();
@@ -23,7 +23,7 @@ public class EquivalenceClassTable {
         probs[card1][card2][suited][players] = prob;
     }
 
-    public double getProb(List<Card> holeCards, int players){
+    public static double getProb(List<Card> holeCards, int players){
         Collections.sort(holeCards);
         int card1 = holeCards.get(0).getValue().ordinal();
         int card2 = holeCards.get(1).getValue().ordinal();
@@ -31,14 +31,14 @@ public class EquivalenceClassTable {
         return probs[card1][card2][suited][players];
     }
 
-    private int isSuited(List<Card> holeCards) {
+    private static int isSuited(List<Card> holeCards) {
         if(holeCards.get(0).getSuit()==holeCards.get(1).getSuit())
             return 1;
         else
             return 0;
     }
     
-    public void saveProbEquivalenceClassToFile() throws IOException {
+    public static void saveProbEquivalenceClassToFile() throws IOException {
     	File f = new File("probs.txt");
     	
     	FileWriter fwriter = new FileWriter(f);
@@ -56,7 +56,7 @@ public class EquivalenceClassTable {
     	writer.close();
     }
 
-    public void readProbEquivalenceClassFromFile() throws IOException{
+    public static void readProbEquivalenceClassFromFile() throws IOException{
         File f = new File("probs.txt");
 
     	FileReader fReader = new FileReader(f);
