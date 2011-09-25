@@ -14,14 +14,9 @@ public class PokerSimulator {
 	private static ActionSelector actionSelector;
 	private static int smallBlindPosition;
 	private static int bigBlindPosition;
-    private static int wins, losses, draws;
-    
-	
-	public int getCurrentBet() {
-		return currentBet;
-	}
 
-    public static void startBetting() {
+
+    public static void startBetting(boolean preFlop) {
         boolean bettingNotDone = true;
         int raiseCount = 0;
         while(bettingNotDone){
@@ -31,9 +26,9 @@ public class PokerSimulator {
                 if(playersInRound.size()==1)
                     return;
 
-                player.setAction(actionSelector.decideAction(player));
+                player.setAction(actionSelector.decideAction(player, preFlop));
                 if(player.getAction()==PlayerActions.RAISE){
-                    if(raiseCount >= 3){
+                    if(raiseCount >= Settings.maxNumRaises){
                         if(currentBet==player.getBet())
                             player.setAction(PlayerActions.CHECK);
                         else{
@@ -62,9 +57,10 @@ public class PokerSimulator {
                 }
                 System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
 
-                if(player.hasFolded() || player.getAction()==PlayerActions.CALL)
+                if(player.hasFolded() || player.getAction()==PlayerActions.CALL){
                     if(isLastCall())
                         return;
+                }
             }
 
             for(Player player : playersInRound){
@@ -84,7 +80,7 @@ public class PokerSimulator {
         //preflop
         dealStartingHandToPlayers();
         printGame(true);
-        preFlopBetting();
+        startBetting(true);
 
         if(onePLayerLeft())
             return;
@@ -93,7 +89,7 @@ public class PokerSimulator {
         dealFlop();
         updatePowerRatingsforPlayers();
         printGame(false);
-        startBetting();
+        startBetting(false);
 
         if (onePLayerLeft())
             return;
@@ -102,7 +98,7 @@ public class PokerSimulator {
         table.dealCard(deck.dealCard());
         updatePowerRatingsforPlayers();
         printGame(false);
-        startBetting();
+        startBetting(false);
 
         if (onePLayerLeft())
             return;
@@ -111,13 +107,13 @@ public class PokerSimulator {
         table.dealCard(deck.dealCard());
         updatePowerRatingsforPlayers();
         printGame(false);
-        startBetting();
+        startBetting(false);
     }
 
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 
-		setUpGame();
+		setUpPhase1Game();
 		int roundsPlayed=0;
 
 		while (roundsPlayed<Settings.numberOfRounds) {
@@ -138,28 +134,6 @@ public class PokerSimulator {
 		}
 		System.out.println("this should be 25000 for 5 players?: " + sum);
 	}
-
-    private static void resetStats() {
-        draws = 0;
-        wins = 0;
-        losses = 0;
-    }
-
-    private static double calculateHoldecardProb(int numberOfPlayers) {
-        //( (Wins + Ties/2) / (Wins + Ties + Losses) )^Opponents
-        int teller = wins + (draws/2);
-        int nevner = wins + draws + losses;
-        return Math.pow((double)teller/(double) nevner, (double)numberOfPlayers-1);
-    }
-
-    private static void updateStats(List<Player> winners) {
-        if(winners.size()>1 && winners.contains(players.get(0)))
-            draws++;
-        else if(winners.size()==1 && winners.contains(players.get(0)))
-            wins++;
-        else
-            losses++;
-    }
 
     public static void printGame(boolean preFlop){
         if(preFlop)
@@ -267,16 +241,30 @@ public class PokerSimulator {
 			player.updatePowerRating(getPowerRating(player));
 		}
 	}
+
+    private static void setUpPhase1Game(){
+        setUpGame();
+        setUpPlayers(PhaseType.PHASE1PLAYER);
+    }
+
+    private static void setUpPhase2Game(){
+        setUpGame();
+        setUpPlayers(PhaseType.PHASE2PLAYER);
+    }
+
+    private static void setUpPhase3Game(){
+        setUpGame();
+        setUpPlayers(PhaseType.PHASE3PLAYER);
+    }
 	
-	public static void setUpGame() {
+	private static void setUpGame() {
 		actionSelector = new ActionSelector();
 		players = new ArrayList<Player>();
 		deck = new Deck();
 		table = new Table();
-		setUpPlayers();
 	}
 	
-	public static void setUpRound() {
+	private static void setUpRound() {
 		playersInRound = new ArrayList<Player>();
 		playersInRound.addAll(players);
 		deck.buildDeck();
@@ -298,7 +286,7 @@ public class PokerSimulator {
 		pot += players.get(bigBlindPosition).raise(Settings.bigBlind);
 	}
 	
-	public static void tearDown() {
+	private static void tearDown() {
 		playersInRound.clear();
 		for (Player player : players) {
 			player.setBet(0);
@@ -323,9 +311,9 @@ public class PokerSimulator {
 		}
 	}
 	
-	private static void setUpPlayers() {
+	private static void setUpPlayers(PhaseType phase) {
 		for (int i = 0; i < Settings.numOfPlayers; i++) {
-			players.add(new Player("P"+i, generateType(), PhaseType.PHASE1PLAYER));
+			players.add(new Player("P"+i, generateType(), phase));
 		}
 	}
 
@@ -335,9 +323,9 @@ public class PokerSimulator {
 		r.nextInt(3);
 		switch (r.nextInt(3)) {
 		case 0:
-			return PlayerType.PASSIVE;
+			return PlayerType.CONSERVATIVE;
 		case 1:
-			return PlayerType.AGGRESSIVE;
+			return PlayerType.BLUFFER;
 		case 2:
 			return PlayerType.NORMAL;
 		default:

@@ -387,7 +387,7 @@ public class PreflopRolloutSimulator {
 	
 	private static void setUpPlayers(int numOfPlayers) {
 		for (int i = 0; i < numOfPlayers; i++) {
-			players.add(new Player("P"+i, PlayerType.PASSIVE, PhaseType.PHASE1PLAYER));
+			players.add(new Player("P"+i, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
 		}
 	}
 
@@ -397,9 +397,9 @@ public class PreflopRolloutSimulator {
 		r.nextInt(3);
 		switch (r.nextInt(3)) {
 		case 0:
-			return PlayerType.PASSIVE;
+			return PlayerType.CONSERVATIVE;
 		case 1:
-			return PlayerType.AGGRESSIVE;
+			return PlayerType.BLUFFER;
 		case 2:
 			return PlayerType.NORMAL;
 		default:
