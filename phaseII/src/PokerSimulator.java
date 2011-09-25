@@ -1,3 +1,4 @@
+import enums.PhaseType;
 import enums.PlayerActions;
 import enums.PlayerType;
 import java.util.*;
@@ -324,7 +325,7 @@ public class PokerSimulator {
 	
 	private static void setUpPlayers() {
 		for (int i = 0; i < Settings.numOfPlayers; i++) {
-			players.add(new Player("P"+i, generateType()));
+			players.add(new Player("P"+i, generateType(), PhaseType.PHASE1PLAYER));
 		}
 	}
 
