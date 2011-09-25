@@ -296,7 +296,7 @@ public class CardRating {
     }
 
     
-    public double handStrength (ArrayList<Card> holeCards, List<Card> communityCards, int numberOfPlayers){
+    public double handStrength (List<Card> holeCards, List<Card> communityCards, int numberOfPlayers){
         Deck deck = new Deck();
         ArrayList<Card> plHand = new ArrayList<Card>();
         ArrayList<Card> opHand = new ArrayList<Card>();
@@ -334,7 +334,7 @@ public class CardRating {
                 opHand.remove(remainingCards.get(j));
             }
         }
-        System.out.println("WINS: "+wins+" LOSSES: "+losses+" DRAWS: "+draws);
+//        System.out.println("WINS: "+wins+" LOSSES: "+losses+" DRAWS: "+draws);
         int teller = wins + (draws/2);
         int nevner = wins + draws + losses;
         return Math.pow((double)teller/(double)nevner, (double)numberOfPlayers-1);
