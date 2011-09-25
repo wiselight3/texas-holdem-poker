@@ -1,6 +1,8 @@
 import enums.PhaseType;
 import enums.PlayerActions;
 import enums.PlayerType;
+
+import java.io.IOException;
 import java.util.*;
 
 
@@ -11,6 +13,7 @@ public class PokerSimulator {
 	private static Table table;
 	private static int pot;
 	private static int currentBet;
+    private static EquivalenceClassTable equivalenceClassTable;
 	private static ActionSelector actionSelector;
 	private static int smallBlindPosition;
 	private static int bigBlindPosition;
@@ -26,7 +29,7 @@ public class PokerSimulator {
                 if(playersInRound.size()==1)
                     return;
 
-                player.setAction(actionSelector.decideAction(player, preFlop));
+                player.setAction(actionSelector.decideAction(player, table, players, equivalenceClassTable, preFlop));
                 if(player.getAction()==PlayerActions.RAISE){
                     if(raiseCount >= Settings.maxNumRaises){
                         if(currentBet==player.getBet())
@@ -58,7 +61,7 @@ public class PokerSimulator {
                 System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
 
                 if(player.hasFolded() || player.getAction()==PlayerActions.CALL){
-                    if(isLastCall())
+                    if(isLastCall() && !preFlop)
                         return;
                 }
             }
@@ -113,7 +116,7 @@ public class PokerSimulator {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 
-		setUpPhase1Game();
+		setUpPhase1vsPhase2Game();
 		int roundsPlayed=0;
 
 		while (roundsPlayed<Settings.numberOfRounds) {
@@ -125,14 +128,14 @@ public class PokerSimulator {
 
 		System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
 		for (Player player : players) {
-			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as " +player.playerType);
+			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as "+player.getPhaseType()+" "+player.playerType);
 		}
 
 		int sum =0;
 		for (Player player : players) {
 			sum+= player.getMoney();
 		}
-		System.out.println("this should be 25000 for 5 players?: " + sum);
+		System.out.println("This should be "+(Settings.startingCash*players.size())+" for "+players.size()+" players?: " + sum);
 	}
 
     public static void printGame(boolean preFlop){
@@ -256,9 +259,39 @@ public class PokerSimulator {
         setUpGame();
         setUpPlayers(PhaseType.PHASE3PLAYER);
     }
+
+    private static void setUpPhase1vsPhase2Game() {
+        setUpGame();
+        int i=0;
+        for(PhaseType phase : PhaseType.values()){
+            if(phase.equals(PhaseType.PHASE3PLAYER))
+                continue;
+            for(PlayerType type : PlayerType.values()){
+                players.add(new Player("P"+i, type, phase));
+                i++;
+            }
+        }
+    }
+
+    private static void setUpAllPhasesGame() {
+        setUpGame();
+        int i=0;
+        for(PhaseType phase : PhaseType.values()){
+            for(PlayerType type : PlayerType.values()){
+                players.add(new Player("P"+i, type, phase));
+                i++;
+            }
+        }
+    }
 	
 	private static void setUpGame() {
-		actionSelector = new ActionSelector();
+        equivalenceClassTable = new EquivalenceClassTable();
+        try {
+            equivalenceClassTable.readProbEquivalenceClassFromFile();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        actionSelector = new ActionSelector();
 		players = new ArrayList<Player>();
 		deck = new Deck();
 		table = new Table();
@@ -316,6 +349,13 @@ public class PokerSimulator {
 			players.add(new Player("P"+i, generateType(), phase));
 		}
 	}
+
+    private static void addPlayers(int numPlayersToAdd, PhaseType phase, PlayerType type){
+        int n = players.size();
+        for(int i=n; i<n+numPlayersToAdd; i++){
+            players.add(new Player("P"+i, type, phase));
+        }
+    }
 
 	//TODO: Ikke random type spiller, b�r predefineres s� de kan sammenlignes.
 	private static PlayerType generateType () {
