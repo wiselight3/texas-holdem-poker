@@ -1,3 +1,4 @@
+import enums.PhaseType;
 import enums.PlayerActions;
 import enums.PlayerType;
 
@@ -386,7 +387,7 @@ public class PreflopRolloutSimulator {
 	
 	private static void setUpPlayers(int numOfPlayers) {
 		for (int i = 0; i < numOfPlayers; i++) {
-			players.add(new Player("P"+i, PlayerType.PASSIVE));
+			players.add(new Player("P"+i, PlayerType.PASSIVE, PhaseType.PHASE1PLAYER));
 		}
 	}
 
