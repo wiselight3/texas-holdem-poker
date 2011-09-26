@@ -18,35 +18,35 @@ public class ActionSelector {
         }
     }
 
-    public PlayerActions decideActionsForPhase2Players(Player player, Table table, List<Player> players, EquivalenceClassTable ect, boolean preFlop) {
+    public PlayerActions decideActionsForPhase2Players(Player player, Table table, List<Player> playersInRound, EquivalenceClassTable ect, boolean preFlop) {
         CardRating cardRating = new CardRating();
         double probForWinning;
         if(preFlop)
-		    probForWinning = ect.getProb(player.getCards(), players.size());
+		    probForWinning = ect.calcPreflopProbabilityStrength(player.getCards(), playersInRound.size());
         else
-            probForWinning = cardRating.handStrength(player.getCards(), table.getCards(), players.size());
+            probForWinning = cardRating.handStrength(player.getCards(), table.getCards(), playersInRound.size());
 
 		switch (player.playerType) {
             case BLUFFER:
                 return decideActionForPhase2Bluffer(probForWinning);
             case CONSERVATIVE:
                 return decideActionForPhase2ConservativePlayer(probForWinning);
-            case NORMAL:
-                return decideActionForPhase2NormalPlayer(probForWinning);
+            //case NORMAL:
+            //    return decideActionForPhase2NormalPlayer(probForWinning);
             default:
                 return PlayerActions.CALL;
 		}
 	}
 
     private PlayerActions decideActionForPhase2ConservativePlayer(double probForWinning) {
-		if (probForWinning > 0.7) return PlayerActions.RAISE;
-		else if (probForWinning > 0.4) return PlayerActions.CALL;
+		if (probForWinning >= 0.5) return PlayerActions.RAISE;
+		else if (probForWinning >= 0.3) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 	}
 
 	private PlayerActions decideActionForPhase2Bluffer(double probForWinning) {
-		if (probForWinning > 0.3) return PlayerActions.RAISE;
-		else if (probForWinning > 0.1) return PlayerActions.CALL;
+		if (probForWinning >= 0.3) return PlayerActions.RAISE;
+		else if (probForWinning >= 0.2) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 	}
 
@@ -66,8 +66,8 @@ public class ActionSelector {
             return preFlopFlipOfCoin(player);
         else{
             switch (player.playerType) {
-                case NORMAL:
-                    return decideActionForNormalPlayer(player);
+                //case NORMAL:
+                //    return decideActionForNormalPlayer(player);
                 case BLUFFER:
                     return decideActionForBluffer(player);
                 case CONSERVATIVE:
@@ -101,8 +101,8 @@ public class ActionSelector {
 
     private PlayerActions decideActionForBluffer(Player player) {
 		int [] powerRating = player.getPowerRating();
-		if (powerRating[0] >=2) return PlayerActions.RAISE;
-		else if (powerRating[0] ==1) return PlayerActions.CALL;
+		if (powerRating[0] >=3) return PlayerActions.RAISE;
+		else if (powerRating[0] ==2) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 	}
 	
