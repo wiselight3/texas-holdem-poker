@@ -4,7 +4,6 @@ public enum PlayerType {
 	
 	CONSERVATIVE,
 	BLUFFER,
-	NORMAL
-	
+	//NORMAL
 
 }

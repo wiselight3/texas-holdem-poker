@@ -400,10 +400,10 @@ public class PreflopRolloutSimulator {
 			return PlayerType.CONSERVATIVE;
 		case 1:
 			return PlayerType.BLUFFER;
-		case 2:
-			return PlayerType.NORMAL;
+		//case 2:
+		//	return PlayerType.NORMAL;
 		default:
-			return PlayerType.NORMAL;
+			return PlayerType.BLUFFER;
 		}
 	}
 	

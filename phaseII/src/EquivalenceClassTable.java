@@ -36,6 +36,31 @@ public class EquivalenceClassTable {
         else
             return 0;
     }
+
+    public double calcPreflopProbabilityStrength(List<Card> holeCards, int players){
+        double myProb = getProb(holeCards, players);
+        int bigger=0, lower=0, tie=0;
+        for (int i = 0; i < 13; i++) {
+			for (int j = 0; j < 13; j++) {
+				for (int j2 = 0; j2 < 2; j2++) {
+					double temp = probs[i][j][j2][players];
+                    if(temp==0)
+                        continue;
+                    else{
+                        if(myProb<temp)
+                            lower++;
+                        else if(myProb>temp)
+                            bigger++;
+                        else
+                            tie++;
+                    }
+				}
+			}
+		}
+        int teller = bigger + (tie/2);
+        int nevner = bigger + tie + lower;
+        return (double)teller/(double)nevner;
+    }
     
     public void saveProbEquivalenceClassToFile() throws IOException {
     	File f = new File("probs.txt");
