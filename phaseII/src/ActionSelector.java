@@ -5,14 +5,14 @@ import java.util.*;
 
 public class ActionSelector {
 
-	public PlayerActions decideAction(Player player, Table table, List<Player> players, EquivalenceClassTable ect, boolean preFlop){
+	public PlayerActions decideAction(Player player, Table table, List<Player> players, EquivalenceClassTable ect, boolean preFlop, OpponentModeler opponentModeler){
         switch (player.getPhaseType()) {
             case PHASE1PLAYER:
                 return decideActionsForPhase1Players(player, preFlop);
             case PHASE2PLAYER:
                 return decideActionsForPhase2Players(player, table, players, ect, preFlop);
             case PHASE3PLAYER:
-                return decideActionsForPhase3Players(player, table, preFlop);
+                return decideActionsForPhase3Players(player, table, preFlop, ect, opponentModeler, players);
             default:
                 return PlayerActions.CALL;
         }
@@ -56,10 +56,68 @@ public class ActionSelector {
 		else return PlayerActions.FOLD;
     }
 
-    //ToDo: innhold til fase 3
-    private PlayerActions decideActionsForPhase3Players(Player player, Table table, boolean preFlop) {
-        return null;
+    //TODO: innhold til fase 3
+    private PlayerActions decideActionsForPhase3Players(Player player, Table table, boolean preFlop, EquivalenceClassTable ect, OpponentModeler opponentModeler, List<Player> playersInRound) {
+    	CardRating cardRating = new CardRating();
+        double probForWinning;
+        if(preFlop)
+		    probForWinning = ect.calcPreflopProbabilityStrength(player.getCards(), playersInRound.size());
+        else
+            probForWinning = cardRating.handStrength(player.getCards(), table.getCards(), playersInRound.size());
+    	
+        
+        double [] otherPlayerDatas = new double [playersInRound.size()];
+        
+        int counter =0;
+        	while(counter < playersInRound.size()) {
+        		if (playersInRound.get(counter).getAction() == null) {
+        			counter++;
+        			continue;
+        		}
+        		
+        		if (playersInRound.get(counter).getId() == player.getId()) {
+        			counter++;
+        			continue;
+            		
+    		} else {
+        		otherPlayerDatas[counter] = opponentModeler.getPlayerData(player.getId(), preFlop, playersInRound.get(counter).getAction());
+        		counter++;
+    		}
+        	}
+        
+       
+    	switch (player.playerType) {
+		case BLUFFER:
+			return decideActionForPhase3Bluffer(probForWinning, otherPlayerDatas );
+		case CONSERVATIVE:
+			return decideActionForPhase3Conservative(probForWinning, otherPlayerDatas);
+		default: 
+			return PlayerActions.CALL;
+		}
     }
+
+	private PlayerActions decideActionForPhase3Conservative(double probForWinning, double[] otherPlayerDatas) {
+		double strongestHandStrength =0;
+		for (double d : otherPlayerDatas) {
+			if (d>strongestHandStrength) strongestHandStrength = d;
+		}
+		
+		if (probForWinning  >strongestHandStrength  ) return PlayerActions.RAISE;
+		else if (probForWinning >= strongestHandStrength ) return PlayerActions.CALL;
+		else return PlayerActions.FOLD;
+	}
+
+	private PlayerActions decideActionForPhase3Bluffer(double probForWinning,double[] otherPlayerDatas) {
+		double strongestHandStrength =0;
+		for (double d : otherPlayerDatas) {
+			if (d>strongestHandStrength) strongestHandStrength = d;
+		}
+		
+		if (strongestHandStrength - probForWinning >= -4 ) return PlayerActions.RAISE;
+		else if (strongestHandStrength - probForWinning >=1) return PlayerActions.CALL;
+		else return PlayerActions.FOLD;
+		
+	}
 
 	public PlayerActions decideActionsForPhase1Players(Player player, boolean preFlop) {
         if(preFlop)
