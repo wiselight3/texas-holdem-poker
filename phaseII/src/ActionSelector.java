@@ -80,10 +80,15 @@ public class ActionSelector {
         			continue;
             		
     		} else {
-        		otherPlayerDatas[counter] = opponentModeler.getPlayerData(player.getId(), preFlop, playersInRound.get(counter).getAction());
+        		otherPlayerDatas[counter] = opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction());
+        		//System.out.println("" + playersInRound.get(counter) + opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction()));
         		counter++;
     		}
         	}
+        	
+        	for (double d : otherPlayerDatas) {
+				//System.out.println("how zxxx: " + d);
+			}
         
        
     	switch (player.playerType) {
@@ -113,8 +118,8 @@ public class ActionSelector {
 			if (d>strongestHandStrength) strongestHandStrength = d;
 		}
 		
-		if (strongestHandStrength - probForWinning >= -4 ) return PlayerActions.RAISE;
-		else if (strongestHandStrength - probForWinning >=1) return PlayerActions.CALL;
+		if (probForWinning - strongestHandStrength >= -1 ) return PlayerActions.RAISE;
+		else if (probForWinning - strongestHandStrength >=0) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 		
 	}
