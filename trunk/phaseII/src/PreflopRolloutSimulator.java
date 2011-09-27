@@ -387,7 +387,7 @@ public class PreflopRolloutSimulator {
 	
 	private static void setUpPlayers(int numOfPlayers) {
 		for (int i = 0; i < numOfPlayers; i++) {
-			players.add(new Player("P"+i, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
+			players.add(new Player(i, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
 		}
 	}
 

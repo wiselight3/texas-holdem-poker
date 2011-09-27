@@ -16,27 +16,30 @@ public class Player {
 
 	private PlayerActions action;
 	private PhaseType phaseType;
-	
-	public PlayerActions getAction() {
+    public final PlayerType playerType;
+
+    private List<Card> cards;
+    private int money = Settings.startingCash;
+    private String name;
+    private int id;
+
+    private int bet;
+    private int raises =0;
+
+    private int [] powerRating;
+
+    public PlayerActions getAction() {
 		return action;
 	}
-	public void setAction(PlayerActions action) {
+
+    public void setAction(PlayerActions action) {
 		this.action = action;
 	}
-	public final PlayerType playerType;
-	
-	private List<Card> cards;
-	private int money = Settings.startingCash;
-    private String id;
-    private int [] powerRating;
-    
+
 	public int[] getPowerRating() {
 		return powerRating;
 	}
 
-	private int bet;
-	private int raises =0;
-	
 	public int getRaises() {
 		return raises;
 	}
@@ -53,22 +56,26 @@ public class Player {
 	public int getBet() {
 		return bet;
 	}
-	public Player (String id, PlayerType type, PhaseType phaseType){
+	public Player (int id, PlayerType type, PhaseType phaseType){
 		this.phaseType = phaseType;
         this.id = id;
         playerType = type;
         cards = new ArrayList<Card>();
 	}
-	public String getId() {
+
+	public int getId() {
 		return id;
 	}
+
     public void dealCard(Card card) {
     	cards.add(card);
     }
+
     public void dealHand(ArrayList<Card> cards){
         this.cards = cards;
-    }    
-	 public List<Card> getCards() {
+    }
+
+	public List<Card> getCards() {
 	    return cards;
 	}
 	 
@@ -133,7 +140,7 @@ public class Player {
    }
 	
    public String toString (){
-       return id;
+       return "P"+id;
    }
    public PhaseType getPhaseType() {
 	   return this.phaseType;

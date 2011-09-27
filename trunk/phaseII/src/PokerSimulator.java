@@ -17,6 +17,7 @@ public class PokerSimulator {
     private static EquivalenceClassTable equivalenceClassTable;
     private static CardRating cardRating;
 	private static ActionSelector actionSelector;
+    private static OpponentModeler opponentModeler;
 	private static int smallBlindPosition;
 	private static int bigBlindPosition;
     private static int roundsPlayed;
@@ -61,6 +62,12 @@ public class PokerSimulator {
                         iterator.remove();
                     }
                 }
+
+                if(roundsPlayed<100){
+                    double strength = preFlop? equivalenceClassTable.calcPreflopProbabilityStrength(player.getCards(), playersInRound.size()) : cardRating.handStrength(player.getCards(), table.getCards(), playersInRound.size());
+                    opponentModeler.savePlayerData(player.getId(), preFlop, player.getAction(), strength);
+                }
+
                 if(roundsPlayed<Settings.numberOfRoundsToPrint)
                     System.out.println(player+"($"+player.getMoney()+"): "+player.getAction().toString()+"      "+"Current bet: $"+currentBet+" Pot: $"+pot);
 
@@ -120,10 +127,13 @@ public class PokerSimulator {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 
-		setUpPhase1vsPhase2Game();
+        setUpPhase1vsPhase2Game();
+        opponentModeler = new OpponentModeler(players);
 
-		while (roundsPlayed<Settings.numberOfRounds) {
+		while(roundsPlayed<Settings.numberOfRounds) {
             playRound();
+            if(roundsPlayed<100)
+                opponentModeler.saveDataForShowdownPlayers(playersInRound);
             distributePotToWinners();
             tearDown();
             roundsPlayed++;
@@ -198,22 +208,6 @@ public class PokerSimulator {
             return;
     }
 
-    public static void preFlopBetting() {
-        for(Player pl : players){
-            if(players.indexOf(pl)==players.size()-1){
-                pl.setAction(PlayerActions.CHECK);
-                System.out.println(pl+"($"+pl.getMoney()+"): "+pl.getAction().toString());
-            }else{
-                pl.setAction(actionSelector.preFlopFlipOfCoin(pl));
-                if(pl.hasFolded())
-                    playersInRound.remove(pl);
-                else
-                    pot += pl.call(currentBet-pl.getBet());
-                System.out.println(pl+"($"+pl.getMoney()+"): "+pl.getAction().toString());
-            }
-        }
-    }
-
     private static boolean isLastCall() {
         for(Player player : playersInRound){
             if(player.getBet()!=currentBet)
@@ -226,7 +220,6 @@ public class PokerSimulator {
     	if (playersInRound.size() == 1) return true;
     	return false;
     }
-    
 
 	private static void distributePotToWinners() {
         if(roundsPlayed<Settings.numberOfRoundsToPrint)
@@ -238,14 +231,14 @@ public class PokerSimulator {
 			int temp = pot/winners.size();
 			for (Player player : calculateWinner(playersInRound)) {
                 if(roundsPlayed<Settings.numberOfRoundsToPrint)
-				    System.out.println(player.getId()+" wins: $"+temp);
+				    System.out.println(player+" wins: $"+temp);
 				player.addMoney(temp);
 			}
 		} else {
 			Player winner = winners.get(0);
             if(roundsPlayed<Settings.numberOfRoundsToPrint){
 			    System.out.println("The winner is: ");
-                System.out.println(calculateWinner(playersInRound).get(0).getId());
+                System.out.println(calculateWinner(playersInRound).get(0));
             }
 			winner.addMoney(pot);
 		}
@@ -267,37 +260,37 @@ public class PokerSimulator {
 
     private static void setUpPhase1Game(){
         setUpGame();
-        players.add(new Player("P0", PlayerType.BLUFFER, PhaseType.PHASE1PLAYER));
-        players.add(new Player("P1", PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
+        players.add(new Player(0, PlayerType.BLUFFER, PhaseType.PHASE1PLAYER));
+        players.add(new Player(1, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
     }
 
     private static void setUpPhase2Game(){
         setUpGame();
-        players.add(new Player("P0", PlayerType.BLUFFER, PhaseType.PHASE2PLAYER));
-        players.add(new Player("P1", PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
+        players.add(new Player(0, PlayerType.BLUFFER, PhaseType.PHASE2PLAYER));
+        players.add(new Player(1, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
     }
 
     private static void setUpPhase3Game(){
         setUpGame();
-        players.add(new Player("P0", PlayerType.BLUFFER, PhaseType.PHASE3PLAYER));
-        players.add(new Player("P1", PlayerType.CONSERVATIVE, PhaseType.PHASE3PLAYER));
+        players.add(new Player(0, PlayerType.BLUFFER, PhaseType.PHASE3PLAYER));
+        players.add(new Player(1, PlayerType.CONSERVATIVE, PhaseType.PHASE3PLAYER));
     }
 
     private static void setUpPhase1vsPhase2Game() {
         setUpGame();
-        players.add(new Player("P0", PlayerType.BLUFFER, PhaseType.PHASE1PLAYER));
-        players.add(new Player("P1", PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
-        players.add(new Player("P2", PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
-        players.add(new Player("P3", PlayerType.BLUFFER, PhaseType.PHASE2PLAYER));
-        players.add(new Player("P4", PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
-        players.add(new Player("P5", PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
+        players.add(new Player(0, PlayerType.BLUFFER, PhaseType.PHASE1PLAYER));
+        players.add(new Player(1, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
+        players.add(new Player(2, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
+        players.add(new Player(3, PlayerType.BLUFFER, PhaseType.PHASE2PLAYER));
+        players.add(new Player(4, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
+        players.add(new Player(5, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
     }
 
     private static void setUpCustomGame(){
         setUpGame();
-        players.add(new Player("P0", PlayerType.BLUFFER, PhaseType.PHASE1PLAYER));
-        players.add(new Player("P1", PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
-        players.add(new Player("P2", PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
+        players.add(new Player(0, PlayerType.BLUFFER, PhaseType.PHASE1PLAYER));
+        players.add(new Player(1, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
+        players.add(new Player(2, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
     }
 
     private static void setUpAllPhasesGame() {
@@ -305,7 +298,7 @@ public class PokerSimulator {
         int i=0;
         for(PhaseType phase : PhaseType.values()){
             for(PlayerType type : PlayerType.values()){
-                players.add(new Player("P"+i, type, phase));
+                players.add(new Player(i, type, phase));
                 i++;
             }
         }
@@ -374,14 +367,14 @@ public class PokerSimulator {
 	
 	private static void setUpPlayers(PhaseType phase, PlayerType type) {
 		for (int i = 0; i < Settings.numOfPlayers; i++) {
-			players.add(new Player("P"+i, type, phase));
+			players.add(new Player(i, type, phase));
 		}
 	}
 
     private static void addPlayers(int numPlayersToAdd, PhaseType phase, PlayerType type){
         int n = players.size();
         for(int i=n; i<n+numPlayersToAdd; i++){
-            players.add(new Player("P"+i, type, phase));
+            players.add(new Player(i, type, phase));
         }
     }
 
