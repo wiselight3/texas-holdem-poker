@@ -63,7 +63,7 @@ public class PokerSimulator {
                     }
                 }
 
-                if(roundsPlayed<Settings.numRoundsToCollectDataForOpponentModeler){
+                if(roundsPlayed<Settings.numRoundsToCollectData){
                     double strength = preFlop? equivalenceClassTable.calcPreflopProbabilityStrength(player.getCards(), playersInRound.size()) : cardRating.handStrength(player.getCards(), table.getCards(), playersInRound.size());
                     opponentModeler.savePlayerData(player.getId(), preFlop, player.getAction(), strength);
                 }
@@ -85,7 +85,6 @@ public class PokerSimulator {
                     bettingNotDone = false;
             }
         }
-        resetRaisesForPlayers();
     }
 
     public static void playRound() {
@@ -127,12 +126,13 @@ public class PokerSimulator {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 
-        setUpPhase2vsPhase3Game();
+        setUpAllPhasesGame();
+
         opponentModeler = new OpponentModeler(players);
 
 		while(roundsPlayed<Settings.numberOfRounds) {
             playRound();
-            if(roundsPlayed<Settings.numRoundsToCollectDataForOpponentModeler)
+            if(roundsPlayed<Settings.numRoundsToCollectData)
                 opponentModeler.saveDataForShowdownPlayers(playersInRound);
             distributePotToWinners();
             tearDown();
@@ -150,7 +150,7 @@ public class PokerSimulator {
 		}
 		System.out.println("This should be "+(Settings.startingCash*players.size())+" for "+players.size()+" players?: " + sum);
 
-        opponentModeler.printPlayerModels();
+//        opponentModeler.printPlayerModels(players.size());
 	}
 
     public static void printGame(boolean preFlop){
@@ -247,12 +247,6 @@ public class PokerSimulator {
         if(roundsPlayed<Settings.numberOfRoundsToPrint)
             System.out.println("*************************");
 	}
-
-	private static void resetRaisesForPlayers() {
-		for (Player player : players) {
-			player.setRaises(0);
-		}
-	}
 	
 	private static void updatePowerRatingsforPlayers() {
 		for (Player player : players) {
@@ -302,7 +296,8 @@ public class PokerSimulator {
         setUpGame();
         players.add(new Player(0, PlayerType.BLUFFER, PhaseType.PHASE1PLAYER));
         players.add(new Player(1, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
-        players.add(new Player(2, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
+        players.add(new Player(2, PlayerType.BLUFFER, PhaseType.PHASE3PLAYER));
+        players.add(new Player(3, PlayerType.CONSERVATIVE, PhaseType.PHASE3PLAYER));
     }
 
     private static void setUpAllPhasesGame() {
@@ -383,29 +378,6 @@ public class PokerSimulator {
 		}
 	}
 
-    private static void addPlayers(int numPlayersToAdd, PhaseType phase, PlayerType type){
-        int n = players.size();
-        for(int i=n; i<n+numPlayersToAdd; i++){
-            players.add(new Player(i, type, phase));
-        }
-    }
-
-	//TODO: Ikke random type spiller, b�r predefineres s� de kan sammenlignes.
-	private static PlayerType generateType () {
-		Random r = new Random();
-		r.nextInt(3);
-		switch (r.nextInt(3)) {
-		case 0:
-			return PlayerType.CONSERVATIVE;
-		case 1:
-			return PlayerType.BLUFFER;
-		//case 2:
-		//	return PlayerType.NORMAL;
-		default:
-			return PlayerType.BLUFFER;
-		}
-	}
-
 	public static void dealStartingHandToPlayers() {
 		for (Player player : players) {
 			player.dealCard(deck.dealCard());
@@ -456,6 +428,4 @@ public class PokerSimulator {
 	    }
         return winners;
 	}
-	
-
 }

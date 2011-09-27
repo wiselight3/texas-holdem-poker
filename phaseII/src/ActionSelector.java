@@ -12,7 +12,7 @@ public class ActionSelector {
             case PHASE2PLAYER:
                 return decideActionsForPhase2Players(player, table, players, ect, preFlop);
             case PHASE3PLAYER:
-            	if (roundsPlayed < Settings.numRoundsToCollectDataForOpponentModeler) {
+            	if (roundsPlayed < Settings.numRoundsToCollectData) {
             		return decideActionsForPhase2Players(player, table, players, ect, preFlop);
             	}
                 return decideActionsForPhase3Players(player, table, preFlop, ect, opponentModeler, players);
@@ -34,8 +34,6 @@ public class ActionSelector {
                 return decideActionForPhase2Bluffer(probForWinning);
             case CONSERVATIVE:
                 return decideActionForPhase2ConservativePlayer(probForWinning);
-            //case NORMAL:
-            //    return decideActionForPhase2NormalPlayer(probForWinning);
             default:
                 return PlayerActions.CALL;
 		}
@@ -53,13 +51,6 @@ public class ActionSelector {
 		else return PlayerActions.FOLD;
 	}
 
-    private PlayerActions decideActionForPhase2NormalPlayer(double probForWinning) {
-        if (probForWinning > 0.4) return PlayerActions.RAISE;
-		else if (probForWinning > 0.2) return PlayerActions.CALL;
-		else return PlayerActions.FOLD;
-    }
-
-    //TODO: innhold til fase 3
     private PlayerActions decideActionsForPhase3Players(Player player, Table table, boolean preFlop, EquivalenceClassTable ect, OpponentModeler opponentModeler, List<Player> playersInRound) {
     	CardRating cardRating = new CardRating();
         double probForWinning;
@@ -67,56 +58,50 @@ public class ActionSelector {
 		    probForWinning = ect.calcPreflopProbabilityStrength(player.getCards(), playersInRound.size());
         else
             probForWinning = cardRating.handStrength(player.getCards(), table.getCards(), playersInRound.size());
-    	
-        
+
         double [] otherPlayerDatas = new double [playersInRound.size()];
         
         int counter =0;
-        	while(counter < playersInRound.size()) {
-        		if (playersInRound.get(counter).getAction() == null) {
-        			counter++;
-        			continue;
-        		}
-        		
-        		if (playersInRound.get(counter).getId() == player.getId()) {
-        			counter++;
-        			continue;
-            		
-    		} else {
-        		otherPlayerDatas[counter] = opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction());
-        		//System.out.println("" + playersInRound.get(counter) + opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction()));
+
+        while(counter < playersInRound.size()) {
+        	if (playersInRound.get(counter).getAction() == null) {
         		counter++;
-    		}
+        		continue;
         	}
-        	
-        	for (double d : otherPlayerDatas) {
-				//System.out.println("how zxxx: " + d);
-			}
-        
-       
+
+        	if (playersInRound.get(counter).getId() == player.getId()) {
+        		counter++;
+        		continue;
+            }else{
+        	    otherPlayerDatas[counter] = opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction());
+        	    //System.out.println("" + playersInRound.get(counter) + opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction()));
+        	    counter++;
+    		}
+        }
+
     	switch (player.playerType) {
-		case BLUFFER:
-			return decideActionForPhase3Bluffer(probForWinning, otherPlayerDatas );
-		case CONSERVATIVE:
-			return decideActionForPhase3Conservative(probForWinning, otherPlayerDatas);
-		default: 
-			return PlayerActions.CALL;
+            case BLUFFER:
+                return decideActionForPhase3Bluffer(probForWinning, otherPlayerDatas);
+            case CONSERVATIVE:
+                return decideActionForPhase3Conservative(probForWinning, otherPlayerDatas);
+            default:
+                return PlayerActions.CALL;
 		}
     }
 
 	private PlayerActions decideActionForPhase3Conservative(double probForWinning, double[] otherPlayerDatas) {
-		double strongestHandStrength =0;
+		double strongestHandStrength = 0;
 		for (double d : otherPlayerDatas) {
 			if (d>strongestHandStrength) strongestHandStrength = d;
 		}
-        System.out.println("MyStrength: "+probForWinning+" StrongestHand: "+strongestHandStrength);
-		if (probForWinning >strongestHandStrength  ) return PlayerActions.RAISE;
-		else if (probForWinning >= strongestHandStrength-0.25  ) return PlayerActions.CALL;
+
+		if (probForWinning > strongestHandStrength) return PlayerActions.RAISE;
+		else if (probForWinning >= strongestHandStrength) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 	}
 
 	private PlayerActions decideActionForPhase3Bluffer(double probForWinning,double[] otherPlayerDatas) {
-		double strongestHandStrength =0;
+		double strongestHandStrength = 0;
 		for (double d : otherPlayerDatas) {
 			if (d>strongestHandStrength) strongestHandStrength = d;
 		}
@@ -132,8 +117,6 @@ public class ActionSelector {
             return preFlopFlipOfCoin(player);
         else{
             switch (player.playerType) {
-                //case NORMAL:
-                //    return decideActionForNormalPlayer(player);
                 case BLUFFER:
                     return decideActionForBluffer(player);
                 case CONSERVATIVE:
@@ -169,13 +152,6 @@ public class ActionSelector {
 		int [] powerRating = player.getPowerRating();
 		if (powerRating[0] >=3) return PlayerActions.RAISE;
 		else if (powerRating[0] ==2) return PlayerActions.CALL;
-		else return PlayerActions.FOLD;
-	}
-	
-	private PlayerActions decideActionForNormalPlayer(Player player) {
-        int [] powerRating = player.getPowerRating();
-		if (powerRating[0] >= 4) return PlayerActions.RAISE;
-		else if (powerRating[0]>=2 && powerRating[0] <4) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 	}
 }

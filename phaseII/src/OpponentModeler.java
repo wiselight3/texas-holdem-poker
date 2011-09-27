@@ -28,9 +28,6 @@ public class OpponentModeler {
     public void savePlayerData(int player, boolean preFlop, PlayerActions action, double handStrength){
         tempModels[player][isPreFlop(preFlop)][action.ordinal()].totalHandStrength += handStrength;
         tempModels[player][isPreFlop(preFlop)][action.ordinal()].numberOfHands++;
-        /*System.out.println("P"+player+" preFlop: "+preFlop+" action: "+action+" strength: "+handStrength+
-                " totStrength: "+tempModels[player][isPreFlop(preFlop)][action.ordinal()].totalHandStrength+
-                " numHands: "+tempModels[player][isPreFlop(preFlop)][action.ordinal()].numberOfHands); */
     }
 
     public void saveDataForShowdownPlayers(List<Player> playersInShowdown){
@@ -44,8 +41,16 @@ public class OpponentModeler {
         }
     }
 
-    public void printPlayerModels(){
-        for(int i=0; i<6; i++){
+    public double getPlayerData(int player, boolean preFlop, PlayerActions action){
+        return playerModels[player][isPreFlop(preFlop)][action.ordinal()].totalHandStrength/playerModels[player][isPreFlop(preFlop)][action.ordinal()].numberOfHands;
+    }
+
+    private int isPreFlop(boolean preFlop){
+        return preFlop ? 1:0;
+    }
+
+    public void printPlayerModels(int players){
+        for(int i=0; i<players; i++){
             for(int j=0; j<2; j++){
                 for(int k=0; k<PlayerActions.values().length; k++){
                     System.out.println(
@@ -56,13 +61,5 @@ public class OpponentModeler {
                 }
             }
         }
-    }
-
-    public double getPlayerData(int player, boolean preFlop, PlayerActions action){
-        return playerModels[player][isPreFlop(preFlop)][action.ordinal()].totalHandStrength/playerModels[player][isPreFlop(preFlop)][action.ordinal()].numberOfHands;
-    }
-
-    private int isPreFlop(boolean preFlop){
-        return preFlop ? 1:0;
     }
 }
