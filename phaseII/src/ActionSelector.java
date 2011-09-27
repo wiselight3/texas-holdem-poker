@@ -96,7 +96,7 @@ public class ActionSelector {
 		}
 
 		if (probForWinning > strongestHandStrength) return PlayerActions.RAISE;
-		else if (probForWinning >= strongestHandStrength) return PlayerActions.CALL;
+		else if (probForWinning >= strongestHandStrength-0.30) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 	}
 
@@ -107,7 +107,7 @@ public class ActionSelector {
 		}
 		
 		if (probForWinning > strongestHandStrength-0.30) return PlayerActions.RAISE;
-		else if (probForWinning > strongestHandStrength-0.5) return PlayerActions.CALL;
+		else if (probForWinning > strongestHandStrength-0.50) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 		
 	}
