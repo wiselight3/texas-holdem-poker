@@ -33,7 +33,7 @@ public class PokerSimulator {
                 if(playersInRound.size()==1)
                     return;
 
-                player.setAction(actionSelector.decideAction(player, table, playersInRound, equivalenceClassTable, preFlop, opponentModeler));
+                player.setAction(actionSelector.decideAction(player, table, playersInRound, equivalenceClassTable, preFlop, opponentModeler, roundsPlayed));
                 if(player.getAction()==PlayerActions.RAISE){
                     if(raiseCount >= Settings.maxNumRaises){
                         if(currentBet==player.getBet())
@@ -127,7 +127,7 @@ public class PokerSimulator {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 
-        setUpAllPhasesGame();
+        setUpPhase2vsPhase3Game();
         opponentModeler = new OpponentModeler(players);
 
 		while(roundsPlayed<Settings.numberOfRounds) {
@@ -286,6 +286,16 @@ public class PokerSimulator {
         players.add(new Player(3, PlayerType.BLUFFER, PhaseType.PHASE2PLAYER));
         players.add(new Player(4, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
         players.add(new Player(5, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
+    }
+    
+    private static void setUpPhase2vsPhase3Game() {
+        setUpGame();
+        players.add(new Player(0, PlayerType.BLUFFER, PhaseType.PHASE2PLAYER));
+        players.add(new Player(1, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
+        players.add(new Player(2, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
+        players.add(new Player(3, PlayerType.BLUFFER, PhaseType.PHASE3PLAYER));
+        players.add(new Player(4, PlayerType.CONSERVATIVE, PhaseType.PHASE3PLAYER));
+        players.add(new Player(5, PlayerType.CONSERVATIVE, PhaseType.PHASE3PLAYER));
     }
 
     private static void setUpCustomGame(){

@@ -9,5 +9,6 @@ public class Settings {
 	public static final int numberOfRounds = 1000;
 
     public static final int numberOfRoundsToPrint = 5;
+	public static int numRoundsToCollectDataForOpponentModeler = 100;
 	
 }
