@@ -5,13 +5,16 @@ import java.util.*;
 
 public class ActionSelector {
 
-	public PlayerActions decideAction(Player player, Table table, List<Player> players, EquivalenceClassTable ect, boolean preFlop, OpponentModeler opponentModeler){
+	public PlayerActions decideAction(Player player, Table table, List<Player> players, EquivalenceClassTable ect, boolean preFlop, OpponentModeler opponentModeler, int roundsPlayed){
         switch (player.getPhaseType()) {
             case PHASE1PLAYER:
                 return decideActionsForPhase1Players(player, preFlop);
             case PHASE2PLAYER:
                 return decideActionsForPhase2Players(player, table, players, ect, preFlop);
             case PHASE3PLAYER:
+            	if (roundsPlayed < Settings.numRoundsToCollectDataForOpponentModeler) {
+            		return decideActionsForPhase2Players(player, table, players, ect, preFlop);
+            	}
                 return decideActionsForPhase3Players(player, table, preFlop, ect, opponentModeler, players);
             default:
                 return PlayerActions.CALL;
@@ -81,7 +84,7 @@ public class ActionSelector {
             		
     		} else {
         		otherPlayerDatas[counter] = opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction());
-        		//System.out.println("" + playersInRound.get(counter) + opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction()));
+        		System.out.println("" + playersInRound.get(counter) + opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction()));
         		counter++;
     		}
         	}
