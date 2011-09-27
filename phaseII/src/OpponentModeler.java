@@ -44,6 +44,19 @@ public class OpponentModeler {
         }
     }
 
+    public void printPlayerModels(){
+        for(int i=0; i<6; i++){
+            for(int j=0; j<2; j++){
+                for(int k=0; k<PlayerActions.values().length; k++){
+                    System.out.println(
+                            "totStrength: "+playerModels[i][j][k].totalHandStrength+
+                            "numHands: "+playerModels[i][j][k].numberOfHands
+                    );
+                }
+            }
+        }
+    }
+
     public double getPlayerData(int player, boolean preFlop, PlayerActions action){
         return playerModels[player][isPreFlop(preFlop)][action.ordinal()].totalHandStrength/playerModels[player][isPreFlop(preFlop)][action.ordinal()].numberOfHands;
     }

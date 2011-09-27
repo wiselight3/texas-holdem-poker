@@ -149,6 +149,8 @@ public class PokerSimulator {
 			sum+= player.getMoney();
 		}
 		System.out.println("This should be "+(Settings.startingCash*players.size())+" for "+players.size()+" players?: " + sum);
+
+        opponentModeler.printPlayerModels();
 	}
 
     public static void printGame(boolean preFlop){
