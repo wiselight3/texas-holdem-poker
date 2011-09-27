@@ -118,8 +118,8 @@ public class ActionSelector {
 			if (d>strongestHandStrength) strongestHandStrength = d;
 		}
 		
-		if (probForWinning - strongestHandStrength >= -1 ) return PlayerActions.RAISE;
-		else if (probForWinning - strongestHandStrength >=0) return PlayerActions.CALL;
+		if (probForWinning - strongestHandStrength >= -3 ) return PlayerActions.RAISE;
+		else if (probForWinning - strongestHandStrength >= 0) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 		
 	}
