@@ -49,6 +49,7 @@ public class OpponentModeler {
             for(int j=0; j<2; j++){
                 for(int k=0; k<PlayerActions.values().length; k++){
                     System.out.println(
+                            "P"+i+"preflop: "+j+
                             "totStrength: "+playerModels[i][j][k].totalHandStrength+
                             "numHands: "+playerModels[i][j][k].numberOfHands
                     );

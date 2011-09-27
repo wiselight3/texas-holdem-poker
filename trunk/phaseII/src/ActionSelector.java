@@ -84,7 +84,7 @@ public class ActionSelector {
             		
     		} else {
         		otherPlayerDatas[counter] = opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction());
-        		System.out.println("" + playersInRound.get(counter) + opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction()));
+        		//System.out.println("" + playersInRound.get(counter) + opponentModeler.getPlayerData(playersInRound.get(counter).getId(), preFlop, playersInRound.get(counter).getAction()));
         		counter++;
     		}
         	}
@@ -109,9 +109,9 @@ public class ActionSelector {
 		for (double d : otherPlayerDatas) {
 			if (d>strongestHandStrength) strongestHandStrength = d;
 		}
-		
-		if (probForWinning  >strongestHandStrength  ) return PlayerActions.RAISE;
-		else if (probForWinning >= strongestHandStrength ) return PlayerActions.CALL;
+        System.out.println("MyStrength: "+probForWinning+" StrongestHand: "+strongestHandStrength);
+		if (probForWinning >strongestHandStrength  ) return PlayerActions.RAISE;
+		else if (probForWinning >= strongestHandStrength-0.25  ) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 	}
 
@@ -121,8 +121,8 @@ public class ActionSelector {
 			if (d>strongestHandStrength) strongestHandStrength = d;
 		}
 		
-		if (probForWinning - strongestHandStrength >= -3 ) return PlayerActions.RAISE;
-		else if (probForWinning - strongestHandStrength >= 0) return PlayerActions.CALL;
+		if (probForWinning > strongestHandStrength-0.30) return PlayerActions.RAISE;
+		else if (probForWinning > strongestHandStrength-0.5) return PlayerActions.CALL;
 		else return PlayerActions.FOLD;
 		
 	}
