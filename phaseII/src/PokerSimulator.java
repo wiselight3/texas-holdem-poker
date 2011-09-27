@@ -63,7 +63,7 @@ public class PokerSimulator {
                     }
                 }
 
-                if(roundsPlayed<100){
+                if(roundsPlayed<Settings.numRoundsToCollectDataForOpponentModeler){
                     double strength = preFlop? equivalenceClassTable.calcPreflopProbabilityStrength(player.getCards(), playersInRound.size()) : cardRating.handStrength(player.getCards(), table.getCards(), playersInRound.size());
                     opponentModeler.savePlayerData(player.getId(), preFlop, player.getAction(), strength);
                 }
@@ -132,7 +132,7 @@ public class PokerSimulator {
 
 		while(roundsPlayed<Settings.numberOfRounds) {
             playRound();
-            if(roundsPlayed<100)
+            if(roundsPlayed<Settings.numRoundsToCollectDataForOpponentModeler)
                 opponentModeler.saveDataForShowdownPlayers(playersInRound);
             distributePotToWinners();
             tearDown();
