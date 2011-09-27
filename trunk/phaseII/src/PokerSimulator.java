@@ -33,7 +33,7 @@ public class PokerSimulator {
                 if(playersInRound.size()==1)
                     return;
 
-                player.setAction(actionSelector.decideAction(player, table, playersInRound, equivalenceClassTable, preFlop));
+                player.setAction(actionSelector.decideAction(player, table, playersInRound, equivalenceClassTable, preFlop, opponentModeler));
                 if(player.getAction()==PlayerActions.RAISE){
                     if(raiseCount >= Settings.maxNumRaises){
                         if(currentBet==player.getBet())
@@ -127,7 +127,7 @@ public class PokerSimulator {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 
-        setUpPhase1vsPhase2Game();
+        setUpAllPhasesGame();
         opponentModeler = new OpponentModeler(players);
 
 		while(roundsPlayed<Settings.numberOfRounds) {
