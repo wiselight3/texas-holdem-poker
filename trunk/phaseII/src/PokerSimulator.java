@@ -126,9 +126,9 @@ public class PokerSimulator {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 
-        setUpPhase1Game();
+        //setUpPhase1Game();
         //setUpPhase1vsPhase2Game();
-        //setUpAllPhasesGame();
+        setUpAllPhasesGame();
 
         opponentModeler = new OpponentModeler(players);
 
