@@ -129,8 +129,8 @@ public class PokerSimulator {
     //  setUpPhase1Game();
     //  setUpPhase2Game();
     //  setUpPhase1vsPhase2Game();
-      setUpPhase2vsPhase3Game();
-    //  setUpAllPhasesGame();
+    //  setUpPhase2vsPhase3Game();
+      setUpAllPhasesGame();
 
         opponentModeler = new OpponentModeler(players);
 

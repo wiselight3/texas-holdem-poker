@@ -9,6 +9,7 @@ public class Settings {
 	public static final int numberOfRounds = 1000;
 
     public static final int numberOfRoundsToPrint = 5;
-	public static int numRoundsToCollectData = 100;
+	public static final int numRoundsToCollectData = 1000;
+    public static final int numRoundsForPhase3ToWait = 100;
 	
 }
