@@ -37,6 +37,15 @@ public class EquivalenceClassTable {
             return 0;
     }
 
+    /**
+     * For a given number of active players, this method calculates how often the probability for the given hole cards
+     * is bigger, lower or equal to any other possible probability. Giving a percentage estimating how often the given
+     * hole cards will win.
+     *
+     * @param holeCards
+     * @param players
+     * @return
+     */
     public double calcPreflopProbabilityStrength(List<Card> holeCards, int players){
         double myProb = getProb(holeCards, players);
         int bigger=0, lower=0, tie=0;
@@ -61,7 +70,8 @@ public class EquivalenceClassTable {
         int nevner = bigger + tie + lower;
         return (double)teller/(double)nevner;
     }
-    
+
+    //Writes the roll out data to a file
     public void saveProbEquivalenceClassToFile() throws IOException {
     	File f = new File("probs.txt");
     	
@@ -80,6 +90,7 @@ public class EquivalenceClassTable {
     	writer.close();
     }
 
+    //Reads the roll out data from file
     public void readProbEquivalenceClassFromFile() throws IOException{
         File f = new File("probs.txt");
 
@@ -98,19 +109,4 @@ public class EquivalenceClassTable {
 		}
     	reader.close();
     }
-
-    public static void main (String[] args){
-        EquivalenceClassTable ect = new EquivalenceClassTable();
-        try {
-            ect.readProbEquivalenceClassFromFile();
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        List<Card> testCards = new ArrayList<Card>();
-        testCards.add(new Card(Card.Value.JACK, Card.Suit.CLUBS));
-        testCards.add(new Card(Card.Value.JACK, Card.Suit.DIAMONDS));
-        System.out.println(ect.getProb(testCards, 2));
-    }
-
 }

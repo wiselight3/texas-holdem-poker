@@ -22,7 +22,7 @@ public class PokerSimulator {
 	private static int bigBlindPosition;
     private static int roundsPlayed;
 
-
+    //Simulates a round of betting
     public static void startBetting(boolean preFlop) {
         boolean bettingNotDone = true;
         int raiseCount = 0;
@@ -140,8 +140,10 @@ public class PokerSimulator {
             tearDown();
             roundsPlayed++;
         }
+
         movePlayerOrder();
         movePlayerOrder();
+
 		System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
 		for (Player player : players) {
 			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as "+player.getPhaseType()+" "+player.playerType);

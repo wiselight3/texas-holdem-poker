@@ -145,7 +145,7 @@ public class CardRating {
         return null;
     }
 
-
+    //return the highest power rating for a collection of cards
     public int[] calcCardsPower (ArrayList<Card> cards){
         ArrayList<ArrayList<Card>> vGroups = genValueGroups(cards);
         ArrayList<Card> flush = findFlush(cards);
@@ -295,7 +295,10 @@ public class CardRating {
         return power;
     }
 
-    
+    /**
+     *  Takes a set of hole cards as well as the community cards and number of players, and returns a probability value
+     *  based on how often the given hole cards will win against any possible combination of hole cards the opponents can have.
+     */
     public double handStrength (List<Card> holeCards, List<Card> communityCards, int numberOfPlayers){
         Deck deck = new Deck();
         ArrayList<Card> plHand = new ArrayList<Card>();
@@ -334,7 +337,7 @@ public class CardRating {
                 opHand.remove(remainingCards.get(j));
             }
         }
-//        System.out.println("WINS: "+wins+" LOSSES: "+losses+" DRAWS: "+draws);
+
         int teller = wins + (draws/2);
         int nevner = wins + draws + losses;
         return Math.pow((double)teller/(double)nevner, (double)numberOfPlayers-1);
@@ -346,9 +349,9 @@ public class CardRating {
 	  * @param rating2
 	  * @return integer: 1 if rating 1 is best, 0 if they are equal, and -1 if rating2 is best.
 	  */
-	 public static int calculateBestRating(int[] rating, int[] rating2) {
-		 int toTraverse;
-		 if (rating.length > rating2.length) toTraverse = rating2.length;
+	public static int calculateBestRating(int[] rating, int[] rating2) {
+	     int toTraverse;
+	     if (rating.length > rating2.length) toTraverse = rating2.length;
 		 if (rating.length < rating2.length) toTraverse = rating.length;
 		 else toTraverse = rating.length;
 
@@ -359,51 +362,5 @@ public class CardRating {
 			if (rating[i] == rating2[i] && toTraverse-i == 1) return 0;
 		 }
 		 return 0;
-     }
-    
-    
-    //Testing of sorting methods
-    public static void main(String args[]){
-        Deck deck = new Deck();
-        CardRating cardRating = new CardRating();
-
-        ArrayList<Card> testHole1 = new ArrayList<Card>();
-        testHole1.add(new Card(Card.Value.ACE, Card.Suit.DIAMONDS));
-        testHole1.add(new Card(Card.Value.ACE, Card.Suit.HEARTS));
-
-        ArrayList<Card> testHole2 = new ArrayList<Card>();
-        testHole2.add(new Card(Card.Value.FOUR, Card.Suit.SPADES));
-        testHole2.add(new Card(Card.Value.FIVE, Card.Suit.SPADES));
-
-        ArrayList<Card> testHole3 = new ArrayList<Card>();
-        testHole3.add(new Card(Card.Value.FOUR, Card.Suit.HEARTS));
-        testHole3.add(new Card(Card.Value.FIVE, Card.Suit.HEARTS));
-
-        ArrayList<Card> testHole4 = new ArrayList<Card>();
-        testHole4.add(new Card(Card.Value.ACE, Card.Suit.DIAMONDS));
-        testHole4.add(new Card(Card.Value.THREE, Card.Suit.HEARTS));
-
-        ArrayList<Card> testHole5 = new ArrayList<Card>();
-        testHole5.add(new Card(Card.Value.FOUR, Card.Suit.DIAMONDS));
-        testHole5.add(new Card(Card.Value.NINE, Card.Suit.DIAMONDS));
-
-        ArrayList<Card> testCommunity = new ArrayList<Card>();
-        testCommunity.add(new Card(Card.Value.ACE, Card.Suit.SPADES));
-        testCommunity.add(new Card(Card.Value.DEUCE, Card.Suit.SPADES));
-        testCommunity.add(new Card(Card.Value.THREE, Card.Suit.SPADES));
-
-        System.out.println(cardRating.handStrength(testHole1, testCommunity, 2));
-        System.out.println(cardRating.handStrength(testHole2, testCommunity, 2));
-        System.out.println(cardRating.handStrength(testHole3, testCommunity, 2));
-        System.out.println(cardRating.handStrength(testHole4, testCommunity, 2));
-        System.out.println(cardRating.handStrength(testHole5, testCommunity, 2));
-
-        testCommunity.add(new Card(Card.Value.ACE, Card.Suit.CLUBS));
-
-        System.out.println(cardRating.handStrength(testHole1, testCommunity, 2));
-        System.out.println(cardRating.handStrength(testHole2, testCommunity, 2));
-        System.out.println(cardRating.handStrength(testHole3, testCommunity, 2));
-        System.out.println(cardRating.handStrength(testHole4, testCommunity, 2));
-        System.out.println(cardRating.handStrength(testHole5, testCommunity, 2));
     }
 }

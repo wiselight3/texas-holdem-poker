@@ -67,27 +67,4 @@ public class Deck {
         }
         return null;
     }
-
-    //Testing the main Deck functionality
-    public static void main(String args[]){
-        Deck deck = new Deck();
-//        System.out.println(deck.cardsLeft());
-//        for(int i=0; i<52; i++){
-//            System.out.println(deck.dealCard());
-//        }
-//        deck.buildDeck();
-//        deck.shuffleDeck();
-//        Collections.sort(deck.getCards());
-//        Collections.reverse(deck.getCards());
-//        for(int i=0; i<52; i++){
-//            System.out.println(deck.dealCard());
-//        }
-        for(Card card : deck.getCards()){
-            System.out.println(card);
-        }
-        System.out.println("**** "+deck.getSpecificCard(new Card(Card.Value.ACE, Card.Suit.SPADES))+" ****");
-        for(Card card : deck.getCards()){
-            System.out.println(card);
-        }
-    }
 }
