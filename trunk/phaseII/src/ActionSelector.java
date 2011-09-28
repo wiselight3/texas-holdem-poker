@@ -12,7 +12,7 @@ public class ActionSelector {
             case PHASE2PLAYER:
                 return decideActionsForPhase2Players(player, table, players, ect, preFlop);
             case PHASE3PLAYER:
-            	if (roundsPlayed < Settings.numRoundsToCollectData) {
+            	if (roundsPlayed < Settings.numRoundsForPhase3ToWait) {
             		return decideActionsForPhase2Players(player, table, players, ect, preFlop);
             	}
                 return decideActionsForPhase3Players(player, table, preFlop, ect, opponentModeler, players);
