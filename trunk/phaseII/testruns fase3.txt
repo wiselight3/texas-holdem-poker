@@ -1,3 +1,88 @@
+---- 28.09.2011 ----
+
+After 1002 rounds played in 77s:
+P0 ended up with -189775$ by playing as PHASE1PLAYER CONSERVATIVE
+P1 ended up with -105342$ by playing as PHASE1PLAYER BLUFFER
+P2 ended up with 29000$ by playing as PHASE2PLAYER CONSERVATIVE
+P3 ended up with 49033$ by playing as PHASE2PLAYER BLUFFER
+P4 ended up with 89500$ by playing as PHASE3PLAYER CONSERVATIVE
+P5 ended up with 157583$ by playing as PHASE3PLAYER BLUFFER
+This should be 30000 for 6 players?: 29999
+
+After 1002 rounds played in 77s:
+P0 ended up with -167034$ by playing as PHASE1PLAYER CONSERVATIVE
+P1 ended up with -86192$ by playing as PHASE1PLAYER BLUFFER
+P2 ended up with 12516$ by playing as PHASE2PLAYER CONSERVATIVE
+P3 ended up with 48624$ by playing as PHASE2PLAYER BLUFFER
+P4 ended up with 66233$ by playing as PHASE3PLAYER CONSERVATIVE
+P5 ended up with 155850$ by playing as PHASE3PLAYER BLUFFER
+This should be 30000 for 6 players?: 29997
+
+After 1002 rounds played in 76s:
+P0 ended up with -171475$ by playing as PHASE1PLAYER CONSERVATIVE
+P1 ended up with -69050$ by playing as PHASE1PLAYER BLUFFER
+P2 ended up with 82200$ by playing as PHASE2PLAYER CONSERVATIVE
+P3 ended up with -62850$ by playing as PHASE2PLAYER BLUFFER
+P4 ended up with 116300$ by playing as PHASE3PLAYER CONSERVATIVE
+P5 ended up with 134875$ by playing as PHASE3PLAYER BLUFFER
+This should be 30000 for 6 players?: 30000
+
+After 1002 rounds played in 75s:
+P0 ended up with -111875$ by playing as PHASE1PLAYER CONSERVATIVE
+P1 ended up with -58375$ by playing as PHASE1PLAYER BLUFFER
+P2 ended up with 50500$ by playing as PHASE2PLAYER CONSERVATIVE
+P3 ended up with -54350$ by playing as PHASE2PLAYER BLUFFER
+P4 ended up with 105375$ by playing as PHASE3PLAYER CONSERVATIVE
+P5 ended up with 98725$ by playing as PHASE3PLAYER BLUFFER
+This should be 30000 for 6 players?: 30000
+
+After 1002 rounds played in 80s:
+P0 ended up with -179075$ by playing as PHASE1PLAYER CONSERVATIVE
+P1 ended up with -20775$ by playing as PHASE1PLAYER BLUFFER
+P2 ended up with -9775$ by playing as PHASE2PLAYER CONSERVATIVE
+P3 ended up with 80025$ by playing as PHASE2PLAYER BLUFFER
+P4 ended up with 69125$ by playing as PHASE3PLAYER CONSERVATIVE
+P5 ended up with 90475$ by playing as PHASE3PLAYER BLUFFER
+This should be 30000 for 6 players?: 30000
+
+After 1002 rounds played in 77s:
+P0 ended up with -190042$ by playing as PHASE1PLAYER CONSERVATIVE
+P1 ended up with -113967$ by playing as PHASE1PLAYER BLUFFER
+P2 ended up with 33925$ by playing as PHASE2PLAYER CONSERVATIVE
+P3 ended up with 83633$ by playing as PHASE2PLAYER BLUFFER
+P4 ended up with 116400$ by playing as PHASE3PLAYER CONSERVATIVE
+P5 ended up with 100050$ by playing as PHASE3PLAYER BLUFFER
+This should be 30000 for 6 players?: 29999
+
+After 1002 rounds played in 75s:
+P0 ended up with -182275$ by playing as PHASE1PLAYER CONSERVATIVE
+P1 ended up with -87900$ by playing as PHASE1PLAYER BLUFFER
+P2 ended up with 44925$ by playing as PHASE2PLAYER CONSERVATIVE
+P3 ended up with 89050$ by playing as PHASE2PLAYER BLUFFER
+P4 ended up with 80900$ by playing as PHASE3PLAYER CONSERVATIVE
+P5 ended up with 85300$ by playing as PHASE3PLAYER BLUFFER
+This should be 30000 for 6 players?: 30000
+
+After 10002 rounds played in 1006s:
+P0 ended up with -1678175$ by playing as PHASE1PLAYER CONSERVATIVE
+P1 ended up with -862293$ by playing as PHASE1PLAYER BLUFFER
+P2 ended up with 376065$ by playing as PHASE2PLAYER CONSERVATIVE
+P3 ended up with 412215$ by playing as PHASE2PLAYER BLUFFER
+P4 ended up with 894866$ by playing as PHASE3PLAYER CONSERVATIVE
+P5 ended up with 887315$ by playing as PHASE3PLAYER BLUFFER
+This should be 30000 for 6 players?: 29993
+
+After 10002 rounds played in 709s:
+P0 ended up with -1649450$ by playing as PHASE1PLAYER CONSERVATIVE
+P1 ended up with -543925$ by playing as PHASE1PLAYER BLUFFER
+P2 ended up with 593407$ by playing as PHASE2PLAYER CONSERVATIVE
+P3 ended up with -25027$ by playing as PHASE2PLAYER BLUFFER
+P4 ended up with 664832$ by playing as PHASE3PLAYER CONSERVATIVE
+P5 ended up with 990157$ by playing as PHASE3PLAYER BLUFFER
+This should be 30000 for 6 players?: 29994
+
+----- 27.09.2011 ----
+
 After 10002 rounds played in 244s:
 P0 ended up with -657533$ by playing as PHASE2PLAYER BLUFFER
 P1 ended up with 87301$ by playing as PHASE2PLAYER CONSERVATIVE
