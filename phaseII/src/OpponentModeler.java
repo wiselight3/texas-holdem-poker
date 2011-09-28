@@ -30,6 +30,7 @@ public class OpponentModeler {
         tempModels[player][isPreFlop(preFlop)][action.ordinal()].numberOfHands++;
     }
 
+    //Saves the actions of players who reached the showdown
     public void saveDataForShowdownPlayers(List<Player> playersInShowdown){
         for (Player player : playersInShowdown) {
             for (int i=0; i<2; i++){
@@ -47,19 +48,5 @@ public class OpponentModeler {
 
     private int isPreFlop(boolean preFlop){
         return preFlop ? 1:0;
-    }
-
-    public void printPlayerModels(int players){
-        for(int i=0; i<players; i++){
-            for(int j=0; j<2; j++){
-                for(int k=0; k<PlayerActions.values().length; k++){
-                    System.out.println(
-                            "P"+i+"preflop: "+j+
-                            "totStrength: "+playerModels[i][j][k].totalHandStrength+
-                            "numHands: "+playerModels[i][j][k].numberOfHands
-                    );
-                }
-            }
-        }
     }
 }
