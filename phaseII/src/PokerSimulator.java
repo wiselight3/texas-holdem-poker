@@ -126,11 +126,9 @@ public class PokerSimulator {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 
-    //  setUpPhase1Game();
-    //  setUpPhase2Game();
-    //  setUpPhase1vsPhase2Game();
-    //  setUpPhase2vsPhase3Game();
-      setUpAllPhasesGame();
+        setUpPhase1Game();
+        //setUpPhase1vsPhase2Game();
+        //setUpAllPhasesGame();
 
         opponentModeler = new OpponentModeler(players);
 
@@ -153,9 +151,7 @@ public class PokerSimulator {
 		for (Player player : players) {
 			sum+= player.getMoney();
 		}
-		System.out.println("This should be "+(Settings.startingCash*players.size())+" for "+players.size()+" players?: " + sum);
-
-//        opponentModeler.printPlayerModels(players.size());
+		//System.out.println("This should be "+(Settings.startingCash*players.size())+" for "+players.size()+" players?: " + sum);
 	}
 
     public static void printGame(boolean preFlop){

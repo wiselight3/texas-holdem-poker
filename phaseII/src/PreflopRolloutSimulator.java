@@ -77,7 +77,6 @@ public class PreflopRolloutSimulator {
                     bettingNotDone = false;
             }
         }
-        resetRaisesForPlayers();
     }
 
     public static void playRound() {
@@ -316,12 +315,6 @@ public class PreflopRolloutSimulator {
 			winner.addMoney(pot);
 		}
         System.out.println("*************************");
-	}
-
-	private static void resetRaisesForPlayers() {
-		for (Player player : players) {
-			player.setRaises(0);
-		}
 	}
 	
 	private static void updatePowerRatingsforPlayers() {
