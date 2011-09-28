@@ -1,0 +1,46 @@
+---- 28.09.2011 ----
+
+Run 1:
+
+After 1000 rounds played in 2s:
+P0 ended up with -5868$ by playing as PHASE1PLAYER BLUFFER
+P1 ended up with 14839$ by playing as PHASE1PLAYER CONSERVATIVE
+P2 ended up with 532$ by playing as PHASE1PLAYER BLUFFER
+P3 ended up with 10489$ by playing as PHASE1PLAYER CONSERVATIVE
+This should be 20000 for 4 players?: 19992
+
+Run 2:
+
+After 1000 rounds played in 2s:
+P0 ended up with 16$ by playing as PHASE1PLAYER BLUFFER
+P1 ended up with 16600$ by playing as PHASE1PLAYER CONSERVATIVE
+P2 ended up with -13259$ by playing as PHASE1PLAYER BLUFFER
+P3 ended up with 16641$ by playing as PHASE1PLAYER CONSERVATIVE
+This should be 20000 for 4 players?: 19998
+
+Run 3:
+
+After 1000 rounds played in 1s:
+P0 ended up with 25858$ by playing as PHASE1PLAYER BLUFFER
+P1 ended up with 16200$ by playing as PHASE1PLAYER CONSERVATIVE
+P2 ended up with -36117$ by playing as PHASE1PLAYER BLUFFER
+P3 ended up with 14058$ by playing as PHASE1PLAYER CONSERVATIVE
+This should be 20000 for 4 players?: 19999
+
+Run 4:
+
+After 1000 rounds played in 1s:
+P0 ended up with -24377$ by playing as PHASE1PLAYER BLUFFER
+P1 ended up with 25098$ by playing as PHASE1PLAYER CONSERVATIVE
+P2 ended up with -18968$ by playing as PHASE1PLAYER BLUFFER
+P3 ended up with 38241$ by playing as PHASE1PLAYER CONSERVATIVE
+This should be 20000 for 4 players?: 19994
+
+Run 5:
+
+After 1000 rounds played in 2s:
+P0 ended up with -46509$ by playing as PHASE1PLAYER BLUFFER
+P1 ended up with 47291$ by playing as PHASE1PLAYER CONSERVATIVE
+P2 ended up with 1975$ by playing as PHASE1PLAYER BLUFFER
+P3 ended up with 17241$ by playing as PHASE1PLAYER CONSERVATIVE
+This should be 20000 for 4 players?: 19998

@@ -126,7 +126,11 @@ public class PokerSimulator {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 
-        setUpAllPhasesGame();
+    //  setUpPhase1Game();
+    //  setUpPhase2Game();
+    //  setUpPhase1vsPhase2Game();
+      setUpPhase2vsPhase3Game();
+    //  setUpAllPhasesGame();
 
         opponentModeler = new OpponentModeler(players);
 
@@ -138,7 +142,8 @@ public class PokerSimulator {
             tearDown();
             roundsPlayed++;
         }
-
+        movePlayerOrder();
+        movePlayerOrder();
 		System.out.println("After "+roundsPlayed+" rounds played in "+(System.currentTimeMillis()-startTime)/1000+"s:");
 		for (Player player : players) {
 			System.out.println(player + " ended up with " + player.getMoney() + "$ by playing as "+player.getPhaseType()+" "+player.playerType);
@@ -258,12 +263,16 @@ public class PokerSimulator {
         setUpGame();
         players.add(new Player(0, PlayerType.BLUFFER, PhaseType.PHASE1PLAYER));
         players.add(new Player(1, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
+        players.add(new Player(2, PlayerType.BLUFFER, PhaseType.PHASE1PLAYER));
+        players.add(new Player(3, PlayerType.CONSERVATIVE, PhaseType.PHASE1PLAYER));
     }
 
     private static void setUpPhase2Game(){
         setUpGame();
         players.add(new Player(0, PlayerType.BLUFFER, PhaseType.PHASE2PLAYER));
         players.add(new Player(1, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
+        players.add(new Player(2, PlayerType.BLUFFER, PhaseType.PHASE2PLAYER));
+        players.add(new Player(3, PlayerType.CONSERVATIVE, PhaseType.PHASE2PLAYER));
     }
 
     private static void setUpPhase3Game(){
