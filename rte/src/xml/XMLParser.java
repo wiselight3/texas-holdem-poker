@@ -29,8 +29,5 @@ public class XMLParser {
 			System.out.println("</pair>");
 
 		}
-		
-		
 	}
-	
 }

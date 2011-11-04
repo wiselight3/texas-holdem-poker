@@ -16,7 +16,6 @@ public class Pair {
 	
 	@Element
 	private String t;
-	
 	@Element
 	private String h;
 	
